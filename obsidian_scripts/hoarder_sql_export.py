@@ -5,7 +5,7 @@ from datetime import datetime
 # Configuration
 DB_PATH = '/mnt/user/appdata/hoarder/db.db'  # Remplacer par le bon chemin
 BASE_URL = 'http://192.168.50.12:3000/dashboard/preview/'
-EXPORT_PATH = '/mnt/user/Documents/Obsidian/imports/hoarder_bookmarks.md'  # Chemin vers l'export
+EXPORT_PATH = '/mnt/user/Documents/Obsidian/notes/imports/hoarder_bookmarks.md'  # Chemin vers l'export
 
 # Connexion à la base de données
 def connect_db(db_path):
