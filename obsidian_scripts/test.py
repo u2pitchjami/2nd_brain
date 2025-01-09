@@ -376,9 +376,8 @@ def process_single_note(filepath):
         # Étape 2 : Vérification de la taille
         if not should_split_note(simplified_note):
             print(f"[INFO] La note est suffisamment courte, pas de split nécessaire : {filepath}")
-            # Écraser la note avec la version simplifiée
             logging.debug(f"[DEBUG] remplacement de la note par la simplification")
-            # Ajouter YAML + contenu de la section
+            
             
             with open(filepath, 'w', encoding='utf-8') as file:
                 file.write(simplified_note)
@@ -390,6 +389,7 @@ def process_single_note(filepath):
         sections = filter_short_sections(sections, min_word_count=100)
         create_split_notes(filepath, sections)
         logging.debug(f"[DEBUG] process_single_note : envoie vers create_split_notes")
+        return
 
             
     except Exception as e:
