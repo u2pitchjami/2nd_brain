@@ -1,237 +1,257 @@
 import os
 import re
 import requests
-import time
-import json
-import logging
 from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
-from sentence_transformers import SentenceTransformer, util
-
-model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+import time
+import logging
+import json
 
 # Chemin vers le dossier contenant les notes Obsidian
 obsidian_notes_folder = "/mnt/user/Documents/Obsidian/notes"
 ollama_api_url = "http://192.168.50.12:11434/api/generate"
 
-# Configuration basique des logs
-logging.basicConfig(
-    filename='/home/pipo/bin/dev/2nd_brain/obsidian_scripts/logs/auto_tags.log',  # Emplacement du fichier log
-    level=logging.DEBUG,  # Niveau des logs (DEBUG, INFO, WARNING, ERROR)
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+  # Emplacement du fichier log
+logging.basicConfig(filename='/home/pipo/bin/dev/2nd_brain/obsidian_scripts/logs/auto_tags.log', level=logging.DEBUG, format='%(asctime)s - %(message)s')
 
-# Fonction pour interroger Ollama et générer des tags à partir du contenu d'une note
-def get_tags_from_ollama(content):
-    logging.debug(f"[DEBUG] tags ollama : lancement fonction")
-    tag_prompt = f"""
-    You are a bot in a read-it-later app and your responsibility is to help with automatic tagging.
-    Please analyze the text between the sentences "CONTENT START HERE" and "CONTENT END HERE" and suggest relevant tags that describe its key themes, topics, and main ideas. The rules are:
-    - Aim for a variety of tags, including broad categories, specific keywords, and potential sub-genres.
-    - The tags language must be in English.
-    - If it's a famous website you may also include a tag for the website. If the tag is not generic enough, don't include it.
-    - The content can include text for cookie consent and privacy policy, ignore those while tagging.
-    - Aim for 3-5 tags.
-    - if a specific hardware and/or specific software are use add tags with the names for each.
-    - If there are no good tags, leave the array empty.
-    
-    CONTENT START HERE
-    {content[:5000]}
-    CONTENT END HERE
-    
-    Respond in JSON with the key "tags" and the value as an array of string tags.
+def clean_content(content):
+    logging.debug(f"[DEBUG] clean_content")
     """
-    
-    response = ollama_generate(tag_prompt)
-    #print(f"Réponse complète : {response}")
-    # EXTRACTION DU JSON VIA REGEX
-    match = re.search(r'\{.*?\}', response, re.DOTALL)
-    
-    if match:
-        try:
-            tags_data = json.loads(match.group(0))
-            tags = tags_data.get("tags", [])
-        except json.JSONDecodeError:
-            tags = ["Error parsing JSON"]
-    else:
-        tags = ["No tags found"]
+    Nettoie le contenu avant de l'envoyer au modèle.
+    - Conserve les blocs de code Markdown (``` ou ~~~).
+    - Supprime les balises SVG ou autres éléments non pertinents.
+    - Élimine les lignes vides ou répétitives inutiles.
+    """
+    # Supprimer les balises SVG ou autres formats inutiles
+    content = re.sub(r'<svg[^>]*>.*?</svg>', '', content, flags=re.DOTALL)
 
-    return tags
-            
-# Fonction pour générer un résumé automatique avec Ollama
-def get_summary_from_ollama(content):
-    logging.debug(f"[DEBUG] résumé ollama : lancement fonction")
-    summary_prompt = f"""
-    Provide a concise summary of the key points discussed in the following text. Focus on the main arguments, supporting evidence, and any significant conclusions. Present the summary in a bullet-point format, highlighting the most crucial information. Ensure that the summary captures the essence of the text while maintaining clarity and brevity
-    Only return the summary itself. Do not add any introduction, explanation, or surrounding text.
-    **without including the parts already present** in the "summary:" section. Do not repeat existing elements
-    
-    TEXT START
-    {content[:5000]}
-    TEXT END
+    # Supprimer les lignes vides multiples
+    content = re.sub(r'\n\s*\n', '\n', content)
+
+    return content.strip()
+
+def split_large_note(content, max_words=3000):
     """
-    response = ollama_generate(summary_prompt)
-    
-   # Nettoyage au cas où Ollama ajoute du texte autour
-    match = re.search(r'TEXT START(.*?)TEXT END', response, re.DOTALL)
-    if match:
-        summary = match.group(1).strip()
-    else:
-        summary = response  # Si pas de balise trouvée, retourne la réponse complète
-    
-    # Nettoyage des artefacts
-    summary = clean_summary(summary)
-    
-    return summary
+    Découpe une note en blocs de taille optimale (max_words).
+    """
+    words = content.split()
+    blocks = []
+    current_block = []
+
+    for word in words:
+        current_block.append(word)
+        if len(current_block) >= max_words:
+            blocks.append(" ".join(current_block))
+            current_block = []
+
+    # Ajouter le dernier bloc s'il reste des mots
+    if current_block:
+        blocks.append(" ".join(current_block))
+
+    return blocks
+
+def process_large_note(content, filepath):
+    logging.debug(f"[DEBUG] process_large_note")
+    """
+    Traite une note volumineuse en la découpant et en envoyant les blocs au modèle.
+    """
+    try:
+        #with open(filepath, 'r', encoding='utf-8') as file:
+        #    content = file.read()
+
+        # Étape 1 : Découpage en blocs optimaux
+        blocks = split_large_note(content, max_words=3000)
+        print(f"[INFO] La note a été découpée en {len(blocks)} blocs.")
+
+        processed_blocks = []
+        for i, block in enumerate(blocks):
+            print(f"[INFO] Traitement du bloc {i + 1}/{len(blocks)}...")
+
+            # Étape 2 : Appel au modèle pour reformulation
+            prompt = f"""
+            You are an intelligent note-organizing assistant. Analyze the following text and identify distinct subjects or topics.
+    - **if the content is a bot conversation** :
+        - Please identify the main discussion points, decisions, and action items from my conversation below and provide a concise bulleted summary
+        - Simplify and reformat the conversation.
+        - Extract key ideas and create a structured summary in markdown format.
+        - highlights thoughts on topics, good or bad actions in order to draw useful elements or points of vigilance for the future
+        - Focus on removing redundant back-and-forth while preserving the core arguments and answers.
+    - **If the content is NOT a conversation with ChatGPT**:
+        - Rewrite the following text to improve clarity and conciseness. Maintain the original meaning while simplifying complex language, removing unnecessary jargon, and ensuring the content is easily understood by a general audience.
+        - The tone should be professional yet approachable.
+        - Organize the information logically and use clear, concise sentences
+        - For each subject, create a separate section with a clear heading.
+        - Organize the content under each heading, reformulating in a clear and simple way but improving the structure and readability and clearly identifying key points.
+        - Use markdown formatting for headings and subheadings.
+        - Ensure that related information is grouped together logically.
+        - Remove unnecessary details or redundancies.
+        - Ensure the output is in markdown format.
+
+            Here is the text to simplify:
+            {block}
+            """
+            response = ollama_generate(prompt)
+            processed_blocks.append(response.strip())
+
+        # Étape 3 : Fusionner les blocs reformulés
+        final_content = "\n\n".join(processed_blocks)
+
+        # Écriture de la note reformulée
+        with open(filepath, 'w', encoding='utf-8') as file:
+            file.write(final_content)
+        print(f"[INFO] La note volumineuse a été traitée et enregistrée : {filepath}")
+
+    except Exception as e:
+        print(f"[ERREUR] Impossible de traiter {filepath} : {e}")
+
+def simplify_note_with_ai(content):
+    logging.debug(f"[DEBUG] démarrage du simplify_note_with_ai")
+    """
+    Reformule et simplifie une note en utilisant Ollama.
+    """
+    prompt = f"""
+    You are an intelligent note-organizing assistant. Analyze the following text and identify distinct subjects or topics.
+    - **if the content is a bot conversation** :
+        - Please identify the main discussion points, decisions, and action items from my conversation below and provide a concise bulleted summary
+        - Simplify and reformat the conversation.
+        - Extract key ideas and create a structured summary in markdown format.
+        - highlights thoughts on topics, good or bad actions in order to draw useful elements or points of vigilance for the future
+        - Focus on removing redundant back-and-forth while preserving the core arguments and answers.
+    - **If the content is NOT a conversation with ChatGPT**:
+        - Rewrite the following text to improve clarity and conciseness. Maintain the original meaning while simplifying complex language, removing unnecessary jargon, and ensuring the content is easily understood by a general audience.
+        - The tone should be professional yet approachable.
+        - Organize the information logically and use clear, concise sentences
+        - For each subject, create a separate section with a clear heading.
+        - Organize the content under each heading, reformulating in a clear and simple way but improving the structure and readability and clearly identifying key points.
+        - Use markdown formatting for headings and subheadings.
+        - Ensure that related information is grouped together logically.
+        - Remove unnecessary details or redundancies.
+        - Ensure the output is in markdown format.
+
+
+    Here is the note:
+    {content}
+    """
+
+    # Appel à Ollama pour simplifier la note
+    response = ollama_generate(prompt)
+    print (response)
+    return response.strip()
 
 def split_note_by_ai(content):
-    # Prompt pour Ollama
-    logging.debug(f"[DEBUG] lancement split")
+    logging.debug(f"[DEBUG] Démmarage interrogation Ollama pour Split")
+    # Utilisation du prompt que tu as testé
     prompt = f"""
     You are an intelligent note-organizing assistant. Analyze the following text and identify distinct subjects or topics.
     For each subject, create a separate section with a clear heading.
-    Organize the content under each heading, maintaining the original information but improving structure and readability.
-    Use markdown formatting for headings and subheadings.
-    Ensure that related information is grouped together logically
-    Split each section in a new .md file with a link with the previous note and the next note
+    - Start each section with 'TITLE: <short descriptive title>'.
+    - Organize the content under each heading, keeping related information grouped logically.
+    - Use markdown formatting for headings and subheadings.
+    - Ensure the sections are distinct, well-structured, and concise.
+
+    Here is the text to split:
+
     
-    TEXT START
-    {content[:5000]}
-    TEXT END
     
+    Text to process:
+    {content}
     """
-    
-    # Appel à Ollama pour générer les sections
+
+    # Appel au modèle IA (ollama)
     response = ollama_generate(prompt)
     print (response)
-    try:
-        sections = json.loads(response)
-    except json.JSONDecodeError:
-        sections = {"Note principale": content}  # Si l'IA échoue, garder la note complète
 
+    # Supprimer l'introduction jusqu'au premier "TITLE:"
+    response = re.sub(r'^.*?(?=TITLE:)', '', response, flags=re.DOTALL)
+
+    # Découper les sections basées sur "TITLE:"
+    sections = re.split(r'(?=TITLE:)', response)
+
+    # Nettoyer les sections pour éviter les blocs vides
+    sections = [s.strip() for s in sections if s.strip()]
+
+    if not sections:
+        print(f"[ERREUR] Aucune section détectée avec 'TITLE:' dans la réponse de l'IA.")
+        return []
+
+    logging.debug(f"[DEBUG] Sections extraites : {sections}")
     return sections
 
-# Fonction pour ajouter ou mettre à jour les tags, résumés et commandes dans le front matter YAML
-def add_metadata_to_yaml(filepath, tags, summary, sections):
-    try:    
-        with open(filepath, "r", encoding="utf-8") as file:
-            lines = file.readlines()
+def create_split_notes(filepath, sections):
+    logging.debug(f"[DEBUG] Split : création de fichiers")
+    directory = os.path.dirname(filepath)
+    created_files = []
+
+    for i, section in enumerate(sections):
+        # Extraire le titre d'ollama depuis 'TITLE: ...'
+        title_match = re.search(r'TITLE:\s*(.+)', section)
+        title = title_match.group(1) if title_match else f"section_{i+1}"
+        logging.debug(f"[DEBUG] Split : extraction du titre : {title}")
         
-        nombre_mots = count_words("".join(lines))
-        date_actuelle = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # Nettoyer le titre pour créer un nom de fichier correct
+        safe_title = re.sub(r'[^\w\s-]', '', title)  # Supprimer caractères spéciaux
+        safe_title = safe_title[:50].replace(" ", "_").lower()  # Limiter la longueur
+        logging.debug(f"[DEBUG] Split : nettoyage du titre : {safe_title}")
+
+        # Créer un nom de fichier
+        new_filename = f"{safe_title}.md"
+        new_filepath = os.path.join(directory, new_filename)
+        logging.debug(f"[DEBUG] Split : création du fichier dans : {new_filepath}")
+
+        # Ajouter les liens pour navigation
+        prev_link = f"[[{created_files[-1]}]]" if i > 0 else ""
+        next_link = f"[[{safe_title}.md]]" if i < len(sections) - 1 else ""
+        logging.debug(f"[DEBUG] Split : création des liens")
         
-        # Récupération de la date de création existante ou initialisation
-        date_creation = date_actuelle
-        yaml_start, yaml_end = -1, -1
-        
-        for i, line in enumerate(lines):
-            if line.strip() == "---":
-                if yaml_start == -1:
-                    yaml_start = i
-                else:
-                    yaml_end = i
-                    break
-            if line.startswith("created:"):
-                date_creation = line.split(":")[1].strip()
-        logging.debug(f"[DEBUG] Y a t-il une entête ?")
-        # Si aucune entête YAML n'existe, la créer
-        if yaml_start == -1 or yaml_end == -1:
-            missing_summary = not any("summary:" in line for line in lines[yaml_start:yaml_end])
-            missing_tags = not any("tags:" in line for line in lines[yaml_start:yaml_end])
+        # Ajouter YAML + contenu de la section
+        yaml_block = [
+            "---\n",
+            f"title: {title}\n",
+            f"created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+            "status: processed\n",  # Ajout du status
+            "---\n\n",
+            f"{prev_link}\n\n",
+            section,
+            f"\n\n{next_link}"
+        ]
+        try:
+            # Créer et écrire le fichier
+            with open(new_filepath, 'w', encoding='utf-8') as new_file:
+                new_file.writelines(yaml_block)
+                created_files.append(new_filename)
+                logging.debug(f"[DEBUG] Split : création du fichier dans : {new_filepath}")
+        except Exception as e:
+            print(f"[ERREUR] Impossible de créer le fichier {new_filename} : {e}")
 
-            if missing_tags:
-                lines.insert(yaml_end, f"tags: [{', '.join(tags)}]\n")
-                logging.info(f"Ajout des tags manquants pour {filepath}")
+    #try:
+        # Supprimer la note d'origine
+    #    os.remove(filepath)
+    #    print(f"[SUPPRIMÉE] Note d'origine : {filepath}")
+    #except Exception as e:
+    #    print(f"[ERREUR] Impossible de supprimer {filepath} : {e}")
 
-            if missing_summary:
-                lines.insert(yaml_end, f"summary: |\n  {summary.replace('\n', '\n  ')}\n")
-                logging.info(f"Ajout du résumé manquant pour {filepath}")
-                
-            yaml_block = [
-                "---\n",
-                f"tags: [{', '.join(tags)}]\n",
-                f"summary: |\n  {summary.replace('\n', '\n  ')}\n",
-                f"word_count: {nombre_mots}\n",
-                f"created: {date_creation}\n",
-                f"last_modified: {date_actuelle}\n",
-                "author: \n",
-                "status: \n",
-                "---\n\n"
-            ]
-            lines = yaml_block + lines
-            logging.info(f"Création d'une entête YAML complète pour {filepath} :\n{''.join(yaml_block)}")
-        
-        else:
-            # Mise à jour des métadonnées existantes
-            logging.debug(f"[DEBUG] Il y a déjà une entête")
-            inside_yaml = False
-            inside_summary = False
-            inside_tags = False
 
-            for i in range(yaml_start, yaml_end):
-                line = lines[i].strip()
-
-                # Détecte les lignes à traiter
-                if line == "---":
-                    inside_yaml = not inside_yaml
-
-                if inside_yaml:
-                    if line.startswith("tags:"):
-                        inside_tags = True
-                        lines[i] = f"tags: [{', '.join(tags)}]\n"
-                    elif inside_tags and line.startswith("  - "):
-                        lines[i] = ""  # Efface les anciennes lignes de tags
-                    else:
-                        inside_tags = False
-
-                    if line.startswith("summary:"):
-                        inside_summary = True
-                        lines[i] = f"summary: |\n  {summary.replace('\n', '\n  ')}\n"
-                    elif inside_summary and line.startswith("  "):
-                        lines[i] = ""  # Efface les anciennes lignes du résumé
-                    else:
-                        inside_summary = False
-
-                    if line.startswith("word_count:"):
-                        lines[i] = f"word_count: {nombre_mots}\n"
-
-                    if line.startswith("last_modified:"):
-                        lines[i] = f"last_modified: {date_actuelle}\n"
-
-                       
-                        
-            # Loguer l'entête après modification
-            yaml_block = lines[yaml_start:yaml_end + 1]
-            logging.info(f"[YAML MODIFIÉ] pour {filepath} :\n{''.join(yaml_block)}")
-            
-            missing_summary = not any("summary:" in line for line in lines[yaml_start:yaml_end])
-            missing_tags = not any("tags:" in line for line in lines[yaml_start:yaml_end])
-
-            if missing_tags:
-                lines.insert(yaml_end, f"tags: [{', '.join(tags)}]\n")
-            if missing_summary:
-                lines.insert(yaml_end, f"summary: |\n  {summary.replace('\n', '\n  ')}\n")
-
-                
-        # Écriture des modifications dans le fichier
-        with open(filepath, "w", encoding="utf-8") as file:
-            file.writelines(lines)
-            logging.info(f"Fichier {filepath} mis à jour avec succès.")
-            logging.debug(f"[DEBUG] fichier mis à jour ??? : {line.strip()}")
+# Traitement pour réponse d'ollama
+def ollama_generate(prompt):
+    logging.debug(f"[DEBUG] Ollama sollicité")
+    payload = {
+        "model": "qwen2.5:14b",
+        "prompt": prompt
+    }
     
-    except Exception as e:
-        logging.error(f"Erreur lors de la mise à jour de {filepath} : {e}")
-        raise
-   
-
-def clean_summary(summary):
-    # Supprimer les /t/ ou autres artefacts similaires
-    cleaned_summary = re.sub(r'\/t\/', '', summary)
-    logging.debug(f"[DEBUG] résumé nettoyé")
-    return cleaned_summary
-
-
+    response = requests.post("http://192.168.50.12:11434/api/generate", json=payload, stream=True)
+    
+    full_response = ""
+    for line in response.iter_lines():
+        if line:
+            try:
+                json_line = json.loads(line)
+                full_response += json_line.get("response", "")
+            except json.JSONDecodeError as e:
+                print(f"Erreur de décodage JSON : {e}")
+    
+    return full_response.strip()
 
 class NoteHandler(FileSystemEventHandler):
     def on_modified(self, event):
@@ -258,104 +278,50 @@ class NoteHandler(FileSystemEventHandler):
         # Vérifie si le dossier ou fichier est caché (commence par un .)
         return any(part.startswith('.') for part in path.split(os.sep))
 
-        
-# Traitement pour réponse d'ollama
-def ollama_generate(prompt):
-    logging.debug(f"[DEBUG] Ollama sollicité")
-    payload = {
-        "model": "llama3:latest",
-        "prompt": prompt
-    }
-    
-    response = requests.post("http://192.168.50.12:11434/api/generate", json=payload, stream=True)
-    
-    full_response = ""
-    for line in response.iter_lines():
-        if line:
-            try:
-                json_line = json.loads(line)
-                full_response += json_line.get("response", "")
-            except json.JSONDecodeError as e:
-                print(f"Erreur de décodage JSON : {e}")
-    
-    return full_response.strip()
-
-def count_words(content):
-    logging.debug(f"[DEBUG] def count_word")
-    return len(content.split())
-
-# Traitement d'une note individuelle à la volée
 def process_single_note(filepath):
-    if os.path.isdir(filepath):
-        print(f"[INFO] Ignoré : {filepath} est un dossier.")
+    logging.debug(f"[DEBUG] démarrage du process_single_note pour : {filepath}")
+    if not filepath.endswith(".md"):
         return
     try:
-        with open(filepath, 'r') as file:
+        
+        with open(filepath, 'r', encoding='utf-8') as file:
             content = file.read()
-            
-        # Définir le seuil de mots pour déclencher l'analyse
-        nombre_mots_actuels = count_words(content)
-        seuil_mots_initial = 50
-        seuil_modif = 100
-        ancienne_valeur = 0
-        
-        # Étape 1 : Découpage basé sur l'IA
-        sections = split_note_by_ai(content)
-        
-        base_filename = os.path.splitext(os.path.basename(filepath))[0]
-        directory = os.path.dirname(filepath)
-        created_files = []
-        logging.debug(f"[DEBUG] Étape 1 : Découpage basé sur l'IA")
+        # Nettoyer le contenu
+        cleaned_content = clean_content(content)
+        # Vérifier si la note est volumineuse
+        word_count = len(cleaned_content.split())
+        max_words_for_large_note = 2500  # Définir la limite de mots pour une "grande" note
+        logging.debug(f"[DEBUG] process_single_note nombre mots : {word_count}")
 
-        # Étape 2 : Créer une note pour chaque section identifiée
-        for title, section in sections.items():
-            safe_title = title.replace(" ", "_").replace(":", "").lower()
-            new_filename = f"{base_filename}_{safe_title}.md"
-            new_filepath = os.path.join(directory, new_filename)
-            logging.debug(f"[DEBUG] Étape 2 : Créer une note pour chaque section identifiée")
-        
-            # Générer tags et résumé
-            section_tags = get_tags_from_ollama(section)
-            section_summary = get_summary_from_ollama(section)
-            
-            with open(new_filepath, 'w', encoding='utf-8') as new_file:
-                yaml_block = [
-                    "---\n",
-                    f"title: {title}\n",
-                    f"tags: [{', '.join(section_tags)}]\n",
-                    f"summary: |\n  {section_summary.replace('\n', '\n  ')}\n",
-                    f"created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-                    "---\n\n",
-                    section
-                ]
-                new_file.writelines(yaml_block)
-                created_files.append(new_filename)
-                logging.info(f"Création de {new_filepath}")
-        
-        # Étape 3 : Supprimer la note originale après découpage
-        os.remove(filepath)
-        logging.info(f"Note originale supprimée : {filepath}")
+        if word_count > max_words_for_large_note:
+            print(f"[INFO] La note est volumineuse ({word_count} mots). Utilisation de 'process_large_note'.")
+            process_large_note(cleaned_content, filepath)
+            return
 
+        # Reformulation normale et vérification de la taille
+        simplified_note = simplify_note_with_ai(cleaned_content)
+        
+        # Étape 2 : Vérification de la taille
+        if not should_split_note(simplified_note):
+            print(f"[INFO] La note est suffisamment courte, pas de split nécessaire : {filepath}")
+            # Écraser la note avec la version simplifiée
+            logging.debug(f"[DEBUG] remplacement de la note par la simplification")
+            # Ajouter YAML + contenu de la section
+            
+            with open(filepath, 'w', encoding='utf-8') as file:
+                file.write(simplified_note)
+            return
+        
+        # Étape 3 : Splitter la note si nécessaire
+        sections = split_note_by_ai(simplified_note)
+        logging.debug(f"[DEBUG] process_single_note : envoie vers split_note_by_ai")
+        sections = filter_short_sections(sections, min_word_count=100)
+        create_split_notes(filepath, sections)
+        logging.debug(f"[DEBUG] process_single_note : envoie vers create_split_notes")
+
+            
     except Exception as e:
-        logging.error(f"Erreur lors du traitement de {filepath} : {e}")
-
-#découpage de sections
-def split_note(content):
-    logging.debug(f"[DEBUG] démarrage Split : ")
-    sections = re.split(r'\n{2,}', content)  # Coupe aux doubles sauts de ligne
-    return sections
-
-#backlink
-def find_similar_notes(section, all_notes):
-    logging.debug(f"[DEBUG] démarrage Backlink : ")
-    similarities = {}
-    for note, content in all_notes.items():
-        embeddings1 = model.encode(section, convert_to_tensor=True)
-        embeddings2 = model.encode(content, convert_to_tensor=True)
-        score = util.pytorch_cos_sim(embeddings1, embeddings2).item()
-        if score > 0.6:  # Seuil de similarité
-            similarities[note] = score
-    return similarities
+        print(f"[ERREUR] Impossible de traiter {filepath} : {e}")
 
 
 # Lancement du watcher pour surveiller les modifications dans le dossier Obsidian

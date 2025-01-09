@@ -1,309 +1,146 @@
-2025-01-08 20:57:11,450 - DEBUG - [DEBUG] démarrage du script : 
-2025-01-08 20:57:23,269 - DEBUG - [DEBUG] def count_word
-2025-01-08 20:57:23,269 - DEBUG - [DEBUG] lancement split
-2025-01-08 20:57:23,269 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 20:57:23,271 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 20:57:29,448 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 20:57:44,641 - DEBUG - [DEBUG] process_single_note lecture des metadonnees
-2025-01-08 20:57:44,642 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 20:57:44,642 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 20:57:44,642 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 20:57:47,589 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 20:57:50,323 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 20:57:50,323 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 20:57:50,323 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 20:57:53,108 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 20:58:00,487 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 20:58:00,488 - DEBUG - [DEBUG] démarrage Split : 
-2025-01-08 20:58:00,488 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 20:58:00,488 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 20:58:00,488 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 20:58:03,458 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 20:58:06,203 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 20:58:06,203 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 20:58:06,204 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 20:58:08,991 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 20:58:14,300 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 20:58:14,300 - DEBUG - [DEBUG] def count_word
-2025-01-08 20:58:14,301 - DEBUG - [DEBUG] Y a t-il une entête ?
-2025-01-08 20:58:14,301 - DEBUG - [DEBUG] Il y a déjà une entête
-2025-01-08 20:58:14,301 - INFO - [YAML MODIFIÉ] pour /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2.md :
----
-
-### 2\. **Deuxième cerveau avec Obsidian (Automatisation des notes)**
-
-**Ce que tu as déjà** :
-
-- **Génération d'entêtes automatique**
-- **Surveillance des fichiers modifiés**
-- **Tags et résumés générés par Ollama (llama3)**
-
-**Ce que tu pourrais ajouter/approfondir** :
-
-- **Automatisation de backlinks croisés** : Générer des liens entre notes connexes en Python (analyse sémantique simple avec `sentence-transformers` par ex.).
-- **Création de cartes mentales automatiques** à partir des notes Obsidian (librairies comme `networkx` ou `graphviz`).
-- **Gestion de tâches** avec des scripts qui génèrent des TODO à partir des notes modifiées récemment.
-
-**Surveillance et automation (Exemple avec watchdog)** :
-
-```python
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-import time
-import ollama
-
-class NoteHandler(FileSystemEventHandler):
-    def on_modified(self, event):
-        if event.src_path.endswith(".md"):
-            with open(event.src_path, "r+") as file:
-                content = file.read()
-                summary = ollama.chat("llama3", f"Résumé de la note : {content}")
-                file.seek(0)
-                file.write(f"<!-- Résumé: {summary} -->\n{content}")
-
-observer = Observer()
-observer.schedule(NoteHandler(), path='/path/to/obsidian', recursive=True)
-observer.start()
-
-try:
-    while True:
-        time.sleep(1)
-except KeyboardInterrupt:
-    observer.stop()
-
-observer.join()
-```
-
-
-### 3\. **Optimisation et industrialisation**
-
-- **Dockerisation de l’automatisation Obsidian** : Crée un conteneur Docker qui tourne en tâche de fond pour surveiller tes notes (moins intrusif que de lancer le script localement).
-- **API Flask/FastAPI** : Crée une API simple pour piloter la génération de tags/résumés et interagir avec tes notes à distance.
-- **CI/CD** : Automatisation de tes scripts avec des workflows GitHub Actions pour auto-déployer des conteneurs ou des scripts.
-
-summary: |
-  • The conversation discusses a user's (Thierry) projects and goals with ChatGPT, an AI assistant.
-  • Thierry shares his GitHub repository link, showcasing several projects related to Beets, Docker, and automation.
-  • ChatGPT provides feedback on the projects, highlighting expertise in scripting Bash and using Docker for task automation, particularly in music management with Beets.
-  • The conversation shifts to discuss a new project where Thierry wants to prioritize Python over Bash, aiming to develop skills for professional use.
-  • ChatGPT offers guidance on transitioning from Bash to Python, emphasizing the benefits of improved error handling, library usage, and multithreading/multiprocessing capabilities.
-  • Specific suggestions are provided for the "shuffle_medias_mix" project, including using libraries like `os`, `shutil`, `random`, or `numpy` for file manipulation and audio processing.
-  • The conversation also touches on Thierry's ongoing project involving Obsidian, where he wants to create a second brain and automate note generation with LLaMA.
-  Here is a concise summary of the key points discussed in the text:
-  
-  • The conversation begins with introductions and small talk, with ChatGPT expressing interest in helping with scripting, Docker, or other topics.
-  • Thierry shares his GitHub link, which shows several projects he has worked on, including Beets-Xtractor-Docker, Clone-Raspberrypi-SD-card, Beets_import_auto, Mediainfo_export, and clean_logs_sav.
-  • ChatGPT notes that these projects demonstrate Thierry's expertise in scripting Bash and Docker for automating tasks, particularly with Beets.
-  • The conversation shifts to discuss a new project Thierry is working on, which involves using Python instead of Bash, as well as creating a second brain with Obsidian.
-  • Key points from the conversation:
-    • Transitioning from Bash to Python: advantages include better error handling, library support, and multithreading/multiprocessing capabilities.
-    • Structure for shuffle_medias_mix: use os/shutil for file manipulation, random/pandas for shuffling, and mutagen/pydub for metadata/audio processing.
-    • Example code for a simple file shuffle in Python.
-    • Automating notes with Obsidian: brainstorming and discussing potential solutions, architecture, and automation strategies.
-  Here is the summary in a bullet-point format:
-  
-  • The conversation starts with introducing oneself and discussing work on various projects.
-  • ChatGPT explores Thierry's GitHub repository, highlighting specific projects such as Beets-Xtractor-Docker, Clone-Raspberrypi-SD-card, and Mediainfo_export.
-  • Thierry mentions working on a new project that is not yet on GitHub, but wants to discuss it with the assistant.
-  • The main goal of the new project is to transition from Bash scripting to Python for professional use, specifically rewriting the shuffle_medias_mix script.
-  • ChatGPT provides advice on transitioning from Bash to Python, highlighting advantages such as better error handling and access to rich libraries.
-  • An example code snippet is provided for shuffling files in a directory using Python.
-  • The conversation also touches on creating a second brain with Obsidian, automating note generation, and using LLaMA with llama3.
-tags: [DevOps, Python, Bash, Docker, Beets, Obsidian, Mediainfo, Scripting, Automation, Git]
----
-
-2025-01-08 20:58:14,782 - INFO - Fichier /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2.md mis à jour avec succès.
-2025-01-08 20:58:14,782 - DEBUG - [DEBUG] fichier mis à jour ??? : tags: [DevOps, Chatbot, Python, Bash, Docker, Beets, Obsidian, Automation]
-2025-01-08 20:58:14,866 - DEBUG - [DEBUG] process_single_note modif significative
-2025-01-08 20:58:14,869 - DEBUG - [DEBUG] def count_word
-2025-01-08 20:58:14,871 - DEBUG - [DEBUG] process_single_note recomptage
-2025-01-08 20:58:15,423 - INFO - Nombre de mots mis à jour pour /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2.md
-2025-01-08 20:58:15,508 - DEBUG - [DEBUG] def count_word
-2025-01-08 20:58:15,509 - DEBUG - [DEBUG] lancement split
-2025-01-08 20:58:15,509 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 20:58:15,510 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 20:58:18,292 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 20:58:44,086 - DEBUG - [DEBUG] process_single_note lecture des metadonnees
-2025-01-08 20:58:44,086 - DEBUG - [DEBUG] process_single_note ligne word_count trouvée
-2025-01-08 20:58:44,087 - DEBUG - [DEBUG] process_single_note pas suffisament de modif
-2025-01-08 21:23:59,198 - DEBUG - [DEBUG] démarrage du script : 
-2025-01-08 21:24:05,679 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:24:05,679 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:24:05,679 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:24:05,680 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:24:11,888 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:24:29,533 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:24:29,533 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:24:29,533 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:24:29,533 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:24:29,533 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:24:32,469 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:24:36,308 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:24:36,308 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:24:36,309 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:24:39,065 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:24:43,966 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:24:44,256 - INFO - Création de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale.md
-2025-01-08 21:24:44,258 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2.md
-2025-01-08 21:24:44,420 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2.md'
-2025-01-08 21:24:44,421 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:24:44,421 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:24:44,421 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:24:44,422 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:24:47,170 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:03,851 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:25:03,852 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:25:03,852 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:25:03,852 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:03,852 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:06,800 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:08,835 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:25:08,836 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:08,836 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:11,603 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:15,660 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:25:15,938 - INFO - Création de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale.md
-2025-01-08 21:25:15,939 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale.md
-2025-01-08 21:25:15,941 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:25:15,941 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:25:15,941 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:15,943 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:16,852 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:23,294 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:25:23,294 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:25:23,294 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:25:23,294 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:23,295 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:24,453 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:26,248 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:25:26,248 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:26,249 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:27,130 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:29,777 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:25:29,778 - INFO - Création de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports_note_principale.md
-2025-01-08 21:25:29,893 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md
-2025-01-08 21:25:29,894 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:25:29,894 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:25:29,894 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:29,895 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:30,459 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:41,456 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:25:41,456 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:25:41,456 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:25:41,456 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:41,456 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:42,232 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:43,300 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:25:43,300 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:43,301 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:43,879 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:25:45,097 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:25:45,122 - INFO - Création de /mnt/user/Documents/Obsidian/notes/_Index_of_notes_note_principale.md
-2025-01-08 21:25:45,299 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/_Index_of_notes.md
-2025-01-08 21:25:45,302 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale.md'
-2025-01-08 21:25:45,305 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:25:45,307 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:25:45,307 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:25:45,310 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:25:48,048 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:00,034 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:26:00,034 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:26:00,034 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:26:00,034 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:00,034 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:02,991 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:05,422 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:26:05,422 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:05,423 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:08,208 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:11,204 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:26:11,396 - INFO - Création de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale_note_principale.md
-2025-01-08 21:26:11,398 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale.md
-2025-01-08 21:26:11,400 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:26:11,401 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:26:11,401 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:11,403 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:12,018 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:21,996 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:26:21,996 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:26:21,996 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:26:21,996 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:21,996 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:22,764 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:24,901 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:26:24,901 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:24,901 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:25,469 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:25,708 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:26:25,709 - INFO - Création de /mnt/user/Documents/Obsidian/notes/_Index_of_notes_note_principale.md
-2025-01-08 21:26:25,818 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/_Index_of_notes.md
-2025-01-08 21:26:25,819 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md'
-2025-01-08 21:26:25,821 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:26:25,822 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:26:25,822 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:25,824 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:27,005 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:44,249 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:26:44,249 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:26:44,249 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:26:44,249 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:44,249 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:45,620 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:49,728 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:26:49,728 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:49,728 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:50,896 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:26:53,636 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:26:53,638 - INFO - Création de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports_note_principale_note_principale.md
-2025-01-08 21:26:53,754 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports_note_principale.md
-2025-01-08 21:26:53,755 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/_Index_of_notes.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/_Index_of_notes.md'
-2025-01-08 21:26:53,755 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md'
-2025-01-08 21:26:53,756 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md'
-2025-01-08 21:26:53,757 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:26:53,758 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:26:53,758 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:26:53,759 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:26:54,501 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:27:06,741 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:27:06,741 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:27:06,741 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:27:06,741 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:27:06,742 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:27:07,624 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:27:09,982 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:27:09,982 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:27:09,983 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:27:10,649 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:27:10,891 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:27:10,892 - INFO - Création de /mnt/user/Documents/Obsidian/notes/_Index_of_notes_note_principale_note_principale.md
-2025-01-08 21:27:10,978 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/_Index_of_notes_note_principale.md
-2025-01-08 21:27:10,979 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/_Index_of_notes.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/_Index_of_notes.md'
-2025-01-08 21:27:10,980 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale.md'
-2025-01-08 21:27:10,982 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:27:10,983 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:27:10,983 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:27:10,985 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:27:13,725 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:27:27,519 - DEBUG - [DEBUG] Étape 1 : Découpage basé sur l'IA
-2025-01-08 21:27:27,519 - DEBUG - [DEBUG] Étape 2 : Créer une note pour chaque section identifiée
-2025-01-08 21:27:27,519 - DEBUG - [DEBUG] tags ollama : lancement fonction
-2025-01-08 21:27:27,519 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:27:27,519 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:27:30,479 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:27:31,769 - DEBUG - [DEBUG] résumé ollama : lancement fonction
-2025-01-08 21:27:31,769 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:27:31,770 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:27:34,485 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
-2025-01-08 21:27:37,208 - DEBUG - [DEBUG] résumé nettoyé
-2025-01-08 21:27:37,412 - INFO - Création de /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale_note_principale_note_principale.md
-2025-01-08 21:27:37,413 - INFO - Note originale supprimée : /mnt/user/Documents/Obsidian/notes/imports/ChatGPT 2_note_principale_note_principale_note_principale.md
-2025-01-08 21:27:37,414 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/_Index_of_notes.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/_Index_of_notes.md'
-2025-01-08 21:27:37,415 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports.md'
-2025-01-08 21:27:37,416 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/_Index_of_notes_note_principale.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/_Index_of_notes_note_principale.md'
-2025-01-08 21:27:37,417 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/_Index_of_notes.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/_Index_of_notes.md'
-2025-01-08 21:27:37,417 - ERROR - Erreur lors du traitement de /mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports_note_principale.md : [Errno 2] No such file or directory: '/mnt/user/Documents/Obsidian/notes/imports/_Index_of_imports_note_principale.md'
-2025-01-08 21:27:37,419 - DEBUG - [DEBUG] def count_word
-2025-01-08 21:27:37,419 - DEBUG - [DEBUG] lancement split
-2025-01-08 21:27:37,419 - DEBUG - [DEBUG] Ollama sollicité
-2025-01-08 21:27:37,421 - DEBUG - Starting new HTTP connection (1): 192.168.50.12:11434
-2025-01-08 21:27:38,871 - DEBUG - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 19:55:16,940 - [DEBUG] démarrage du script : 
+2025-01-09 19:55:26,703 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 1.md
+2025-01-09 19:55:26,708 - [DEBUG] clean_content
+2025-01-09 19:55:26,712 - [DEBUG] process_single_note nombre mots : 3977
+2025-01-09 19:55:26,712 - [DEBUG] démarrage du simplify_note_with_ai
+2025-01-09 19:55:26,712 - [DEBUG] Ollama sollicité
+2025-01-09 19:55:26,717 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 19:55:36,670 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 19:57:04,502 - [DEBUG] démarrage should_split_note
+2025-01-09 19:57:04,502 - [DEBUG] should_split_note lines : 51 words : 328 char_count : 2164
+2025-01-09 19:57:04,502 - [DEBUG] remplacement de la note par la simplification
+2025-01-09 19:57:04,785 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 1.md
+2025-01-09 19:57:04,786 - [DEBUG] clean_content
+2025-01-09 19:57:04,787 - [DEBUG] process_single_note nombre mots : 328
+2025-01-09 19:57:04,787 - [DEBUG] démarrage du simplify_note_with_ai
+2025-01-09 19:57:04,787 - [DEBUG] Ollama sollicité
+2025-01-09 19:57:04,789 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 19:57:09,567 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:00:39,035 - [DEBUG] démarrage du script : 
+2025-01-09 20:00:45,591 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 1.md
+2025-01-09 20:00:45,596 - [DEBUG] clean_content
+2025-01-09 20:00:45,600 - [DEBUG] process_single_note nombre mots : 3977
+2025-01-09 20:00:45,600 - [DEBUG] process_large_note
+2025-01-09 20:00:45,602 - [DEBUG] Ollama sollicité
+2025-01-09 20:00:45,605 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:00:55,581 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:03:03,411 - [DEBUG] Ollama sollicité
+2025-01-09 20:03:03,411 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:03:13,397 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:04:22,252 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 1.md
+2025-01-09 20:04:22,252 - [DEBUG] clean_content
+2025-01-09 20:04:22,252 - [DEBUG] process_single_note nombre mots : 703
+2025-01-09 20:04:22,252 - [DEBUG] démarrage du simplify_note_with_ai
+2025-01-09 20:04:22,252 - [DEBUG] Ollama sollicité
+2025-01-09 20:04:22,253 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:04:30,738 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:06:04,865 - [DEBUG] démarrage should_split_note
+2025-01-09 20:06:04,865 - [DEBUG] should_split_note lines : 70 words : 410 char_count : 3121
+2025-01-09 20:06:04,865 - [DEBUG] remplacement de la note par la simplification
+2025-01-09 20:06:05,428 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 1.md
+2025-01-09 20:06:05,430 - [DEBUG] clean_content
+2025-01-09 20:06:05,430 - [DEBUG] process_single_note nombre mots : 410
+2025-01-09 20:06:05,430 - [DEBUG] démarrage du simplify_note_with_ai
+2025-01-09 20:06:05,430 - [DEBUG] Ollama sollicité
+2025-01-09 20:06:05,431 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:06:10,430 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:07:09,743 - [DEBUG] démarrage du script : 
+2025-01-09 20:07:19,404 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 2.md
+2025-01-09 20:07:19,421 - [DEBUG] clean_content
+2025-01-09 20:07:19,433 - [DEBUG] process_single_note nombre mots : 74788
+2025-01-09 20:07:19,433 - [DEBUG] process_large_note
+2025-01-09 20:07:19,439 - [DEBUG] Ollama sollicité
+2025-01-09 20:07:19,440 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:07:29,455 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:08:35,301 - [DEBUG] Ollama sollicité
+2025-01-09 20:08:35,302 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:08:45,311 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:10:57,394 - [DEBUG] Ollama sollicité
+2025-01-09 20:10:57,395 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:11:07,421 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:12:38,091 - [DEBUG] Ollama sollicité
+2025-01-09 20:12:38,092 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:12:48,125 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:13:58,778 - [DEBUG] Ollama sollicité
+2025-01-09 20:13:58,779 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:14:08,845 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:15:45,748 - [DEBUG] Ollama sollicité
+2025-01-09 20:15:45,749 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:15:55,765 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:17:39,604 - [DEBUG] Ollama sollicité
+2025-01-09 20:17:39,604 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:17:49,646 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:21:17,854 - [DEBUG] Ollama sollicité
+2025-01-09 20:21:17,856 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:21:27,952 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:23:32,325 - [DEBUG] Ollama sollicité
+2025-01-09 20:23:32,326 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:23:42,350 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:25:23,757 - [DEBUG] Ollama sollicité
+2025-01-09 20:25:23,758 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:25:33,791 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:25:42,922 - [DEBUG] Ollama sollicité
+2025-01-09 20:25:42,923 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:25:52,983 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:27:06,875 - [DEBUG] Ollama sollicité
+2025-01-09 20:27:06,893 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:27:17,051 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:29:19,589 - [DEBUG] Ollama sollicité
+2025-01-09 20:29:19,590 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:29:29,621 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:31:19,213 - [DEBUG] Ollama sollicité
+2025-01-09 20:31:19,213 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:31:29,278 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:32:31,025 - [DEBUG] Ollama sollicité
+2025-01-09 20:32:31,038 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:32:41,097 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:34:04,369 - [DEBUG] Ollama sollicité
+2025-01-09 20:34:04,370 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:34:14,438 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:35:40,593 - [DEBUG] Ollama sollicité
+2025-01-09 20:35:40,594 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:35:50,642 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:38:01,271 - [DEBUG] Ollama sollicité
+2025-01-09 20:38:01,283 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:38:11,355 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:39:32,355 - [DEBUG] Ollama sollicité
+2025-01-09 20:39:32,356 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:39:42,449 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:41:44,482 - [DEBUG] Ollama sollicité
+2025-01-09 20:41:44,485 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:41:54,535 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:43:46,211 - [DEBUG] Ollama sollicité
+2025-01-09 20:43:46,222 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:43:56,246 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:45:02,656 - [DEBUG] Ollama sollicité
+2025-01-09 20:45:02,657 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:45:12,680 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:46:56,884 - [DEBUG] Ollama sollicité
+2025-01-09 20:46:56,884 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:47:06,937 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:48:47,633 - [DEBUG] Ollama sollicité
+2025-01-09 20:48:47,633 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:48:57,704 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:51:25,097 - [DEBUG] Ollama sollicité
+2025-01-09 20:51:25,097 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:51:35,148 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:54:08,170 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 2.md
+2025-01-09 20:54:08,187 - [DEBUG] clean_content
+2025-01-09 20:54:08,215 - [DEBUG] process_single_note nombre mots : 8640
+2025-01-09 20:54:08,216 - [DEBUG] process_large_note
+2025-01-09 20:54:08,227 - [DEBUG] Ollama sollicité
+2025-01-09 20:54:08,230 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:54:18,323 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:56:43,605 - [DEBUG] Ollama sollicité
+2025-01-09 20:56:43,606 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:56:53,673 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 20:58:49,160 - [DEBUG] Ollama sollicité
+2025-01-09 20:58:49,161 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 20:58:59,242 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
+2025-01-09 21:01:14,174 - [DEBUG] démarrage du process_single_note pour : /mnt/user/Documents/Obsidian/notes/Clippings/ChatGPT 2.md
+2025-01-09 21:01:14,175 - [DEBUG] clean_content
+2025-01-09 21:01:14,175 - [DEBUG] process_single_note nombre mots : 1283
+2025-01-09 21:01:14,176 - [DEBUG] démarrage du simplify_note_with_ai
+2025-01-09 21:01:14,177 - [DEBUG] Ollama sollicité
+2025-01-09 21:01:14,177 - Starting new HTTP connection (1): 192.168.50.12:11434
+2025-01-09 21:01:24,237 - http://192.168.50.12:11434 "POST /api/generate HTTP/1.1" 200 None
