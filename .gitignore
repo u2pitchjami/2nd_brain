@@ -1,0 +1,13 @@
+obsidian_scripts/handlers/__pycache__/divers.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/files.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/headers.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/import_gpt.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/import_normal.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/keywords.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/large_note.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/ollama.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/process_single_note.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/prompts.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/split_note.cpython-312.pyc
+obsidian_scripts/handlers/__pycache__/watcher.cpython-312.pyc
+obsidian_scripts/__pycache__/prompts.cpython-312.pyc

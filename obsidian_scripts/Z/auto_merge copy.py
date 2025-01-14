@@ -191,14 +191,14 @@ def clean_content(content, filepath):
     - Élimine les lignes vides ou répétitives inutiles.
     """
     # Supprimer les balises SVG ou autres formats inutiles
-    content = re.sub(r'<svg[^>]*>.*?</svg>', '', content, flags=re.DOTALL)
+    content = re.sub(r'<svg[^>]*>.*?</svg>', '\n', content, flags=re.DOTALL)
 
     # Supprimer les lignes vides multiples
-    content = re.sub(r'\n\s*\n', '\n', content)
+    #content = re.sub(r'\n\s*\n', '\n', content)
 
     return content.strip()
 
-def split_large_note(content, max_words=3000):
+def split_large_note(content, max_words=200):
     """
     Découpe une note en blocs de taille optimale (max_words).
     """
@@ -228,7 +228,7 @@ def process_large_note(content, filepath):
         #    content = file.read()
 
         # Étape 1 : Découpage en blocs optimaux
-        blocks = split_large_note(content, max_words=3000)
+        blocks = split_large_note(content, max_words=200)
         print(f"[INFO] La note a été découpée en {len(blocks)} blocs.")
 
         processed_blocks = []
@@ -236,8 +236,9 @@ def process_large_note(content, filepath):
             print(f"[INFO] Traitement du bloc {i + 1}/{len(blocks)}...")
 
             # Étape 2 : Appel au modèle pour reformulation
-            prompt = PROMPTS["reformulation"].format(content=block)
+            prompt = PROMPTS["split"].format(content=block)
             response = ollama_generate(prompt)
+            logging.debug(f"[DEBUG] block {i} : {response}")
             processed_blocks.append(response.strip())
 
         # Étape 3 : Fusionner les blocs reformulés
@@ -354,7 +355,7 @@ def create_split_notes(filepath, sections):
 def ollama_generate(prompt):
     logging.debug(f"[DEBUG] Ollama sollicité")
     payload = {
-        "model": "llama3.2:latest",
+        "model": "llama3:latest",
         "prompt": prompt
     }
     
@@ -472,42 +473,14 @@ def make_properties(content, filepath):
     logging.info(f"Nombre de mots mis à jour pour {filepath}")
     return
 
-def make_properties(content, filepath):
-    """
-    génère les entêtes.
-    """
-    logging.debug(f"[DEBUG] Entrée de la fonction make_pro")
-    print ("make",filepath)
-    tags = get_tags_from_ollama(content)
-    summary = get_summary_from_ollama(content)
-    add_metadata_to_yaml(filepath, tags, summary)
-    logging.debug(f"[DEBUG] process_single_note modif significative")
-
-    # Relecture et comptage après mise à jour complète
-    with open(filepath, 'r', encoding='utf-8') as file:
-        updated_content = file.read()
-    nombre_mots_actuels = count_words(updated_content)
-    logging.debug(f"[DEBUG] process_single_note recomptage")
-
-    # Mise à jour du word_count immédiatement
-    with open(filepath, "r", encoding="utf-8") as file:
-        lines = file.readlines()
-
-    with open(filepath, "w", encoding="utf-8") as file:
-        word_count_updated = False
-        for i, line in enumerate(lines):
-            if line.startswith("word_count:"):
-                lines[i] = f"word_count: {nombre_mots_actuels}\n"
-                word_count_updated = True
-                break
-        else:
-            # Ajoute word_count s'il n'existe pas
-            lines.insert(3, f"word_count: {nombre_mots_actuels}\n")
-
-        file.writelines(lines)
-
-    logging.info(f"Nombre de mots mis à jour pour {filepath}")
-    return
+def read_note_content(filepath):
+    """Lit le contenu d'une note depuis le fichier."""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        logging.error(f"[ERREUR] Impossible de lire le fichier {filepath} : {e}")
+        return None
 
 def split_and_filter_sections(content, min_word_count=100):
     """Découpe le contenu en sections basées sur les titres et filtre les sections courtes."""
@@ -600,16 +573,16 @@ def process_single_note(filepath):
                     make_properties(content, filepath)
                 # Étape 3 : Splitter la note si nécessaire
                 # Splitter la note directement avec les titres existants (## ou ###)
-                logging.debug(f"[DEBUG] Début du split basé sur les titres")
+                #logging.debug(f"[DEBUG] Début du split basé sur les titres")
                 
                 # Découpe les sections avec les titres Markdown
-                sections = split_by_headings(content)
-                logging.debug(f"[DEBUG] Sections après split_by_headings : {sections}")
+                #sections = split_by_headings(content)
+                #logging.debug(f"[DEBUG] Sections après split_by_headings : {sections}")
 
                 # Filtre les sections trop courtes
-                sections = filter_short_sections(sections, min_word_count=100)
-                logging.debug(f"[DEBUG] Sections après filtre : {sections}")
-                create_split_notes(filepath, sections)
+                #sections = filter_short_sections(sections, min_word_count=100)
+                #logging.debug(f"[DEBUG] Sections après filtre : {sections}")
+                #create_split_notes(filepath, sections)
                 make_properties(content, filepath)
 
             else:

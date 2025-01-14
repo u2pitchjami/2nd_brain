@@ -1,6 +1,6 @@
 fichier créé modifié
     - nettoyage : cleaned_content
-    - note volumineuse ? :
+    - y a t-il plus de 3000 mots ? :
         - process_large_note
             - decoupe en plusieurs blocs : split_large_not --> reformulation
         - STOP
@@ -24,3 +24,7 @@ fichier créé modifié
         - mise à jour du nombre de mots : def count_words
     - modifs non significatives
     STOP
+
+
+
+    [ERREUR] Impossible de traiter /mnt/user/Documents/Obsidian/notes/imports/chatgpt readme.md : should_split_note() missing 1 required positional argument: 'content'

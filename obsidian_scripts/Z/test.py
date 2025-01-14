@@ -4,6 +4,7 @@ import requests
 from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
+from prompts import PROMPTS
 import time
 import logging
 import json
@@ -69,28 +70,7 @@ def process_large_note(content, filepath):
             print(f"[INFO] Traitement du bloc {i + 1}/{len(blocks)}...")
 
             # Étape 2 : Appel au modèle pour reformulation
-            prompt = f"""
-            You are an intelligent note-organizing assistant. Analyze the following text and identify distinct subjects or topics.
-    - **if the content is a bot conversation** :
-        - Please identify the main discussion points, decisions, and action items from my conversation below and provide a concise bulleted summary
-        - Simplify and reformat the conversation.
-        - Extract key ideas and create a structured summary in markdown format.
-        - highlights thoughts on topics, good or bad actions in order to draw useful elements or points of vigilance for the future
-        - Focus on removing redundant back-and-forth while preserving the core arguments and answers.
-    - **If the content is NOT a conversation with ChatGPT**:
-        - Rewrite the following text to improve clarity and conciseness. Maintain the original meaning while simplifying complex language, removing unnecessary jargon, and ensuring the content is easily understood by a general audience.
-        - The tone should be professional yet approachable.
-        - Organize the information logically and use clear, concise sentences
-        - For each subject, create a separate section with a clear heading.
-        - Organize the content under each heading, reformulating in a clear and simple way but improving the structure and readability and clearly identifying key points.
-        - Use markdown formatting for headings and subheadings.
-        - Ensure that related information is grouped together logically.
-        - Remove unnecessary details or redundancies.
-        - Ensure the output is in markdown format.
-
-            Here is the text to simplify:
-            {block}
-            """
+            prompt = PROMPTS["reformulation"].format(content=block)
             response = ollama_generate(prompt)
             processed_blocks.append(response.strip())
 
@@ -142,30 +122,9 @@ def simplify_note_with_ai(content):
     """
     Reformule et simplifie une note en utilisant Ollama.
     """
-    prompt = f"""
-    You are an intelligent note-organizing assistant. Analyze the following text and identify distinct subjects or topics.
-    - **if the content is a bot conversation** :
-        - Please identify the main discussion points, decisions, and action items from my conversation below and provide a concise bulleted summary
-        - Simplify and reformat the conversation.
-        - Extract key ideas and create a structured summary in markdown format.
-        - highlights thoughts on topics, good or bad actions in order to draw useful elements or points of vigilance for the future
-        - Focus on removing redundant back-and-forth while preserving the core arguments and answers.
-    - **If the content is NOT a conversation with ChatGPT**:
-        - Rewrite the following text to improve clarity and conciseness. Maintain the original meaning while simplifying complex language, removing unnecessary jargon, and ensuring the content is easily understood by a general audience.
-        - The tone should be professional yet approachable.
-        - Organize the information logically and use clear, concise sentences
-        - For each subject, create a separate section with a clear heading.
-        - Organize the content under each heading, reformulating in a clear and simple way but improving the structure and readability and clearly identifying key points.
-        - Use markdown formatting for headings and subheadings.
-        - Ensure that related information is grouped together logically.
-        - Remove unnecessary details or redundancies.
-        - Ensure the output is in markdown format.
-
-
-    Here is the note:
-    {content}
-    """
-
+    prompt = PROMPTS["reformulation"].format(content=content)
+    logging.debug(f"[DEBUG] prompt : {prompt}")
+    logging.debug(f"[DEBUG] contenu : {content}")
     # Appel à Ollama pour simplifier la note
     response = ollama_generate(prompt)
     print (response)
@@ -174,21 +133,7 @@ def simplify_note_with_ai(content):
 def split_note_by_ai(content):
     logging.debug(f"[DEBUG] Démmarage interrogation Ollama pour Split")
     # Utilisation du prompt que tu as testé
-    prompt = f"""
-    You are an intelligent note-organizing assistant. Analyze the following text and identify distinct subjects or topics.
-    For each subject, create a separate section with a clear heading.
-    - Start each section with 'TITLE: <short descriptive title>'.
-    - Organize the content under each heading, keeping related information grouped logically.
-    - Use markdown formatting for headings and subheadings.
-    - Ensure the sections are distinct, well-structured, and concise.
-
-    Here is the text to split:
-
-    
-    
-    Text to process:
-    {content}
-    """
+    prompt = PROMPTS["split"].format(content=content)
 
     # Appel au modèle IA (ollama)
     response = ollama_generate(prompt)
@@ -237,23 +182,16 @@ def create_split_notes(filepath, sections):
         next_link = f"[[{safe_title}.md]]" if i < len(sections) - 1 else ""
         logging.debug(f"[DEBUG] Split : création des liens")
         
-        # Ajouter YAML + contenu de la section
-        yaml_block = [
-            "---\n",
-            f"title: {title}\n",
-            f"created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-            "status: processed\n",  # Ajout du status
-            "---\n\n",
-            f"{prev_link}\n\n",
-            section,
-            f"\n\n{next_link}"
-        ]
+              
         try:
             # Créer et écrire le fichier
             with open(new_filepath, 'w', encoding='utf-8') as new_file:
-                new_file.writelines(yaml_block)
                 created_files.append(new_filename)
                 logging.debug(f"[DEBUG] Split : création du fichier dans : {new_filepath}")
+            with open(new_filepath, 'r', encoding='utf-8') as file:
+                content = file.read()
+                # entete
+                make_properties(content, new_filepath)
         except Exception as e:
             print(f"[ERREUR] Impossible de créer le fichier {new_filename} : {e}")
 
@@ -286,11 +224,11 @@ def ollama_generate(prompt):
     
     return full_response.strip()
 
-def should_split_note(content, min_lines=100):
+def should_split_note(filepath, content, min_lines=100):
     logging.debug(f"[DEBUG] démarrage should_split_note")
     lines = content.splitlines()
-    word_count = len(content.split())
-    char_count = len(content)
+    word_count = len(filepath.split())
+    char_count = len(filepath)
     logging.debug(f"[DEBUG] should_split_note lines : {len(lines)} words : {word_count} char_count : {char_count}")
     
 
@@ -362,7 +300,7 @@ def process_single_note(filepath):
         cleaned_content = clean_content(content)
         # Vérifier si la note est volumineuse
         word_count = len(cleaned_content.split())
-        max_words_for_large_note = 2500  # Définir la limite de mots pour une "grande" note
+        max_words_for_large_note = 3000  # Définir la limite de mots pour une "grande" note
         logging.debug(f"[DEBUG] process_single_note nombre mots : {word_count}")
 
         if word_count > max_words_for_large_note:
