@@ -20,6 +20,9 @@ def clean_content(content, filepath):
     # Supprimer les lignes vides multiples
     #content = re.sub(r'\n\s*\n', '\n', content)
 
+    # Vérifier le type et l'état final
+    logging.debug(f"[DEBUG] Après nettoyage : {type(content)}, longueur = {len(content)}")
+    
     return content.strip()
 
 def read_note_content(filepath):
@@ -27,6 +30,7 @@ def read_note_content(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
             logging.error(f"[DEBUG] lecture du fichier {filepath}")
+            
             return file.read()
     except Exception as e:
         logging.error(f"[ERREUR] Impossible de lire le fichier {filepath} : {e}")

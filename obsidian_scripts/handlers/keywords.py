@@ -2,6 +2,8 @@ import re
 import yaml
 import os
 import logging
+from handlers.extract_yaml_header import extract_yaml_header
+from handlers.files import copy_file_with_date
 
 # Variables globales pour les mots-clés et leur dernier horodatage
 KEYWORDS_FILE = "/home/pipo/bin/dev/2nd_brain/obsidian_scripts/handlers/keywords.yaml"
@@ -45,10 +47,11 @@ def process_and_update_file(filepath):
     # Charger le contenu du fichier
     with open(filepath, 'r', encoding='utf-8') as file:
         text = file.read()
+    logging.debug(f"[DEBUG] process_and_update_file text : {text}")
     # Charger les mots-clés depuis le fichier
     TAG_KEYWORDS = load_keywords(KEYWORDS_FILE)
     #data = yaml.safe_load(f)
-    logging.debug(f"[DEBUG] Contenu du fichier YAML chargé : {TAG_KEYWORDS}")
+    logging.debug(f"[DEBUG] process_and_update_file : Contenu du fichier YAML chargé : {TAG_KEYWORDS}")
     # Analyser les sections et générer des tags
     logging.debug(f"[DEBUG] process_and_update_file : envoie vers tag_sections")
     tagged_sections = tag_sections(text)
@@ -127,24 +130,27 @@ def integrate_tags_in_file(filepath, tagged_sections):
     Réécrit le fichier en ajoutant les tags au début de chaque section.
     """
     with open(filepath, "r", encoding="utf-8") as file:
-        lines = file.readlines()
-
+        content = file.read()
+    header_lines, content_lines = extract_yaml_header(content)
     # Préserver l'entête YAML
-    if lines[0].strip() == "---":
-        yaml_start = 0
-        yaml_end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), -1)
-        header_lines = lines[yaml_start:yaml_end + 1]
-        content_lines = lines[yaml_end + 1:]
-    else:
-        header_lines = []
-        content_lines = lines
-
+    #if lines[0].strip() == "---":
+    #    yaml_start = 0
+    #    yaml_end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), -1)
+    #    header_lines = lines[yaml_start:yaml_end + 1]
+    #    content_lines = lines[yaml_end + 1:]
+    #else:
+    #    header_lines = []
+    #    content_lines = lines
+    #logging.debug(f"[DEBUG] Type de content avant extract_yaml_header : {type(content)}")
+    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header : {header_lines[:50]}")
+    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header CONTENT : {content_lines[:50]}")
     # Loguer l'entête pour vérification
     with open(filepath, "w", encoding="utf-8") as file:
     # Écrire l'entête YAML si elle existe
         if header_lines:  # Vérifie que l'entête n'est pas vide
             file.writelines(header_lines)
-            logging.debug(f"[DEBUG] integrate_tags_in_file : Entête YAML ajoutée : {''.join(header_lines)}")
+            logging.debug(f"[DEBUG] integrate_tags_in_file : Entête YAML ajoutée 1 : {header_lines}")
+            logging.debug(f"[DEBUG] integrate_tags_in_file : Entête YAML ajoutée 2 : {''.join(header_lines)}")
     
         # Écrire les sections avec leurs titres, tags et contenu
         for section in tagged_sections:
@@ -160,3 +166,4 @@ def integrate_tags_in_file(filepath, tagged_sections):
             logging.debug(f"[DEBUG] integrate_tags_in_file : section content : {section['content']}")
     
     print(f"Fichier mis à jour : {filepath}")
+    copy_file_with_date(filepath, "/mnt/user/Documents/Obsidian/notes/.2")

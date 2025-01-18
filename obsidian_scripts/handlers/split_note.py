@@ -52,3 +52,47 @@ def should_split_note(filepath, content, min_lines=100):
     
 
     return len(lines) >= min_lines
+
+def split_note_by_subject(content):
+    """
+    Utilise le modèle pour détecter les changements de sujet dans une note
+    et la découper en sections.
+    """
+    prompt = """
+    You are a text analysis assistant. Your task is to read the following document and split it into separate sections whenever you detect a change in subject. 
+
+    For each section:
+    1. Provide a short title summarizing the section's main topic.
+    2. Extract the section's content.
+
+    Return the result in the following format:
+    ---
+    Title: <Short title summarizing the topic>
+    Content: <Content of the section>
+    ---
+
+    Example:
+    Input:
+    1. Introduction to Python programming.
+    2. Explanation of Python data types.
+    3. Discussion about Python loops and conditions.
+
+    Output:
+    ---
+    Title: Introduction to Python programming
+    Content: 1. Introduction to Python programming.
+    ---
+
+    Title: Explanation of Python data types
+    Content: 2. Explanation of Python data types.
+    ---
+
+    Title: Discussion about Python loops and conditions
+    Content: 3. Discussion about Python loops and conditions.
+    ---
+
+    Now process the following text:
+    {content}
+    """
+    response = ollama_generate(prompt.format(content=content))
+    return response.strip()

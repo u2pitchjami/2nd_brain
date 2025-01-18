@@ -1,31 +1,72 @@
 PROMPTS = {
-    "reformulation": """
-    You are an intelligent and structured note organizer assistant specialized in processing and improving text. Depending on the nature of the input content, follow the specific instructions below. 
-
-- **If the content is a conversation with an AI bot**:
-    1. Identify and organize distinct discussion points, decisions, and actions within the conversation.
-    2. Retain the back-and-forth structure but simplify, improve clarity and readability by rephrasing or reorganizing where necessary.
-    4. If parts of the conversation are related to project work or script writing:
-        - Detail the steps involved in the project.
-        - For non-functional proposals, flag them as such without elaboration.
-        - For relevant proposals, provide detailed explanations, highlight key code snippets, and emphasize good practices.
-    5. Highlight key reflections, positive or negative actions, and derive actionable points or areas for improvement for future reference.
-    6. The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
-
-- **If the content is NOT a conversation with an AI bot**:
-    1. Extract key ideas, rewrite the content to enhance clarity, conciseness, and logical flow while preserving the original meaning.
-    2. Simplify complex language, eliminate unnecessary jargon, and ensure the content is accessible to a general audience.
-    3. Use a professional yet approachable tone.
-    4. Organize the text under appropriate headings, grouping related information logically and clearly identifying key points.
-    5. Remove redundancies and unnecessary details.
-    6. The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
-   
-
-            Here is the text to simplify:
+    "technical": """
+    You are an intelligent note-organizing assistant.
+    Your task is to summarize the following technical article.
+    Provide a comprehensive summary that captures the main ideas, key findings, and essential technical details.
+    Structure your summary logically, starting with an overview and progressing through the article's main sections.
+    Use markdown to format your output, bolding key subject matter and potential areas that may need expanded information.
+    Ensure the summary is accessible to the target audience while maintaining technical accuracy.
+    Conclude with the most significant implications or applications of the article's content.
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
             {content}
             """,
+    "news": """
+    You are an intelligent note-organizing assistant.
+    Your task is to summarize the following article.
+    Provide a comprehensive summary that captures the main ideas, key findings.
+    Structure your summary logically, starting with an overview and progressing through the article's main sections.
+    Use markdown to format your output, bolding key subject matter and potential areas that may need expanded information.
+    Ensure the summary is accessible to the target audience while maintaining technical accuracy.
+    Conclude with the most significant implications or applications of the article's content.
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+            """,
+    "idea": """
+    Provide a comprehensive summary and structured outline of [topic/project].
+    Include the following elements:
+        - A concise overview in 2-3 sentences
+        - Key objectives or goals
+        - Main ideas or components, organized into logical sections
+        - Reflections on challenges, insights, and lessons learned
+        - Potential next steps or areas for improvement
+        - Format the response using appropriate headers, bullet points, and numbering.
+        - Ensure the summary is clear, concise, and captures the essential elements without excessive detail.
+        - The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+            """,
+    "todo": """
+    You are an intelligent note-organizing assistant.
+    Create a comprehensive task management plan that:
+        - Prioritizes tasks using a strategic approach
+        - Allocates appropriate time blocks
+        - Identifies potential bottlenecks
+        - Suggests optimal task sequencing
+
+        - Current tasks: [detailed task list]
+        - Project goals: [specific objectives]
+        - Time constraints: [available working hours]
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+            """,
+    "tutorial": """
+    You are an intelligent note-organizing assistant.
+    Please reorganize the tutorial to enhance its clarity and user engagement.
+    Start by reviewing the current structure and content.
+    Identify any sections that need to be reordered, combined, or split.
+    Ensure that each section begins with a clear introduction, followed by a detailed explanation, and ends with practical examples or exercises.
+    Highlight the key points and the key commands.
+    Provide a revised outline of the tutorial with suggested changes.
+    suggests ways to explore the subject in more depth
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+            """,            
     "title": """
-    You are an intelligent note-organizing assistant. Analyze the following conversation and add clear, structured titles in markdown format.
+    You are an intelligent note-organizing assistant. Add clear, structured titles in markdown format.
 
     **Instructions:**
     - Use `##` for major sections.
@@ -33,7 +74,7 @@ PROMPTS = {
     - Use `####` only for deeply detailed points.
     - Do not add unnecessary titles like "ChatGPT said" or "You said".
     - Titles should be short (max 8 words) and descriptive.
-    - the titles must be in french language.
+    - The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
   
 
     Here is the text to process:
@@ -57,8 +98,10 @@ PROMPTS = {
     Respond in JSON with the key "tags" and the value as an array of string tags.
     """,
     "summary": """
-    Provide a concise summary of the key points discussed in the following text. Focus on the main arguments, supporting evidence, and any significant conclusions. Present the summary in a bullet-point format, highlighting the most crucial information. Ensure that the summary captures the essence of the text while maintaining clarity and brevity
-    Only return the summary itself. Do not add any introduction, explanation, or surrounding text.
+    Provide a concise summary of the key points discussed in the following text.
+    Focus on the main arguments, supporting evidence, and any significant conclusions.
+    Present the summary in a bullet-point format, highlighting the most crucial information.
+    The summary should not be longer than 5 sentences. 
     **without including the parts already present** in the "summary:" section. Do not repeat existing elements
     
     TEXT START
@@ -66,18 +109,48 @@ PROMPTS = {
     TEXT END
     """,
     "synthese": """
-    Analyze the input text and generate 5 essential questions that, when answered, capture the main points and core meaning of the text.
-    When formulating your questions:
-    a. Address the central theme or argument
-    b. Identify key supporting ideas
-    c. Highlight important facts or evidence
-    d. Reveal the author's purpose or perspective
-    e. Explore any significant implications or conclusions
-    Answer all of your generated questions one-by-one in detail.
-    Based on the answers to these questions, provide a concise summary of the text in 2-3 sentences, capturing the essential message and offering a concrete example to support the main argument
+    You are an intelligent note-organizing assistant. Analyze the following content and add clear, structured titles in markdown format
+    1. Identify the main topic of the text.
+    2. List the key supporting points.
+    3. Present the summary in a bullet-point format, highlighting the most crucial information.
+    4. Highlight any important data or statistics.
+    5. The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+Here is the text to process:
+    {content}    
+    """,
+    "synthese2": """
+    You are an intelligent note-organizing assistant.
+    the content is a synthesis recomposed from several blocks.
+    your goal is to :
+        - structure the text logically, using clear paragraphs.
+        - Connect important ideas
+        - Remove superfluous or redundant details.
+        - Make sure the result is fluid and readable.
+        - Capture the author's conclusion or main argument.
+        - Synthesize the information into a concise summary.
+        - Ends with 1-2 reflection questions to explore the topic further
+        - The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
     Here is the text to process:
     {content}    
-    """
+    """,
+    "type": """
+You are an intelligent note-organizing assistant.
+Your task is to classify the following content into one of the categories below.
+Choose the most appropriate type based on the main purpose or structure of the text.
+Only select "unknown" if absolutely no other category fits.
+
+Categories (with examples):
+- "technical": A technical article or document, e.g., a software guide, API documentation, or white paper.
+- "news": General information or current events, e.g., a news report or blog post about world affairs.
+- "idea": A text that proposes ideas, thoughts, or project outlines, e.g., a brainstorming note or concept description.
+- "todo": A to-do list or text with actionable tasks, e.g., a grocery list or project checklist.
+- "tutorial": A step-by-step guide or lesson, e.g., a programming tutorial or recipe.
+- "unknown": Use this only if the text does not fit into any of the above categories.
+
+Returns only this word without any further explanatory text.
+Text to analyze:
+{content}
+"""
    
    
    
