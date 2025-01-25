@@ -5,18 +5,20 @@ import logging
 from handlers.extract_yaml_header import extract_yaml_header
 from handlers.files import copy_file_with_date
 
+logger = logging.getLogger(__name__)
+
 # Variables globales pour les mots-clés et leur dernier horodatage
-KEYWORDS_FILE = "/home/pipo/bin/dev/2nd_brain/obsidian_scripts/handlers/keywords.yaml"
+keywords_file = os.getenv('KEYWORDS_FILE')
 TAG_KEYWORDS = {}
 
-if os.path.exists(KEYWORDS_FILE):
-    print("Fichier trouvé :", KEYWORDS_FILE)
+if os.path.exists(keywords_file):
+    logging.debug("Fichier trouvé :", keywords_file)
 else:
-    print("Fichier introuvable :", KEYWORDS_FILE)
+    logging.warning("Fichier introuvable :", keywords_file)
 
 # Initialisation sécurisée
 try:
-    LAST_MODIFIED_TIME = os.path.getmtime(KEYWORDS_FILE)
+    LAST_MODIFIED_TIME = os.path.getmtime(keywords_file)
 except FileNotFoundError:
     LAST_MODIFIED_TIME = 0  # Valeur par défaut si le fichier n'existe pas encore
 
@@ -30,35 +32,41 @@ def load_keywords(file_path):
         keywords = {tag: [word.strip() for word in words.split(",")] for tag, words in raw_data.items()}
         return keywords
     except Exception as e:
-        print(f"Erreur lors du chargement des mots-clés : {e}")
+        logging.warning(f"Erreur lors du chargement des mots-clés : {e}")
         raise
 
 def process_and_update_file(filepath):
     global LAST_MODIFIED_TIME, TAG_KEYWORDS
     # Vérifier si le fichier de mots-clés a changé
     logging.debug(f"[DEBUG] process_and_update_file : vérif du fichier de mots clés is_file_update ")
-    file_updated, new_modified_time = is_file_updated(KEYWORDS_FILE, LAST_MODIFIED_TIME)
+    file_updated, new_modified_time = is_file_updated(keywords_file, LAST_MODIFIED_TIME)
     if file_updated:
         print("[INFO] Rechargement des mots-clés...")
         logging.debug(f"[DEBUG] process_and_update_file : fichier modifié : rechargement des  mots clés")
-        TAG_KEYWORDS = load_keywords(KEYWORDS_FILE)
+        TAG_KEYWORDS = load_keywords(keywords_file)
         LAST_MODIFIED_TIME = new_modified_time
     
     # Charger le contenu du fichier
-    with open(filepath, 'r', encoding='utf-8') as file:
-        text = file.read()
-    logging.debug(f"[DEBUG] process_and_update_file text : {text}")
+        
+    with open(filepath, "r", encoding="utf-8") as file:
+        content = file.read()
+    header_lines, content_lines = extract_yaml_header(content)
+    {repr(header_lines)}
+    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header : {header_lines[:5]}")
+    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header : {repr(header_lines[:5])}")
+    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header CONTENT : {content_lines[:5]}")
+    
     # Charger les mots-clés depuis le fichier
-    TAG_KEYWORDS = load_keywords(KEYWORDS_FILE)
+    TAG_KEYWORDS = load_keywords(keywords_file)
     #data = yaml.safe_load(f)
     logging.debug(f"[DEBUG] process_and_update_file : Contenu du fichier YAML chargé : {TAG_KEYWORDS}")
     # Analyser les sections et générer des tags
     logging.debug(f"[DEBUG] process_and_update_file : envoie vers tag_sections")
-    tagged_sections = tag_sections(text)
+    tagged_sections = tag_sections(content_lines)
 
     # Réécrire le contenu dans le fichier
     logging.debug(f"[DEBUG] process_and_update_file : envoie vers integrate_tags_in_file")
-    integrate_tags_in_file(filepath, tagged_sections)
+    integrate_tags_in_file(filepath, tagged_sections, header_lines)
 
 
 
@@ -70,37 +78,37 @@ def is_file_updated(file_path, last_modified_time):
         logging.debug(f"[DEBUG] is_file_updated : nouvelle date : {current_modified_time}")
         return current_modified_time != last_modified_time, current_modified_time
     except FileNotFoundError:
-        print(f"[ERREUR] Fichier introuvable : {file_path}")
+        logging.error(f"[ERREUR] Fichier introuvable : {file_path}")
         return False, last_modified_time
 
-def extract_sections(text):
+def extract_sections(content_lines):
     """Divise le texte en sections basées sur les titres Markdown."""
     logging.debug(f"[DEBUG] entrée fonction : extract_sections")
-    sections = re.split(r'(?=^#{2,3}\s)', text, flags=re.MULTILINE)
-    logging.debug(f"[DEBUG] extract_sections : {sections}")
+    sections = re.split(r'(?=^#{1,3}\s)', content_lines, flags=re.MULTILINE)
+    logging.debug(f"[DEBUG] extract_sections : {sections[:5]}")
     return [section.strip() for section in sections if section.strip()]
 
-def detect_tags_in_text(text, TAG_KEYWORDS):
+def detect_tags_in_text(content_lines, TAG_KEYWORDS):
     logging.debug(f"[DEBUG] entrée fonction : detect_tags_in_text")
     """Détecte les tags dans un texte."""
     tags = set()  # Initialisation de la variable 'tags' comme un ensemble vide
     for tag, keywords in TAG_KEYWORDS.items():  # Parcourt chaque catégorie
         for keyword in keywords:  # Parcourt chaque mot-clé dans la catégorie
-            if keyword.lower() in text.lower():  # Recherche insensible à la casse
+            if keyword.lower() in content_lines.lower():  # Recherche insensible à la casse
                 tags.add(f"#{tag}")  # Ajoute un # devant chaque tag
     return tags
 
-def tag_sections(text):
+def tag_sections(content_lines):
     logging.debug(f"[DEBUG] entrée fonction : tag_sections")
     """Analyse chaque section et génère des tags basés sur le titre et le contenu."""
     logging.debug(f"[DEBUG] tag_sections : envoie vers extract_sections")
-    sections = extract_sections(text)
+    sections = extract_sections(content_lines)
     tagged_sections = []
 
     for section in sections:
         # Séparer le titre de la section du contenu
         logging.debug(f"[DEBUG] tag_sections : Séparer le titre de la section du contenu")
-        title_match = re.match(r'^#{2,3}\s(.+)', section)
+        title_match = re.match(r'^#{1,3}\s(.+)', section)
         title = title_match.group(1) if title_match else "Untitled Section"
         logging.debug(f"[DEBUG] tag_sections : title : {title}")
         content = section[len(title_match.group(0)):] if title_match else section
@@ -124,34 +132,21 @@ def tag_sections(text):
 
     return tagged_sections
 
-def integrate_tags_in_file(filepath, tagged_sections):
+def integrate_tags_in_file(filepath, tagged_sections, header_lines):
     logging.debug(f"[DEBUG] entrée fonction : integrate_tags_in_file : {filepath}")
     """
     Réécrit le fichier en ajoutant les tags au début de chaque section.
     """
-    with open(filepath, "r", encoding="utf-8") as file:
-        content = file.read()
-    header_lines, content_lines = extract_yaml_header(content)
-    # Préserver l'entête YAML
-    #if lines[0].strip() == "---":
-    #    yaml_start = 0
-    #    yaml_end = next((i for i, line in enumerate(lines[1:], start=1) if line.strip() == "---"), -1)
-    #    header_lines = lines[yaml_start:yaml_end + 1]
-    #    content_lines = lines[yaml_end + 1:]
-    #else:
-    #    header_lines = []
-    #    content_lines = lines
-    #logging.debug(f"[DEBUG] Type de content avant extract_yaml_header : {type(content)}")
-    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header : {header_lines[:50]}")
-    logging.debug(f"[DEBUG] Contenu brut après extract_yaml_header CONTENT : {content_lines[:50]}")
-    # Loguer l'entête pour vérification
+    logging.debug(f"[DEBUG] entrée fonction : integrate_tags_in_file : {filepath}")
+
+    # Ouvre le fichier en écriture
     with open(filepath, "w", encoding="utf-8") as file:
-    # Écrire l'entête YAML si elle existe
+        # Écrire l'entête YAML si elle existe
         if header_lines:  # Vérifie que l'entête n'est pas vide
-            file.writelines(header_lines)
-            logging.debug(f"[DEBUG] integrate_tags_in_file : Entête YAML ajoutée 1 : {header_lines}")
-            logging.debug(f"[DEBUG] integrate_tags_in_file : Entête YAML ajoutée 2 : {''.join(header_lines)}")
-    
+            for line in header_lines:
+                file.write(line if line.endswith("\n") else line + "\n")
+            logging.debug(f"[DEBUG] integrate_tags_in_file : Entête YAML correctement écrite : {''.join(header_lines)}")
+
         # Écrire les sections avec leurs titres, tags et contenu
         for section in tagged_sections:
             # Ajoute le titre de la section
@@ -164,6 +159,5 @@ def integrate_tags_in_file(filepath, tagged_sections):
             # Ajoute le contenu de la section
             file.write(f"{section['content']}\n\n")
             logging.debug(f"[DEBUG] integrate_tags_in_file : section content : {section['content']}")
-    
-    print(f"Fichier mis à jour : {filepath}")
-    copy_file_with_date(filepath, "/mnt/user/Documents/Obsidian/notes/.2")
+
+    logging.info(f"[INFO] Génération des mots clés terminée pour {filepath}")

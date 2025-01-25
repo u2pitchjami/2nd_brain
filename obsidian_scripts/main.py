@@ -1,12 +1,19 @@
-from handlers.watcher import start_watcher
+from dotenv import load_dotenv
 import time
+import os
 import logging
+from handlers.logger_setup import setup_logging
 
+# Chemin dynamique basé sur le script en cours
+script_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = os.path.join(script_dir, ".env")
+# Charger le fichier .env
+load_dotenv(env_path)
 
-ollama_api_url = "http://192.168.50.12:11434/api/generate"
+# Emplacement du fichier log
+setup_logging()
 
-  # Emplacement du fichier log
-logging.basicConfig(filename='/home/pipo/bin/dev/2nd_brain/obsidian_scripts/logs/auto_tags.log', level=logging.DEBUG, format='%(asctime)s - %(message)s')
+from handlers.watcher import start_watcher
 
 if __name__ == "__main__":
     start_watcher()

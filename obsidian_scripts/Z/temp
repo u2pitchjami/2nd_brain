@@ -65,7 +65,14 @@ PROMPTS = {
     """
    
    
-   
+   You are an intelligent note-organizing assistant.
+Your task is to classify the following content into both a main category and a sub-category.
+Choose the most appropriate categories and sub-categories based on the main purpose or structure of the text.
+Only select "unknown" if absolutely no other category fits.
+Use the following structure:
+
+You are an assistant specialized in classifying notes based on their content.
+Below is the classification dictionary with categories, subcategories, and descriptions:
    
    
    

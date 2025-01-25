@@ -1,7 +1,24 @@
 PROMPTS = {
-    "technical": """
+    "reformulation": """
+    You are an intelligent and structured note organizer assistant specialized in processing and improving text.
+Follow the specific instructions below:
+
+1. Extract key ideas, rewrite the content to enhance clarity, conciseness, and logical flow while preserving the original meaning.
+2. Simplify complex language, eliminate unnecessary jargon, and ensure the content is accessible to a general audience.
+3. Use a professional yet approachable tone.
+4. Remove redundancies and unnecessary details.
+5. Preserve all original **titles and headings** in the Markdown format.
+6. If the text does not contain a title, generate a relevant and concise title in Markdown format (e.g., # Introduction).
+7. The output must be in **French**, presented in **Markdown format**.
+8. Clean up unnecessary line breaks.
+9. Remove ads and promotional content.
+
+        Here is the text to simplify:
+        {content}
+            """,
+    "article": """
     You are an intelligent note-organizing assistant.
-    Your task is to summarize the following technical article.
+    Your task is to summarize the following article.
     Provide a comprehensive summary that captures the main ideas, key findings, and essential technical details.
     Structure your summary logically, starting with an overview and progressing through the article's main sections.
     Use markdown to format your output, bolding key subject matter and potential areas that may need expanded information.
@@ -11,16 +28,23 @@ PROMPTS = {
             Here is the text :
             {content}
             """,
-    "news": """
-    You are an intelligent note-organizing assistant.
-    Your task is to summarize the following article.
-    Provide a comprehensive summary that captures the main ideas, key findings.
-    Structure your summary logically, starting with an overview and progressing through the article's main sections.
-    Use markdown to format your output, bolding key subject matter and potential areas that may need expanded information.
-    Ensure the summary is accessible to the target audience while maintaining technical accuracy.
-    Conclude with the most significant implications or applications of the article's content.
-    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
-            Here is the text :
+    "divers": """
+    
+    You are an intelligent assistant specialized in summarizing political articles.
+    Summarize the following political article, focusing on these key elements:
+        - structure the text logically, using clear paragraphs.
+        - Connect important ideas
+        - Remove superfluous or redundant details.
+        - Make sure the result is fluid and readable.
+        - Important facts or statistics mentioned
+        - Potential implications or consequences
+        - Any proposed solutions or policy recommendations
+        - Identify the author's thesis statement or main argument.
+        - Highlight any persuasive techniques used in the article.
+        - For opinion pieces, clearly outline the author's viewpoint and key arguments
+        - The output must be in **French**, presented in **Markdown format**.
+        
+        Here is the text :
             {content}
             """,
     "idea": """
@@ -54,13 +78,31 @@ PROMPTS = {
             """,
     "tutorial": """
     You are an intelligent note-organizing assistant.
-    Please reorganize the tutorial to enhance its clarity and user engagement.
-    Start by reviewing the current structure and content.
-    Identify any sections that need to be reordered, combined, or split.
-    Ensure that each section begins with a clear introduction, followed by a detailed explanation, and ends with practical examples or exercises.
-    Highlight the key points and the key commands.
-    Provide a revised outline of the tutorial with suggested changes.
-    suggests ways to explore the subject in more depth
+    Please provide a summary of this tutorial or lesson that includes:
+      1. Main Learning Objectives
+        - What core skills or knowledge are being taught?
+        - What is the primary goal of this tutorial?
+
+      2. Key Concepts Covered
+        - List the most important theoretical or practical concepts
+        - Highlight any critical technical or procedural details
+
+      3. Step-by-Step Overview
+        - Briefly outline the main stages or progression of the tutorial
+        - Note any critical decision points or techniques
+
+      4. Practical Takeaways
+        - What specific skills can a learner immediately apply?
+        - What are the most valuable practical insights?
+
+      5. Potential Challenges and Solutions
+        - What common difficulties might learners encounter?
+        - What strategies help overcome these challenges?
+
+      6. Next Learning Recommendations
+        - What follow-up resources or advanced topics complement this tutorial?
+        - Suggest potential paths for deeper exploration
+    
     The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
             Here is the text :
             {content}
@@ -100,6 +142,7 @@ PROMPTS = {
     "summary": """
     Provide a concise summary of the key points discussed in the following text.
     Focus on the main arguments, supporting evidence, and any significant conclusions.
+    Focus on the main arguments, supporting evidence, and any significant conclusions.
     Present the summary in a bullet-point format, highlighting the most crucial information.
     The summary should not be longer than 5 sentences. 
     **without including the parts already present** in the "summary:" section. Do not repeat existing elements
@@ -134,25 +177,137 @@ Here is the text to process:
     {content}    
     """,
     "type": """
-You are an intelligent note-organizing assistant.
-Your task is to classify the following content into one of the categories below.
-Choose the most appropriate type based on the main purpose or structure of the text.
-Only select "unknown" if absolutely no other category fits.
+You are an assistant specialized in classifying notes based on their content.
+Below is the classification dictionary with categories, subcategories, and descriptions:
 
-Categories (with examples):
-- "technical": A technical article or document, e.g., a software guide, API documentation, or white paper.
-- "news": General information or current events, e.g., a news report or blog post about world affairs.
-- "idea": A text that proposes ideas, thoughts, or project outlines, e.g., a brainstorming note or concept description.
-- "todo": A to-do list or text with actionable tasks, e.g., a grocery list or project checklist.
-- "tutorial": A step-by-step guide or lesson, e.g., a programming tutorial or recipe.
-- "unknown": Use this only if the text does not fit into any of the above categories.
+{classification_dict}
 
-Returns only this word without any further explanatory text.
-Text to analyze:
+Instructions:
+1. Read the following note content.
+2. Determine the best category and subcategory for the note based on the dictionary above.
+3. Return your response in the following format: the main category and the sub-category separated by a slash (e.g., "informatique/tutorials") and must **avoid unnecessary introductory or concluding phrases**.
+
+
+Text:
 {content}
-"""
-   
-   
+""",
+    "watchlist": """
+    You are an intelligent note-organizing assistant.
+    I need help creating and organizing a comprehensive watchlist that helps me track and prioritize media I want to consume. Please help me develop a structured list with the following details for each item:
+
+- Title
+- Type of media (movie, TV show, documentary, etc.)
+- Genre
+- Current status (not started, in progress, completed)
+- Priority level
+- Personal rating (if already watched)
+- Where I can watch it (streaming platform or service)
+- Estimated time to watch
+- Brief reason for adding to the list
+
+Your task is to help me categorize and prioritize these items, suggesting an order based on my preferences, available time, and personal interests. Additionally, provide recommendations for managing and updating this watchlist efficiently.
+
+- Current watchlist items: [list your current items]
+- Personal preferences: [describe your viewing preferences]
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+           """,
+    "political": """
+    You are an intelligent assistant specialized in summarizing political articles.
+    Summarize the following political article, focusing on these key elements:
+        - structure the text logically, using clear paragraphs.
+        - Connect important ideas
+        - Remove superfluous or redundant details.
+        - Make sure the result is fluid and readable.
+        - Important facts or statistics mentioned
+        - Potential implications or consequences
+        - Any proposed solutions or policy recommendations
+        - Identify the author's thesis statement or main argument.
+        - Highlight any persuasive techniques used in the article.
+        - For opinion pieces, clearly outline the author's viewpoint and key arguments
+        - The output must be in **French**, presented in **Markdown format**.
+          
+          
+
+    Here is the text:  
+    {content}
+
+           
+            """,
+    "geopolitical": """
+    Provide a comprehensive summary of the given geopolitical article, focusing on:
+    Key events or developments described
+    Main actors involved (states, organizations, influential individuals)
+    Underlying causes or motivations for the situation
+    Potential short-term and long-term consequences
+    Regional and global implications
+    Any significant economic, military, or diplomatic factors
+    Relevant historical context
+    Current international responses or reactions
+    Possible future scenarios or outcomes
+    Analyze the article through the lens of hard power, soft power, and noopolitik. Highlight any shifts in global power dynamics or balance of power.
+    Conclude with the most critical insights and their potential impact on international relations.
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+            """,
+    "sociology": """
+    Analyze and summarize the key sociological concepts, theories, and findings presented in this article.
+    Focus on the main arguments, methodological approach, and societal implications.
+    Highlight any significant data or statistics that support the author's conclusions.
+    Conclude by discussing how this research contributes to our understanding of social structures, interactions, or phenomena
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+            Here is the text :
+            {content}
+            """,
+    "make_file_name": """
+    You are an intelligent note-organizing assistant.
+    Here is the content of a document:
+
+{content}
+
+    Based on the content, generate a filename in the following format:  
+    `file_name_source_date.md`  
+    - The name should describe the document's content. Replace spaces with underscores `_`. 
+    - Include the source if it is mentioned in the document (e.g., for a webpage, include only the domain or site name without "http" or extensions like ".com").
+    - Add the current date in the format `YYMMDD` (e.g., January 21, 2025, becomes `250121`).
+    - If the content is too vague, create a generic name using the word "note".
+    
+    Generate only the filename, without any additional text or comments.
+          """,
+    "gpt_reformulation": """
+    You are an intelligent note-organizing assistant.
+    Reformule cette conversation GPT en un texte structuré et fluide.
+    Utilise des titres et des sous-titres pour organiser les idées principales, et rédige des paragraphes clairs et bien construits.
+    Assure-toi que le texte final soit lisible, informatif et adapté à une présentation ou un article.
+    The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
+
+      **Exemple d'entrée (conversation GPT) :**
+
+        Utilisateur : Salut, je veux apprendre Python, tu as des conseils ?
+        GPT : Bien sûr ! Commence par des bases comme les variables, boucles, et conditions. Tu peux aussi essayer des exercices pratiques.
+        Utilisateur : Ok, et tu connais des ressources ?
+        GPT : Oui, je te recommande le site "Apprendre Python" ou les tutoriels sur Real Python. Ils sont très bien pour débuter.
+        Utilisateur : Super, merci ! Je vais m'y mettre.
+      
+      **Exemple de sortie (texte structuré) :**
+
+        Apprendre Python : Par où commencer ?
+        Les bases pour bien débuter
+        Python est un langage idéal pour les débutants. Pour commencer, familiarisez-vous avec des concepts fondamentaux comme les variables, les boucles, et les conditions. Ces notions sont essentielles pour comprendre les bases de la programmation.
+
+        Ressources recommandées
+        Pour apprendre Python, plusieurs ressources de qualité sont disponibles. Voici deux suggestions :
+
+        Site "Apprendre Python" : Un site francophone avec des cours clairs et progressifs.
+        Real Python : Une plateforme en anglais offrant des tutoriels détaillés.
+        Passer à la pratique
+        N’hésitez pas à vous lancer dans des exercices pratiques dès le début. Cela vous permettra de consolider vos acquis tout en vous amusant.
+        
+    Here is the text :
+            {content}
+  """
    
    
    

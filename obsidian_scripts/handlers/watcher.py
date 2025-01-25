@@ -6,8 +6,12 @@ import os
 import logging
 import time
 
+logger = logging.getLogger(__name__)
+
+
+
 # Chemin vers le dossier contenant les notes Obsidian
-obsidian_notes_folder = "/mnt/user/Documents/Obsidian/notes"
+obsidian_notes_folder = os.getenv('BASE_PATH')
 
 # Lancement du watcher pour surveiller les modifications dans le dossier Obsidian
 def start_watcher():
@@ -15,8 +19,7 @@ def start_watcher():
     observer = PollingObserver()
     observer.schedule(NoteHandler(), path, recursive=True)
     observer.start()
-    print(f"Surveillance active sur : {obsidian_notes_folder}")
-    logging.debug(f"[DEBUG] démarrage du script : ")
+    logging.info(f"[INFO] démarrage du script, \n active sur : {obsidian_notes_folder} ")
 
     try:
         while True:
@@ -28,22 +31,22 @@ def start_watcher():
 class NoteHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if not self.is_hidden(event.src_path):
-            print(f"[MODIFICATION] {event.src_path}")
+            logging.info(f"[INFO] [MODIFICATION] {event.src_path}")
             process_single_note(event.src_path)
     
     def on_created(self, event):
         if not self.is_hidden(event.src_path):
-            print(f"[CREATION] {event.src_path}")
+            logging.info(f"[INFO] [CREATION] {event.src_path}")
             process_single_note(event.src_path)
     
     def on_deleted(self, event):
         if not self.is_hidden(event.src_path):
-            print(f"[SUPPRESSION] {event.src_path}")
+            logging.info(f"[INFO] [SUPPRESSION] {event.src_path}")
             process_single_note(event.src_path)
     
     def on_moved(self, event):
         if not self.is_hidden(event.src_path) and not self.is_hidden(event.dest_path):
-            print(f"[DEPLACEMENT] {event.src_path} -> {event.dest_path}")
+            logging.info(f"[INFO] [DEPLACEMENT] {event.src_path} -> {event.dest_path}")
             process_single_note(event.dest_path)
     @staticmethod
     def is_hidden(path):

@@ -1,0 +1,8 @@
+*/Archives*
+*/Temp*
+*/.*
+*/gpt_*
+*/imports*
+*/synthèses*
+*/templates*
+*/ZMake*

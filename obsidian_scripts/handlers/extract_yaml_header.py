@@ -1,5 +1,7 @@
 import logging
 
+logger = logging.getLogger(__name__)
+
 def extract_yaml_header(content):
     """
     Extrait l'entête YAML d'un texte s'il existe.
@@ -26,8 +28,8 @@ def extract_yaml_header(content):
         header_lines = []
         content_lines = lines  # Tout le contenu est traité comme texte
 
-    
-    logging.debug(f"[DEBUG] extract_yaml_header header : {header_lines}")
-    logging.debug(f"[DEBUG] extract_yaml_header content : {content_lines[:100]}")
+  
+    logging.debug(f"[DEBUG] extract_yaml_header header : {repr(header_lines)}")
+    logging.debug(f"[DEBUG] extract_yaml_header content : {content_lines[:5]}")
     # Rejoindre content_lines pour retourner une chaîne
     return header_lines, "\n".join(content_lines)

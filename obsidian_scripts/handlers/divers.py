@@ -2,6 +2,8 @@ import re
 import os
 import logging
 
+logger = logging.getLogger(__name__)
+
 def count_words(content):
     logging.debug(f"[DEBUG] def count_word")
     return len(content.split())

@@ -1,8 +1,11 @@
 import re
+import os
 import requests
 from handlers.prompts import PROMPTS
 import json
 import logging
+
+logger = logging.getLogger(__name__)
 
 # Fonction pour interroger Ollama et générer des tags à partir du contenu d'une note
 def get_tags_from_ollama(content):
@@ -10,20 +13,32 @@ def get_tags_from_ollama(content):
     prompt = PROMPTS["tags"].format(content=content)
     logging.debug(f"[DEBUG] tags ollama : recherche et lancement du prompt")
     response = ollama_generate(prompt)
-    logging.debug(f"[DEBUG] tags ollama : reponse récupéré")
-    #print(f"Réponse complète : {response}")
-    # EXTRACTION DU JSON VIA REGEX
-    match = re.search(r'\{.*?\}', response, re.DOTALL)
-    
+    logging.debug(f"[DEBUG] tags ollama : réponse récupérée : {response}")
+
+    # EXTRACTION DES TAGS VIA REGEX
+    match = re.search(r'\{.*?\}', response, re.DOTALL)  # Tente de capturer un objet JSON complet
+
     if match:
         try:
             tags_data = json.loads(match.group(0))
             tags = tags_data.get("tags", [])
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            logging.error(f"[ERREUR] Impossible de décoder le JSON complet : {e}")
             tags = ["Error parsing JSON"]
     else:
-        tags = ["No tags found"]
+        # Capture uniquement le tableau
+        match = re.search(r'\[.*?\]', response, re.DOTALL)
+        if match:
+            try:
+                tags = json.loads(match.group(0))
+            except json.JSONDecodeError as e:
+                logging.error(f"[ERREUR] Impossible de décoder le tableau : {e}")
+                tags = ["Error parsing JSON"]
+        else:
+            logging.warning("[WARN] Aucun JSON ou tableau trouvé dans la réponse.")
+            tags = ["No tags found"]
 
+    logging.debug(f"[DEBUG] tags ollama : tags extraits : {tags}")
     return tags
             
 # Fonction pour générer un résumé automatique avec Ollama
@@ -76,12 +91,16 @@ def enforce_titles(response):
 # Traitement pour réponse d'ollama
 def ollama_generate(prompt):
     logging.debug(f"[DEBUG] entrée fonction : ollama_generate")
+    ollama_url_generate = os.getenv('OLLAMA_URL_GENERATE')
+    model_llama = os.getenv('MODEL_LLAMA')
+    
+    
     payload = {
-        "model": "llama3.2:latest",
+        "model": model_llama,
         "prompt": prompt
     }
     
-    response = requests.post("http://192.168.50.12:11434/api/generate", json=payload, stream=True)
+    response = requests.post(ollama_url_generate, json=payload, stream=True)
     
     full_response = ""
     for line in response.iter_lines():

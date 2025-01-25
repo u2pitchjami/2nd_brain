@@ -2,6 +2,8 @@ from handlers.ollama import ollama_generate
 import os
 import logging
 
+logger = logging.getLogger(__name__)
+
 def create_split_notes(filepath, sections):
     logging.debug(f"[DEBUG] démarrage du create_split_notes")
     """

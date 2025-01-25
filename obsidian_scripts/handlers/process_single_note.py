@@ -1,16 +1,19 @@
 import os
-from handlers.config import DIRS
 from handlers.import_gpt import process_import_gpt
+from handlers.import_gpt import process_clean_gpt
+from handlers.import_gpt import process_class_gpt
 from handlers.import_normal import import_normal
 from handlers.import_syntheses import process_import_syntheses
 from handlers.get_type import process_get_note_type
-from handlers.files import move_file_with_date
-from handlers.files import copy_file_with_date
-from handlers.headers import check_type_header
-from handlers.prompts import PROMPTS
-from datetime import datetime
-
+from handlers.get_type import categ_extract
+from handlers.files import rename_file
+from test_gptcopy2 import process_gpt_note
+from handlers.standalone import make_synthese_standalone
 import logging
+from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
 
 def process_single_note(filepath):
     logging.debug(f"[DEBUG] démarrage du process_single_note pour : {filepath}")
@@ -24,74 +27,74 @@ def process_single_note(filepath):
     
     # Obtenir le dossier contenant le fichier
     base_folder = os.path.dirname(filepath)
-
+    
     # Vérifie si le fichier vient de 'imports'
     if "imports" in base_folder:
-        print(f"Le fichier {filepath} vient de import.")
+        logging.info(f"[INFO] Import de : {filepath}")
         # Appeler la fonction spécifique
-        note_type = process_get_note_type(filepath, "type")
-        dir_type_name = DIRS[note_type]
-        destination_dir = globals().get(dir_type_name)
-        move_file_with_date(filepath, dir_type_name)
+        try:
+            new_path = rename_file(filepath)
+            filepath = new_path
+            new_path = process_get_note_type(filepath)
+            filepath = new_path
+            base_folder = os.path.dirname(new_path)
+            if "gpt_import" in base_folder:
+                logging.info(f"[INFO] Conversation GPT détectée, déplacement vers : {base_folder}")
+                return
+            category, subcategory = categ_extract(base_folder)
+            import_normal(filepath, category, subcategory)
+            logging.debug(f"[DEBUG] process_single_note import normal terminé {category}/{subcategory}")
+            process_import_syntheses(filepath, category, subcategory)
+            logging.info(f"[INFO] Import terminé pour : {filepath}")
+            return
+        except Exception as e:
+            logging.error(f"[ERREUR] Anomalie lors du traitement du fichier : {e}")
+            return
     elif "gpt_import" in base_folder:
-        logging.debug(f"[DEBUG] process_single_note gpt_import")
-        process_import_gpt(filepath)
-        
-        #dir_type_name = DIRS["synthèses_import"]
-        #destination_dir = globals().get(dir_type_name)
-        #copy_file_with_date(filepath, dir_type_name)
-    elif "notes/Technique" in base_folder:
-        import_normal(filepath, "technical")
-        logging.debug(f"[DEBUG] process_single_note traitement technical")
-        dir_type_name = DIRS["synthèses_import"]
-        destination_dir = globals().get(dir_type_name)
-        copy_file_with_date(filepath, dir_type_name)
-    elif "notes/News" in base_folder:
-        import_normal(filepath, "news")
-        logging.debug(f"[DEBUG] process_single_note traitement news")
-        dir_type_name = DIRS["synthèses_import"]
-        destination_dir = globals().get(dir_type_name)
-        copy_file_with_date(filepath, dir_type_name)
-    elif "notes/Idées" in base_folder:
-        print(filepath)
-        import_normal(filepath, "idea")
-        logging.debug(f"[DEBUG] process_single_note traitement idea")
-        dir_type_name = DIRS["synthèses_import"]
-        destination_dir = globals().get(dir_type_name)
-        copy_file_with_date(filepath, dir_type_name)
-    elif "notes/Todo" in base_folder:
-        import_normal(filepath, "todo")
-        logging.debug(f"[DEBUG] process_single_note traitement todo")
-        dir_type_name = DIRS["synthèses_import"]
-        destination_dir = globals().get(dir_type_name)
-        copy_file_with_date(filepath, dir_type_name)
-    elif "notes/Tutorial" in base_folder:
-        import_normal(filepath, "tutorial")
-        logging.debug(f"[DEBUG] process_single_note traitement tutorial")
-        dir_type_name = DIRS["synthèses_import"]
-        destination_dir = globals().get(dir_type_name)
-        copy_file_with_date(filepath, dir_type_name)
-    elif "synthèses_import" in base_folder:
-        print(f"Le fichier {filepath} vient de 'synthèses_import'.")
-        note_type = check_type_header(filepath)
-        process_import_syntheses(filepath, note_type)
-        dir_type_name = DIRS["synthèses_processed"]
-        destination_dir = globals().get(dir_type_name)
-        move_file_with_date(filepath, dir_type_name)
-        return
-    elif "synthèses_processed" in base_folder:
-        return
-    elif "gpt_processed" in base_folder:
-        return
-    elif "unknown" in base_folder:
-        return
+        logging.info(f"[INFO] Split de la conversation GPT : {filepath}")
+        try:
+                       
+            logging.debug(f"[DEBUG] process_single_note : envoi vers gpt_import")
+            process_import_gpt(filepath)
+            return
+        except Exception as e:
+            logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
+            return
+    
+    elif "gpt_output" in base_folder:   
+        logging.info(f"[INFO] Import issu d'une conversation GPT : {filepath}")
+        try:
+            new_path = rename_file(filepath)
+            logging.info(f"[INFO] Note renommée : {filepath} --> {new_path}")
+            filepath = new_path
+            process_clean_gpt(filepath)
+            new_path = process_get_note_type(filepath)
+            base_folder = os.path.dirname(new_path)
+            filepath = new_path
+            category, subcategory = categ_extract(base_folder)
+            process_class_gpt(filepath, category, subcategory)
+            logging.info(f"[INFO] Import terminé pour : {filepath}")
+            return
+        except Exception as e:
+            logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
+            return
+    elif "ZMake_Synthese" in base_folder:   
+        logging.info(f"[INFO] Génération d'une nouvelle synthèse pour : {filepath}")
+        try:
+            make_synthese_standalone(filepath)
+            return
+        except Exception as e:
+            logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
+            return
+    elif "test_gpt" in base_folder:   
+        print(f"Le fichier {filepath} vient de test_gpt.")
+        try:
+            process_gpt_note(filepath)
+            return
+        except Exception as e:
+            logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
+            return
     else:
-        note_type = check_type_header(filepath)
-        if note_type:
-            return
-        else:
-            dir_type_name = DIRS["imports"]
-            destination_dir = globals().get(dir_type_name)
-            move_file_with_date(filepath, dir_type_name)
-            logging.debug(f"[DEBUG] process_single_note : déplacement de {filepath}")
-            return
+        # Traitement pour les autres cas
+        logging.debug(f"[DEBUG] Aucune correspondance pour : {filepath}")
+        return
