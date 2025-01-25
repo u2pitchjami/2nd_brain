@@ -244,7 +244,7 @@ def get_recently_modified_files(base_dirs, time_threshold_seconds, excluded_patt
             if file.is_file():  # Vérifier que c'est un fichier
                 # Vérifier si le fichier ou son parent correspond à un pattern exclu
                 if any(fnmatch.fnmatch(str(file), pattern) for pattern in excluded_patterns):
-                    print(f"[INFO] Fichier ignoré : {file} (exclusion appliquée)")
+                    #print(f"[INFO] Fichier ignoré : {file} (exclusion appliquée)")
                     continue
                 
                 # Vérifier la date de modification
