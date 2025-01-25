@@ -7,7 +7,6 @@ from handlers.import_syntheses import process_import_syntheses
 from handlers.get_type import process_get_note_type
 from handlers.get_type import categ_extract
 from handlers.files import rename_file
-from test_gptcopy2 import process_gpt_note
 from handlers.standalone import make_synthese_standalone
 import logging
 from pathlib import Path
@@ -86,14 +85,7 @@ def process_single_note(filepath):
         except Exception as e:
             logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
             return
-    elif "test_gpt" in base_folder:   
-        print(f"Le fichier {filepath} vient de test_gpt.")
-        try:
-            process_gpt_note(filepath)
-            return
-        except Exception as e:
-            logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
-            return
+    
     else:
         # Traitement pour les autres cas
         logging.debug(f"[DEBUG] Aucune correspondance pour : {filepath}")
