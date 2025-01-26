@@ -1,3 +1,4 @@
 */logs
 .env
-*/__pycache__/*
+/obsidian_scripts/__pycache__/
+/obsidian_scripts/handlers/__pycache__/
