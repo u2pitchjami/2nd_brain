@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def import_normal(filepath, category, subcategory):
     logging.debug(f"[DEBUG] démarrage du process_import_normal pour : {filepath}")
     try:
-        sav_dir = os.getenv('SAV_DIR')
+        sav_dir = os.getenv('SAV_PATH')
         copy_file_with_date(filepath, sav_dir)
         content = read_note_content(filepath)
         lines = content.splitlines()

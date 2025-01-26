@@ -78,13 +78,13 @@ def copy_to_archives(filepath):
         archives_dir = file_path_obj.parent / "Archives"  # Ajouter "Archives" au dossier parent
         archives_dir.mkdir(parents=True, exist_ok=True)  # Créer le dossier Archives s'il n'existe pas
         new_path = archives_dir / file_path_obj.name  # Conserve le même nom de fichier dans Archives
-        logging.debug(f"[DEBUG] move_to_archive : construction de : {archives_dir}")
+        logging.debug(f"[DEBUG] copy_to_archive : construction de : {archives_dir}")
     except ValueError:
         logging.error(f"Impossible de modifier le nom du fichier : {filepath}")
         return None
     try:
         shutil.copy(filepath, archives_dir)
-        logging.info(f"[INFO] Déplacement réussi vers : {new_path}")
+        logging.info(f"[INFO] copy réussi vers : {new_path}")
         return new_path
     except ValueError:
         logging.error(f"Impossible de copier le fichier vers : {archives_dir}")
@@ -231,6 +231,7 @@ def get_recently_modified_files(base_dirs, time_threshold_seconds, excluded_patt
     :return: Liste des chemins de fichiers modifiés récemment.
     """
     recent_files = []
+    print (f"recent_files {recent_files}")
     current_time = time.time()
 
     for base_dir in base_dirs:

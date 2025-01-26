@@ -14,7 +14,7 @@ from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
-
+ 
 def process_import_syntheses(filepath, category, subcategory):
     logging.info(f"[INFO] Génération de la synthèse pour : {filepath}")
     logging.debug(f"[DEBUG] démarrage du process_import_synthèse pour : {category} / {subcategory}")
@@ -26,12 +26,12 @@ def process_import_syntheses(filepath, category, subcategory):
         logging.debug(f"[DEBUG] Type après lecture : {type(content)}")
         
         
-        logging.debug(f"[DEBUG] process_single_note lancement copy_to_archives")
+        logging.debug(f"[DEBUG] process_import_syntheses lancement copy_to_archives")
                 
         new_path = copy_to_archives(filepath)
         original_path = new_path
         original_path = make_relative_link(original_path, link_text="Voir la note originale")
-        logging.debug(f"[DEBUG] process_single_note : original_path {original_path}")
+        logging.debug(f"[DEBUG] process_import_syntheses : original_path {original_path}")
         
         
         header_lines, content_lines = extract_yaml_header(content)
@@ -51,7 +51,7 @@ def process_import_syntheses(filepath, category, subcategory):
         print(f"[ERREUR] Impossible de traiter {filepath} : {e}")    
         
 def make_syntheses(filepath, content, header_lines, category, subcategory, original_path):
-    logging.debug(f"[DEBUG] démarrage de make_synthèse pour ")
+    logging.debug(f"[DEBUG] démarrage de make_synthèse pour {filepath}")
     try:
         prompt_name = get_prompt_name(category, subcategory, NOTE_PATHS)
         #prompt_name = "synthese2"

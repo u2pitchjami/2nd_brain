@@ -27,7 +27,7 @@ def add_metadata_to_yaml(filepath, tags, summary, category, subcategory):
         date_creation = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         nombre_mots = count_words("".join(lines))
         if "ChatGPT" in title:
-            author = ChatGPT
+            author = "ChatGPT"
         
         # Recherche des données dans tout le document
         for line in lines:

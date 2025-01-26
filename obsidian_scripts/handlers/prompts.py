@@ -30,8 +30,8 @@ Follow the specific instructions below:
             """,
     "divers": """
     
-    You are an intelligent assistant specialized in summarizing political articles.
-    Summarize the following political article, focusing on these key elements:
+    You are an intelligent assistant specialized in summarizing articles.
+    Summarize the following article, focusing on these key elements:
         - structure the text logically, using clear paragraphs.
         - Connect important ideas
         - Remove superfluous or redundant details.
@@ -142,9 +142,8 @@ Follow the specific instructions below:
     "summary": """
     Provide a concise summary of the key points discussed in the following text.
     Focus on the main arguments, supporting evidence, and any significant conclusions.
-    Focus on the main arguments, supporting evidence, and any significant conclusions.
     Present the summary in a bullet-point format, highlighting the most crucial information.
-    The summary should not be longer than 5 sentences. 
+    The summary should not be longer than 5 sentences and must **avoid unnecessary introductory or concluding phrases**. 
     **without including the parts already present** in the "summary:" section. Do not repeat existing elements
     
     TEXT START
@@ -171,7 +170,7 @@ Here is the text to process:
         - Make sure the result is fluid and readable.
         - Capture the author's conclusion or main argument.
         - Synthesize the information into a concise summary.
-        - Ends with 1-2 reflection questions to explore the topic further
+        - Ends with 2-3 reflection questions to explore the topic further
         - The output must be in **French**, presented in **Markdown format**, and must **avoid unnecessary introductory or concluding phrases**.
     Here is the text to process:
     {content}    

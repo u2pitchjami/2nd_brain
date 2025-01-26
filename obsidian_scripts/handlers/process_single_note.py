@@ -32,11 +32,11 @@ def process_single_note(filepath):
         logging.info(f"[INFO] Import de : {filepath}")
         # Appeler la fonction spécifique
         try:
-            new_path = rename_file(filepath)
-            filepath = new_path
             new_path = process_get_note_type(filepath)
             filepath = new_path
             base_folder = os.path.dirname(new_path)
+            new_path = rename_file(filepath)
+            filepath = new_path
             if "gpt_import" in base_folder:
                 logging.info(f"[INFO] Conversation GPT détectée, déplacement vers : {base_folder}")
                 return
@@ -63,12 +63,12 @@ def process_single_note(filepath):
     elif "gpt_output" in base_folder:   
         logging.info(f"[INFO] Import issu d'une conversation GPT : {filepath}")
         try:
-            new_path = rename_file(filepath)
-            logging.info(f"[INFO] Note renommée : {filepath} --> {new_path}")
-            filepath = new_path
             process_clean_gpt(filepath)
             new_path = process_get_note_type(filepath)
             base_folder = os.path.dirname(new_path)
+            filepath = new_path
+            new_path = rename_file(filepath)
+            logging.info(f"[INFO] Note renommée : {filepath} --> {new_path}")
             filepath = new_path
             category, subcategory = categ_extract(base_folder)
             process_class_gpt(filepath, category, subcategory)

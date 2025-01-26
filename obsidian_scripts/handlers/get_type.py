@@ -70,7 +70,7 @@ def get_path_from_classification(category, subcategory, note_paths):
         if details["category"] == category and details["subcategory"] == subcategory:
             logging.debug(f"[DEBUG] get_path_from_classification : trouvé dans la base")
             return details["path"]
-    return None  # Retourne None si aucune correspondance trouvée
+    raise  # Retourne None si aucune correspondance trouvée
 
 def generate_classification_dictionary(note_paths):
     """
