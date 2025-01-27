@@ -39,10 +39,9 @@ def process_import_syntheses(filepath, category, subcategory):
         logging.debug(f"[DEBUG] process_import_synthese : original_path {original_path}")              
         make_syntheses(filepath, content, header_lines, category, subcategory, original_path)        
         #logging.debug(f"[DEBUG] process_import_syntheses : envoi vers process & update {filepath}")
-        process_and_update_file(filepath)
-        logging.debug(f"[DEBUG] process_import_syntheses : envoi vers make_properties {filepath}")
-        
-        make_properties(content, filepath, category, subcategory)
+        #process_and_update_file(filepath)
+        logging.debug(f"[DEBUG] process_import_syntheses : envoi vers make_properties {filepath} ")
+        make_properties(content, filepath, category, subcategory, status = "synthesis")
         logging.info(f"[INFO] Synthèse terminée pour {filepath}")
         return
         

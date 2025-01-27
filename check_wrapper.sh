@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-ENV_PATH="/home/pipo/bin/.venv"  # Chemin de l'environnement virtuel
-SCRIPT_PATH="/home/pipo/bin/2nd_brain/obsidian_scripts/check.py"  # Chemin absolu du script Python
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+source ${SCRIPT_DIR}/obsidian_scripts/.env
+
 
 # Activer l'environnement virtuel
 if [ -d "$ENV_PATH" ]; then
@@ -13,10 +14,10 @@ else
 fi
 
 # Exécuter le script Python
-if [ -f "$SCRIPT_PATH" ]; then
-    python "$SCRIPT_PATH"
+if [ -f "$SCRIPT_CHECK" ]; then
+    python "$SCRIPT_CHECK"
 else
-    echo "[$(date)] ERREUR : Script introuvable : $SCRIPT_PATH"
+    echo "[$(date)] ERREUR : Script introuvable : $SCRIPT_CHECK"
     deactivate
     exit 1
 fi

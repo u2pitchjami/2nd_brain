@@ -63,7 +63,7 @@ def import_normal(filepath, category, subcategory):
             logging.debug(f"[DEBUG] import_normal : import normal envoi vers process & update {filepath}")
             process_and_update_file(filepath)
             logging.debug(f"[DEBUG] import_normal : import normal envoi vers make_properties {filepath}")
-            make_properties(content, filepath, category, subcategory)
+            make_properties(content, filepath, category, subcategory, status = "archive")
             
             
             return

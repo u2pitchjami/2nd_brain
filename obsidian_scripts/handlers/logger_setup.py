@@ -17,11 +17,11 @@ def setup_logging():
 
     # Configurer le logger principal
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     # Ajouter un FileHandler
     file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.DEBUG)
+    file_handler.setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(message)s')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)

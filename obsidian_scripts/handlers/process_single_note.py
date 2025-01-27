@@ -8,6 +8,7 @@ from handlers.get_type import process_get_note_type
 from handlers.get_type import categ_extract
 from handlers.files import rename_file
 from handlers.standalone import make_synthese_standalone
+from handlers.standalone import make_header_standalone
 import logging
 from pathlib import Path
 
@@ -83,7 +84,16 @@ def process_single_note(filepath):
             make_synthese_standalone(filepath)
             return
         except Exception as e:
-            logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
+            logging.error(f"[ERREUR] Anomalie ZMake_Synthese : {e}")
+            return
+    
+    elif "ZMake_Header" in base_folder:   
+        logging.info(f"[INFO] Génération d'une nouvelle entête pour : {filepath}")
+        try:
+            make_header_standalone(filepath)
+            return
+        except Exception as e:
+            logging.error(f"[ERREUR] Anomalie ZMake_Header : {e}")
             return
     
     else:

@@ -149,3 +149,20 @@ def extract_category_and_subcategory(filepath):
     except Exception as e:
         logging.error(f"[ERREUR] Impossible de lire l'entête du fichier {filepath} : {e}")
         return None, None
+    
+def extract_status(filepath):
+    """
+    Lit l'entête d'un fichier pour extraire la catégorie et la sous-catégorie.
+    On suppose que les lignes sont au format :
+    category: valeur
+    subcategory: valeur
+    """
+    try:
+        with open(filepath, 'r') as file:
+            for line in file:
+                if line.startswith("status:"):
+                    status = line.split(":")[1].strip()
+            return status
+    except Exception as e:
+        logging.error(f"[ERREUR] Impossible de lire l'entête du fichier {filepath} : {e}")
+        return None

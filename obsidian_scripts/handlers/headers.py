@@ -10,9 +10,10 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 # Fonction pour ajouter ou mettre à jour les tags, résumés et commandes dans le front matter YAML
-def add_metadata_to_yaml(filepath, tags, summary, category, subcategory):
+def add_metadata_to_yaml(filepath, tags, summary, category, subcategory, status):
     try:    
-        logging.debug(f"[DEBUG] add_yaml : démarrage fonction : {filepath}")
+        logging.debug(f"[DEBUG] add_yaml : démarrage fonction : {filepath} {status}")
+        
         
         with open(filepath, "r", encoding="utf-8") as file:
             lines = file.readlines()
@@ -71,6 +72,7 @@ def add_metadata_to_yaml(filepath, tags, summary, category, subcategory):
             f"last_modified: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
             f"source: {source_yaml}\n",
             f"author: {author}\n",
+            f"status: {status}\n",
             f"project: {project}\n",
             "---\n\n"
         ]
@@ -90,52 +92,55 @@ def add_metadata_to_yaml(filepath, tags, summary, category, subcategory):
         logging.error(f"Erreur lors du traitement de l'entête YAML pour {filepath} : {e}")
 
    
-def make_properties(content, filepath, category, subcategory):
+def make_properties(content, filepath, category, subcategory, status):
     """
-    génère les entêtes.
+    Génère les entêtes et met à jour les métadonnées.
     """
-    logging.debug(f"[DEBUG] make_pro : Entrée de la fonction de {filepath}")
+    logging.debug(f"[DEBUG] make_pro : Entrée de la fonction pour {filepath}")
+
+    # Extraction de l'entête YAML
     header_lines, content_lines = extract_yaml_header(content)
     content = content_lines
-    logging.debug(f"[DEBUG] make_pro : Récupération des tags pour {filepath}")
+
+    # Récupération des tags et du résumé
+    logging.debug(f"[DEBUG] make_pro : Récupération des tags et résumé pour {filepath}")
     tags = get_tags_from_ollama(content)
-    logging.debug(f"[DEBUG] make_pro : tags pour {tags}")
-    logging.debug(f"[DEBUG] make_pro : Récupération du résumé pour {filepath}")
     summary = get_summary_from_ollama(content)
-    logging.debug(f"[DEBUG] make_pro : Yaml pour {filepath}")
-    add_metadata_to_yaml(filepath, tags, summary, category, subcategory)
-    
 
-    # Relecture et comptage après mise à jour complète
-    with open(filepath, 'r', encoding='utf-8') as file:
-        updated_content = file.read()
-        logging.debug(f"[DEBUG] make_pro : relecture du fichier : {filepath}")
-    nombre_mots_actuels = count_words(updated_content)
-    logging.debug(f"[DEBUG] make_pro : recomptage du nb de mots pour : {filepath} ")
+    # Mise à jour des métadonnées YAML
+    logging.debug(f"[DEBUG] make_pro : Mise à jour du YAML pour {filepath} {status}")
+    add_metadata_to_yaml(filepath, tags, summary, category, subcategory, status)
 
-    # Mise à jour du word_count immédiatement
-    with open(filepath, "r", encoding="utf-8") as file:
+    # Lecture et mise à jour en une seule passe
+    with open(filepath, "r+", encoding="utf-8") as file:
         lines = file.readlines()
 
-    with open(filepath, "w", encoding="utf-8") as file:
+        # Recalcule du nombre de mots après mise à jour complète
+        updated_content = "".join(lines)
+        nombre_mots_actuels = count_words(updated_content)
+        logging.debug(f"[DEBUG] make_pro : Recalcul du nombre de mots pour {filepath}")
+
+        # Mise à jour de la ligne `word_count`
         word_count_updated = False
         for i, line in enumerate(lines):
             if line.startswith("word_count:"):
-                logging.debug(f"[DEBUG] make_pro : mise à jour du nb de mots : {filepath}")
                 lines[i] = f"word_count: {nombre_mots_actuels}\n"
                 word_count_updated = True
+                logging.debug(f"[DEBUG] make_pro : Mise à jour de word_count existant pour {filepath}")
                 break
-        else:
-            # Ajoute word_count s'il n'existe pas
-            logging.debug(f"[DEBUG] make_pro : ajout du nb de mots (car inexistant) : {filepath}")
+
+        if not word_count_updated:
+            # Ajout du champ `word_count` s'il n'existe pas
+            logging.debug(f"[DEBUG] make_pro : Ajout du champ word_count pour {filepath}")
             lines.insert(3, f"word_count: {nombre_mots_actuels}\n")
 
-        # Vérification avant écriture
-        if isinstance(lines, list) and all(isinstance(line, str) for line in lines):
-            file.writelines(lines)
-            logging.debug(f"[DEBUG] make_pro : écriture réussie pour {filepath}")
-        else:
-            logging.error(f"[ERREUR] 'lines' n'est pas une liste de chaînes : {type(lines)}")
+        # Retour au début du fichier et écriture des modifications
+        file.seek(0)
+        file.writelines(lines)
+        file.truncate()  # Supprime tout contenu restant si le nouveau contenu est plus court
+
+    logging.debug(f"[DEBUG] make_pro : Écriture réussie et fichier mis à jour pour {filepath}")
+
 
 def check_type_header(filepath):
     try:    
