@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def process_clean_gpt(filepath):
     logging.debug(f"[DEBUG] démarrage du process_clean_gpt pour : {filepath}")
-    
+    copy_file_with_date(filepath, sav_dir)
     content = read_note_content(filepath)
         
         

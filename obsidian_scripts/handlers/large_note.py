@@ -4,7 +4,6 @@ from handlers.prompts import PROMPTS
 from handlers.ollama import ollama_generate
 from handlers.extract_yaml_header import extract_yaml_header
 import logging
-from handlers.files import copy_file_with_date
 
 logger = logging.getLogger(__name__)
 
