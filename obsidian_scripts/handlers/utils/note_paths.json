@@ -1,0 +1,387 @@
+{
+    "notes/It": {
+        "category": "it",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/IT/Hardware",
+        "prompt_name": "divers",
+        "explanation": "note about IT hardware, CPU, Ram, GPU etc..."
+    },
+    "notes/AI": {
+        "category": "ai",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/AI",
+        "prompt_name": "divers",
+        "explanation": "theoretical or practical note about artificial intelligence (software, prompt, evolution, perspective but not ai or bot conversation"
+    },
+    "notes/Network": {
+        "category": "network",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Network",
+        "prompt_name": "divers",
+        "explanation": "Notes related to network science, administration, hardware, and software."
+    },
+    "notes/Organization": {
+        "category": "organization",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Organization",
+        "prompt_name": "divers",
+        "explanation": "notes about organization, tools, techniques, software"
+    },
+    "notes/Programming": {
+        "category": "programming",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming",
+        "prompt_name": "divers",
+        "explanation": "notes dealing with programming languages like python, bash, sql, php, docker, etc..."
+    },
+    "notes/Programming/Docker": {
+        "category": "programming",
+        "subcategory": "docker",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Docker",
+        "prompt_name": "divers",
+        "explanation": "note about docker"
+    },
+    "notes/Programming/Python": {
+        "category": "programming",
+        "subcategory": "python",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Python",
+        "prompt_name": "divers",
+        "explanation": "note about python"
+    },
+    "notes/Programming/Bash": {
+        "category": "programming",
+        "subcategory": "bash",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Bash",
+        "prompt_name": "divers",
+        "explanation": "note about bash"
+    },
+    "notes/Linux": {
+        "category": "linux",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Linux",
+        "prompt_name": "divers",
+        "explanation": "note about linux systems (debian, red hat, raspberry, mint, etc..."
+    },
+    "notes/Windows": {
+        "category": "windows",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Windows",
+        "prompt_name": "divers",
+        "explanation": "note about windows systems"
+    },
+    "notes/Unraid": {
+        "category": "unraid",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Unraid",
+        "prompt_name": "divers",
+        "explanation": "note about Unraid OS"
+    },
+    "notes/Raspberry": {
+        "category": "raspberry",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Raspberry",
+        "prompt_name": "divers",
+        "explanation": "note about Raspberry pi"
+    },
+    "notes/Cinema": {
+        "category": "cinema",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Cinema",
+        "prompt_name": "divers",
+        "explanation": "Notes related to cinema, movies, actors, actress, director, reviews etc..."
+    },
+    "notes/Gaming/Reviews": {
+        "category": "gaming",
+        "subcategory": "reviews",
+        "path": "/mnt/user/Documents/Obsidian/notes/Gaming/Reviews",
+        "prompt_name": "divers",
+        "explanation": "Notes related to Reviews or critiques of video games"
+    },
+    "notes/Gaming/Guide": {
+        "category": "gaming",
+        "subcategory": "guide",
+        "path": "/mnt/user/Documents/Obsidian/notes/Gaming/Guide",
+        "prompt_name": "divers",
+        "explanation": "Notes related to Guides or tips for specific games"
+    },
+    "notes/Gaming": {
+        "category": "gaming",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Gaming",
+        "prompt_name": "divers",
+        "explanation": "Notes related gaming, video games, console, pc, retrogaming etc..."
+    },
+    "notes/Music_production": {
+        "category": "music_production",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Music_production",
+        "prompt_name": "divers",
+        "explanation": "Notes related to eletro techno music production, technics, tools, software, hardware, tips"
+    },
+    "notes/Music_production/Ableton": {
+        "category": "music_production",
+        "subcategory": "ableton",
+        "path": "/mnt/user/Documents/Obsidian/notes/Music_production/Ableton",
+        "prompt_name": "divers",
+        "explanation": "Notes related to Ableton software for music production"
+    },
+    "notes/Music": {
+        "category": "music",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Music",
+        "prompt_name": "divers",
+        "explanation": "Notes related to about musical news about artists, albums etc..."
+    },
+    "notes/Lifestyle": {
+        "category": "lifestyle",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Lifestyle",
+        "prompt_name": "divers",
+        "explanation": "Notes related lifestyle like DIY, cooking, my pets, booking etc..."
+    },
+    "notes/Lifestyle/DIY": {
+        "category": "lifestyle",
+        "subcategory": "diy",
+        "path": "/mnt/user/Documents/Obsidian/notes/Lifestyle/DIY",
+        "prompt_name": "divers",
+        "explanation": "Notes related to DIY projects or bricolage"
+    },
+    "notes/Lifestyle/Pets": {
+        "category": "lifestyle",
+        "subcategory": "pets",
+        "path": "/mnt/user/Documents/Obsidian/notes/Lifestyle/Pets",
+        "prompt_name": "divers",
+        "explanation": "Notes related to pets, like cats or dogs"
+    },
+    "notes/Lifestyle/Cooking": {
+        "category": "lifestyle",
+        "subcategory": "cooking",
+        "path": "/mnt/user/Documents/Obsidian/notes/Lifestyle/Cooking",
+        "prompt_name": "divers",
+        "explanation": "Notes related to Recipes or cooking tips"
+    },
+    "notes/Politics": {
+        "category": "politics",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics",
+        "prompt_name": "political",
+        "explanation": "notes about politics and geopolitics"
+    },
+    "notes/Politics/France": {
+        "category": "politics",
+        "subcategory": "france",
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics/France",
+        "prompt_name": "political",
+        "explanation": "notes about french politics"
+    },
+    "notes/Politics/International": {
+        "category": "politics",
+        "subcategory": "international",
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics/International",
+        "prompt_name": "geopolitical",
+        "explanation": "notse about international politics and geopolitics"
+    },
+    "notes/Politics/Europe": {
+        "category": "politics",
+        "subcategory": "europe",
+        "path": "/mnt/user/Documents/Obsidian/Politics/Europe",
+        "prompt_name": "political",
+        "explanation": "Notes related to european politics or political analysis"
+    },
+    "notes/Sports": {
+        "category": "sports",
+        "subcategory": null,
+        "path": "/mnt/user/Documents/Obsidian/notes/Sports",
+        "prompt_name": "divers",
+        "explanation": "Notes related to sports, athletes, news, etc... "
+    },
+    "notes/Sports/Cyclism": {
+        "category": "sports",
+        "subcategory": "cyclism",
+        "path": "/mnt/user/Documents/Obsidian/notes/Sports/Cyclism",
+        "prompt_name": "divers",
+        "explanation": "Notes related to cycling or related activities (road, track, cyclocross"
+    },
+    "notes/Sports/Foot": {
+        "category": "sports",
+        "subcategory": "foot",
+        "path": "/mnt/user/Documents/Obsidian/notes/Sports/Foot",
+        "prompt_name": "divers",
+        "explanation": "Notes related to football or soccer"
+    },
+    "notes/Todo": {
+        "category": "todo",
+        "subcategory": "todo",
+        "path": "/mnt/user/Documents/Obsidian/notes/Todo",
+        "prompt_name": "todo",
+        "explanation": "todo list"
+    },
+    "notes/gpt_import": {
+        "category": "conversation_GPT",
+        "subcategory": "conversation_GPT",
+        "path": "/mnt/user/Documents/Obsidian/notes/gpt_import",
+        "prompt_name": "divers",
+        "explanation": "Notes related to a bot or gpt conversation"
+    },
+    "notes/Health/Psychiatry": {
+        "category": "health",
+        "subcategory": "psychiatry",
+        "path": "/mnt/user/Documents/Obsidian/notes/Health/Psychiatry",
+        "prompt_name": "divers",
+        "explanation": "Note about psychiatry"
+    },
+    "notes/Politics/Gaza": {
+        "category": "politics",
+        "subcategory": "gaza",
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics/Gaza",
+        "prompt_name": "article",
+        "explanation": "Note about gaza"
+    },
+    "notes/Politics/Middle-east": {
+        "category": "politics",
+        "subcategory": "middle-east",
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics/Middle-east",
+        "prompt_name": "article",
+        "explanation": "Note about middle-east"
+    },
+    "notes/Health/Mental_wellness": {
+        "category": "health",
+        "subcategory": "mental_wellness",
+        "path": "/mnt/user/Documents/Obsidian/notes/Health/Mental_wellness",
+        "prompt_name": "article",
+        "explanation": "Note about mental_wellness"
+    },
+    "notes/Network/Organization": {
+        "category": "network",
+        "subcategory": "organization",
+        "path": "/mnt/user/Documents/Obsidian/notes/Organization",
+        "prompt_name": "article",
+        "explanation": "Note about organization"
+    },
+    "notes/Politics/Government": {
+        "category": "politics",
+        "subcategory": "government",
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics/Government",
+        "prompt_name": "article",
+        "explanation": "Note about government"
+    },
+    "notes/Music_production/Music_technology": {
+        "category": "music_production",
+        "subcategory": "music_technology",
+        "path": "/mnt/user/Documents/Obsidian/notes/Music_production/Music_technology",
+        "prompt_name": "article",
+        "explanation": "Note about music_technology"
+    },
+    "notes/Politics/Social_policy": {
+        "category": "politics",
+        "subcategory": "social_policy",
+        "path": "/mnt/user/Documents/Obsidian/notes/Politics/Social_policy",
+        "prompt_name": "article",
+        "explanation": "Note about social_policy"
+    },
+    "notes/Music_production/Gain_staging": {
+        "category": "music_production",
+        "subcategory": "gain_staging",
+        "path": "/mnt/user/Documents/Obsidian/notes/Music_production/Gain_staging",
+        "prompt_name": "article",
+        "explanation": "Note about gain_staging"
+    },
+    "notes/Health/Psychology": {
+        "category": "health",
+        "subcategory": "psychology",
+        "path": "/mnt/user/Documents/Obsidian/notes/Health/Psychology",
+        "prompt_name": "article",
+        "explanation": "Note about psychology"
+    },
+    "notes/Network/Wi-fi": {
+        "category": "network",
+        "subcategory": "wi-fi",
+        "path": "/mnt/user/Documents/Obsidian/notes/Network/Wi-fi",
+        "prompt_name": "article",
+        "explanation": "Note about wi-fi"
+    },
+    "notes/AI/Theoretical": {
+        "category": "ai",
+        "subcategory": "theoretical",
+        "path": "/mnt/user/Documents/Obsidian/notes/AI/Theoretical",
+        "prompt_name": "article",
+        "explanation": "Note about theoretical"
+    },
+    "notes/Programming/Ai": {
+        "category": "programming",
+        "subcategory": "ai",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Ai",
+        "prompt_name": "article",
+        "explanation": "Note about ai"
+    },
+    "notes/Music_production/Electro_techno": {
+        "category": "music_production",
+        "subcategory": "electro_techno",
+        "path": "/mnt/user/Documents/Obsidian/notes/Music_production/Electro_techno",
+        "prompt_name": "article",
+        "explanation": "Note about electro_techno"
+    },
+    "notes/Linux/Raspberry": {
+        "category": "linux",
+        "subcategory": "raspberry",
+        "path": "/mnt/user/Documents/Obsidian/notes/Linux/Raspberry",
+        "prompt_name": "article",
+        "explanation": "Note about raspberry"
+    },
+    "notes/Linux/Organization": {
+        "category": "linux",
+        "subcategory": "organization",
+        "path": "/mnt/user/Documents/Obsidian/notes/Linux/Organization",
+        "prompt_name": "article",
+        "explanation": "Note about organization"
+    },
+    "notes/Network/Unbound": {
+        "category": "network",
+        "subcategory": "unbound",
+        "path": "/mnt/user/Documents/Obsidian/notes/Network/Unbound",
+        "prompt_name": "article",
+        "explanation": "Note about unbound"
+    },
+    "notes/Organization/Lifestyle": {
+        "category": "organization",
+        "subcategory": "lifestyle",
+        "path": "/mnt/user/Documents/Obsidian/notes/Organization/Lifestyle",
+        "prompt_name": "article",
+        "explanation": "Note about lifestyle"
+    },
+    "notes/Cinema/Reviews": {
+        "category": "cinema",
+        "subcategory": "reviews",
+        "path": "/mnt/user/Documents/Obsidian/notes/Cinema/Reviews",
+        "prompt_name": "article",
+        "explanation": "Note about reviews"
+    },
+    "notes/Organization/Unraid": {
+        "category": "organization",
+        "subcategory": "unraid",
+        "path": "/mnt/user/Documents/Obsidian/notes/Organization/Unraid",
+        "prompt_name": "divers",
+        "explanation": "Note about unraid"
+    },
+    "notes/Ai/Practical": {
+        "category": "ai",
+        "subcategory": "practical",
+        "path": "/mnt/user/Documents/Obsidian/notes/AI/Practical",
+        "prompt_name": "divers",
+        "explanation": "Note about practical"
+    },
+    "notes/It/Silent": {
+        "category": "it",
+        "subcategory": "silent",
+        "path": "/mnt/user/Documents/Obsidian/notes/IT/Hardware/Silent",
+        "prompt_name": "divers",
+        "explanation": "Note about silent"
+    },
+    "notes/Linux/Unraid": {
+        "category": "linux",
+        "subcategory": "unraid",
+        "path": "/mnt/user/Documents/Obsidian/notes/Linux/Unraid",
+        "prompt_name": "divers",
+        "explanation": "Note about unraid"
+    }
+}

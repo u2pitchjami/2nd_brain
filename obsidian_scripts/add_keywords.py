@@ -1,4 +1,14 @@
+import logging
+import os
 import yaml
+from dotenv import load_dotenv
+
+# Chemin dynamique basé sur le script en cours
+script_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = os.path.join(script_dir, ".env")
+# Charger le fichier .env
+load_dotenv(env_path)
+keywords_file = os.getenv('KEYWORDS_FILE')
 
 # Charger le fichier YAML
 def load_yaml(file_path):
@@ -55,7 +65,7 @@ def delete_tag(file_path, tag):
 
 # Interface utilisateur pour gérer les tags
 def main():
-    file_path = "/home/pipo/bin/dev/2nd_brain/obsidian_scripts/handlers/keywords.yaml"  # Chemin vers le fichier YAML
+    file_path = keywords_file  # Chemin vers le fichier YAML
     print("=== Gestion des Tags ===")
     while True:
         print("\nOptions :")
@@ -66,7 +76,7 @@ def main():
 
         if choice == "1":
             tag = input("Entrez le tag à ajouter ou modifier : ").strip()
-            keywords = input("Entrez les mots-clés associés, séparés par des virgules : ").strip().split(",")
+            keywords = input("Entrez les mots-clés, séparés par des virgules : ").strip().split(",")
             keywords = [keyword.strip() for keyword in keywords]  # Nettoie les espaces
             add_or_update_tag(file_path, tag, keywords)
 
