@@ -18,12 +18,14 @@ def make_synthese_standalone(filepath):
         
     # Étape 1 : Lire l'entête pour récupérer catégorie et sous-catégorie
     category, subcategory = extract_category_and_subcategory(filepath)
+    logging.debug("[DEBUG] make_synthese_standalone %s %s",category, subcategory)
     if not category or not subcategory:
         logging.error(f"[ERREUR] Impossible d'extraire les informations du fichier : {filepath}")
         raise
     
     # Étape 2 : Trouver le chemin cible
     target_path = get_path_from_classification(category, subcategory, NOTE_PATHS)
+    logging.debug("[DEBUG] make_synthese_standalone target_path %s",target_path)
     if not target_path:
         logging.error(f"[ERREUR] Aucun chemin trouvé pour category={category}, subcategory={subcategory}")
         raise
@@ -57,18 +59,21 @@ def make_header_standalone(filepath):
         
     # Étape 1 : Lire l'entête pour récupérer catégorie et sous-catégorie
     category, subcategory = extract_category_and_subcategory(filepath)
+    logging.debug("[DEBUG] make_header_standalone %s %s",category, subcategory)
     if not category or not subcategory:
         logging.error(f"[ERREUR] Impossible d'extraire les informations du fichier : {filepath}")
         raise
     
     # Étape 2 : Trouver le chemin cible
     target_path = get_path_from_classification(category, subcategory, NOTE_PATHS)
+    logging.debug("[DEBUG] make_sheader_standalone target_path %s",target_path)
     if not target_path:
         logging.error(f"[ERREUR] Aucun chemin trouvé pour category={category}, subcategory={subcategory}")
         raise
     
     # Étape 3 : Lire l'entête pour récupérer le statut
     status = extract_status(filepath)
+    logging.debug("[DEBUG] make_header_standalone status %s",status)
     if not status:
         logging.error(f"[ERREUR] Impossible d'extraire le statut du fichier : {filepath}")
         raise

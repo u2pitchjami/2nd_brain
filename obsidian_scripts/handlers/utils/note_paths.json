@@ -383,5 +383,103 @@
         "path": "/mnt/user/Documents/Obsidian/notes/Linux/Unraid",
         "prompt_name": "divers",
         "explanation": "Note about unraid"
+    },
+    "notes/Programming/Variables": {
+        "category": "programming",
+        "subcategory": "variables",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Variables",
+        "prompt_name": "divers",
+        "explanation": "Note about variables"
+    },
+    "notes/Programming/Unraid": {
+        "category": "programming",
+        "subcategory": "unraid",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Unraid",
+        "prompt_name": "divers",
+        "explanation": "Note about unraid"
+    },
+    "notes/Programming/Binary_numbers": {
+        "category": "programming",
+        "subcategory": "binary_numbers",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Binary_numbers",
+        "prompt_name": "divers",
+        "explanation": "Note about binary_numbers"
+    },
+    "notes/Programming/Tuples": {
+        "category": "programming",
+        "subcategory": "tuples",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Tuples",
+        "prompt_name": "divers",
+        "explanation": "Note about tuples"
+    },
+    "notes/Programming/Pass_by_assignment": {
+        "category": "programming",
+        "subcategory": "pass_by_assignment",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Pass_by_assignment",
+        "prompt_name": "divers",
+        "explanation": "Note about pass_by_assignment"
+    },
+    "notes/Programming/While": {
+        "category": "programming",
+        "subcategory": "while",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/While",
+        "prompt_name": "divers",
+        "explanation": "Note about while"
+    },
+    "notes/Programming/Walrus_operator": {
+        "category": "programming",
+        "subcategory": "walrus_operator",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Walrus_operator",
+        "prompt_name": "divers",
+        "explanation": "Note about walrus_operator"
+    },
+    "notes/It/Unraid": {
+        "category": "it",
+        "subcategory": "unraid",
+        "path": "/mnt/user/Documents/Obsidian/notes/IT/Hardware/Unraid",
+        "prompt_name": "divers",
+        "explanation": "Note about unraid"
+    },
+    "notes/Programming/Conversation_gpt": {
+        "category": "programming",
+        "subcategory": "conversation_gpt",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Conversation_gpt",
+        "prompt_name": "divers",
+        "explanation": "Note about conversation_gpt"
+    },
+    "notes/Ai/Conversation_gpt": {
+        "category": "ai",
+        "subcategory": "conversation_gpt",
+        "path": "/mnt/user/Documents/Obsidian/notes/AI/Conversation_gpt",
+        "prompt_name": "divers",
+        "explanation": "Note about conversation_gpt"
+    },
+    "notes/Organization/Openai": {
+        "category": "organization",
+        "subcategory": "openai",
+        "path": "/mnt/user/Documents/Obsidian/notes/Organization/Openai",
+        "prompt_name": "divers",
+        "explanation": "Note about openai"
+    },
+    "notes/Sports/Arsenal": {
+        "category": "sports",
+        "subcategory": "arsenal",
+        "path": "/mnt/user/Documents/Obsidian/notes/Sports/Arsenal",
+        "prompt_name": "divers",
+        "explanation": "Note about arsenal"
+    },
+    "notes/Organization/Organization": {
+        "category": "organization",
+        "subcategory": "organization",
+        "path": "/mnt/user/Documents/Obsidian/notes/Organization/Organization",
+        "prompt_name": "divers",
+        "explanation": "Note about organization"
+    },
+    "notes/Programming/Linux": {
+        "category": "programming",
+        "subcategory": "linux",
+        "path": "/mnt/user/Documents/Obsidian/notes/Programming/Linux",
+        "prompt_name": "divers",
+        "explanation": "Note about linux"
     }
 }

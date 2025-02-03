@@ -276,6 +276,7 @@ def is_in_excluded_folder(path):
     """
     exclude_file = os.getenv('EXCLUDE_FILE')
     exclude_file = load_excluded_patterns(exclude_file)
+    logging.debug("[DEBUG] fichier exclusion : %s",exclude_file)
     # exclude_file doit être une liste de motifs, pas un chemin de fichier
     excluded_dirs = [pattern.strip("/*") for pattern in exclude_file]  # Nettoyage des motifs
     path_parts = Path(path).parts  # Décompose le chemin en parties

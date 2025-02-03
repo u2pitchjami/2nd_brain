@@ -105,14 +105,16 @@ def verify_and_correct_category(filepath):
     
 def add_archives_to_path(filepath):
     # Créer un objet Path à partir du chemin
+    logging.debug("[DEBUG] add_archives_to_path %s", filepath)
     path_obj = Path(filepath)
-    
+    logging.debug("[DEBUG] add_archives_to_path path_obj : %s", path_obj)
     # Insérer "Archives" entre le dossier parent et le fichier
     archives_dir = path_obj.parent / "Archives"  # Ajouter "Archives" au dossier parent
+    logging.debug("[DEBUG] add_archives_to_path archives_dir : %s", archives_dir)
     archives_dir.mkdir(parents=True, exist_ok=True)  # Créer le dossier Archives s'il n'existe pas
     
     archive_path = archives_dir / path_obj.name
-    
+    logging.debug("[DEBUG] add_archives_to_path archive_path : %s", archive_path)
     return archive_path
 
 def process_sync_entete_with_path(filepath):
@@ -124,13 +126,17 @@ def process_sync_entete_with_path(filepath):
     base_folder = filepath.parent  # Simplification avec Path
     new_category, new_subcategory = categ_extract(filepath)  # Nouvelles catégories
 
-    logging.debug(f"[DEBUG] process_sync_entete_with_path {filepath}")
+    logging.debug("[DEBUG] process_sync_entete_with_path %s", filepath)
 
     category, subcategory = extract_category_and_subcategory(filepath)  # Anciennes catégories
+    logging.debug("[DEBUG] process_sync_entete_with_path %s %s", category, subcategory)
     path_src = get_path_by_category_and_subcategory(category, subcategory, note_paths)  # Ancien chemin
+    logging.debug("[DEBUG] process_sync_entete_with_path %s ", path_src)
     file_path_src = path_src / file
     archives_path_src = add_archives_to_path(file_path_src)  # Ancien chemin archive
+    logging.debug("[DEBUG] process_sync_entete_with_path %s ", archives_path_src)
     archives_path_dest = add_archives_to_path(filepath)  # Nouveau chemin archive
+    logging.debug("[DEBUG] process_sync_entete_with_path %s ", archives_path_src)
 
     # Vérifier que le fichier source existe avant de copier
     if archives_path_src.exists():

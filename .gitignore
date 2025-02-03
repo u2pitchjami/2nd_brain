@@ -2,3 +2,6 @@
 .env
 /obsidian_scripts/__pycache__/
 /obsidian_scripts/handlers/__pycache__/
+obsidian_scripts/handlers/process/__pycache__/
+obsidian_scripts/handlers/standalone/__pycache__/
+obsidian_scripts/handlers/utils/__pycache__/

@@ -3,7 +3,7 @@
 */.*/
 */gpt_*/*
 */imports/*
-*/synthèses/*
 */templates/*
-*/ZMake*/*
+*/ZMake_Header/*
+*/ZMake_Synthese/*
 */uncategorized/*
