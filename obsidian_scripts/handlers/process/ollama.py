@@ -10,7 +10,10 @@ logger = logging.getLogger()
 # Fonction pour interroger Ollama et générer des tags à partir du contenu d'une note
 def get_tags_from_ollama(content):
     logging.debug(f"[DEBUG] tags ollama : lancement fonction")
-    prompt = PROMPTS["tags"].format(content=content)
+    try:
+        prompt = PROMPTS["tags"].format(content=content)
+    except Exception as e:
+            logging.error(f"[ERREUR] prompt : {e}")
     logging.debug(f"[DEBUG] tags ollama : recherche et lancement du prompt")
     response = ollama_generate(prompt)
     logging.debug(f"[DEBUG] tags ollama : réponse récupérée : {response}")

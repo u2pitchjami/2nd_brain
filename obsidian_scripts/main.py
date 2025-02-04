@@ -15,6 +15,5 @@ from handlers.logger_setup import setup_logging
 # Emplacement du fichier log
 setup_logging()
 
-
 if __name__ == "__main__":
     start_watcher()

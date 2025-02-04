@@ -2,8 +2,9 @@ import os
 from handlers.process_imports.import_gpt import process_import_gpt, process_clean_gpt, process_class_gpt
 from handlers.process_imports.import_normal import import_normal
 from handlers.process_imports.import_syntheses import process_import_syntheses
-from handlers.process.get_type import process_get_note_type, categ_extract
-from handlers.utils.files import rename_file, is_in_excluded_folder
+from handlers.process.get_type import process_get_note_type
+from handlers.utils.files import rename_file
+from handlers.utils.process_note_paths import is_folder_included, categ_extract
 from handlers.standalone.standalone import make_synthese_standalone, make_header_standalone
 from handlers.standalone.check_categ import process_sync_entete_with_path
 import logging
@@ -42,31 +43,25 @@ def process_single_note(filepath, dest_path=None):
             logging.info(f"[INFO] Import terminé pour : {filepath}")
         except Exception as e:
             logging.error(f"[ERREUR] Problème lors de l'import : {e}")
-     
-    
-    
-    
-    
-    
-    
-    # 1. Vérifier si c'est un déplacement
+
+     # 1. Vérifier si c'est un déplacement
     if dest_path is not None:
         logging.debug(f"[DEBUG] démarrage du process_single_note pour : Déplacement {dest_path}")
         if not os.path.exists(dest_path):
             logging.warning(f"[WARNING] Le fichier n'existe pas ou plus : {dest_path}")
             return
         dest_folder = os.path.dirname(dest_path)
-
         # 1.1 Déplacement valide entre dossiers catégorisés (hors exclus)
-        if not (is_in_excluded_folder(filepath) or is_in_excluded_folder(dest_path)):
+        if (is_folder_included(base_folder, include_types=['storage']) and 
+    is_folder_included(dest_folder, include_types=['storage'])):
             logging.info(f"[INFO] Déplacement valide détecté : {filepath} -> {dest_path}")
             process_sync_entete_with_path(dest_path)
             return  # Sortir après le traitement du déplacement
         
-        elif "imports" in base_folder:
+        elif "Z_technical/imports" in base_folder:
             process_import(filepath, base_folder)
         
-        elif "gpt_output" in base_folder:
+        elif "Z_technical/gpt_output" in base_folder:
             logging.info(f"[INFO] Import issu d'une conversation GPT : {filepath}")
             try:
                 process_clean_gpt(filepath)
@@ -85,12 +80,12 @@ def process_single_note(filepath, dest_path=None):
                 return
 
         # 1.2 Autres déplacements (exemple : ZMake)
-        elif "ZMake_Synthese" in dest_folder:
+        elif "Z_technical/ZMake_Synthese" in dest_folder:
             logging.info(f"[INFO] Déplacement manuel vers ZMake_Synthese : {filepath} -> {dest_path}")
             make_synthese_standalone(dest_path)
             return
 
-        elif "ZMake_Header" in dest_folder:
+        elif "Z_technical/ZMake_Header" in dest_folder:
             logging.info(f"[INFO] Déplacement manuel vers ZMake_Header : {filepath} -> {dest_path}")
             make_header_standalone(dest_path)
             return
@@ -106,10 +101,10 @@ def process_single_note(filepath, dest_path=None):
         if not os.path.exists(filepath):
             logging.warning(f"[WARNING] Le fichier n'existe pas ou plus : {filepath}")
             return
-        if "imports" in base_folder:
+        if "Z_technical/imports" in base_folder:
             process_import(filepath, base_folder)
 
-        elif "gpt_import" in base_folder:
+        elif "Z_technical/gpt_import" in base_folder:
             logging.info(f"[INFO] Split de la conversation GPT : {filepath}")
             try:
                 logging.debug(f"[DEBUG] process_single_note : envoi vers gpt_import")

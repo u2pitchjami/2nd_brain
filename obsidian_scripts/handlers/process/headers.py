@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from handlers.process.ollama import get_summary_from_ollama, get_tags_from_ollama
 from handlers.utils.files import count_words
-from handlers.process.extract_yaml_header import extract_yaml_header
+from handlers.utils.extract_yaml_header import extract_yaml_header
 
 logger = logging.getLogger()
 
@@ -54,6 +54,7 @@ def add_metadata_to_yaml(filepath, tags, summary, category, subcategory, status)
         if yaml_start != -1 and yaml_end != -1:
             logging.debug("[DEBUG] add_yaml : suppression de l'ancienne entête YAML")
             lines = lines[yaml_end + 1:]  # Supprime tout jusqu'à la fin de l'entête YAML
+            logging.debug("[DEBUG] add_yaml lines %s", lines)
 
         if not title:
             title = os.path.basename(filepath).replace(".md", "")
@@ -75,7 +76,7 @@ def add_metadata_to_yaml(filepath, tags, summary, category, subcategory, status)
             f"project: {project}\n",
             "---\n\n"
         ]
-
+        
         # Insérer la nouvelle entête
         lines = yaml_block + lines
         try:

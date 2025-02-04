@@ -11,7 +11,7 @@ env_path = os.path.join(script_dir, ".env")
 load_dotenv(env_path)
 from handlers.logger_setup import setup_logging # noqa: C0413
 setup_logging()
-from handlers.utils.files import load_excluded_patterns # noqa: C0413
+from handlers.utils.process_note_pathss import load_note_paths
 from handlers.utils.files import get_recently_modified_files # noqa: C0413
 from handlers.standalone.process_project import scan_notes_and_update_projects # noqa: C0413
 from handlers.standalone.check_categ import verify_and_correct_category # noqa: C0413
@@ -28,11 +28,11 @@ directories = [
 # Temps seuil : 1 heure (3600 secondes)
 time_threshold = 3600
 
-# Charger les patterns d'exclusion depuis un fichier texte
-exclude_file = os.getenv('EXCLUDE_FILE')
-excluded_patterns = load_excluded_patterns(exclude_file)
+
+note_paths_file = os.getenv('NOTE_PATHS_FILE')
+note_paths = load_note_paths(note_paths_file)
 # Récupérer les fichiers modifiés récemment
-recent_files = get_recently_modified_files(directories, time_threshold, excluded_patterns)
+recent_files = get_recently_modified_files(directories, time_threshold, note_paths)
 logging.debug("[DEBUG] Check Script recent_files : %s", recent_files)
 # Afficher les fichiers trouvés
 logging.info("[INFO] Fichiers modifiés récemment (dans les %d minutes) :", time_threshold // 60)

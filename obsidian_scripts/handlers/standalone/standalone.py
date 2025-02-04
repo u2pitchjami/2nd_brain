@@ -1,4 +1,5 @@
-from handlers.process.get_type import load_note_paths, extract_category_and_subcategory, extract_status, get_path_from_classification
+from handlers.utils.process_note_paths import get_path_from_classification
+from handlers.utils.extract_yaml_header import extract_category_and_subcategory, extract_status
 from handlers.utils.files import read_note_content
 from handlers.process_imports.import_syntheses import process_import_syntheses
 from handlers.process.headers import make_properties
@@ -10,10 +11,6 @@ import os
 
 logger = logging.getLogger()
 
-note_paths_file = os.getenv('NOTE_PATHS_FILE')    
-NOTE_PATHS = load_note_paths(note_paths_file)
-note_paths = NOTE_PATHS
-
 def make_synthese_standalone(filepath):
         
     # Étape 1 : Lire l'entête pour récupérer catégorie et sous-catégorie
@@ -24,7 +21,7 @@ def make_synthese_standalone(filepath):
         raise
     
     # Étape 2 : Trouver le chemin cible
-    target_path = get_path_from_classification(category, subcategory, NOTE_PATHS)
+    target_path = get_path_from_classification(category, subcategory)
     logging.debug("[DEBUG] make_synthese_standalone target_path %s",target_path)
     if not target_path:
         logging.error(f"[ERREUR] Aucun chemin trouvé pour category={category}, subcategory={subcategory}")
@@ -65,7 +62,7 @@ def make_header_standalone(filepath):
         raise
     
     # Étape 2 : Trouver le chemin cible
-    target_path = get_path_from_classification(category, subcategory, NOTE_PATHS)
+    target_path = get_path_from_classification(category, subcategory)
     logging.debug("[DEBUG] make_sheader_standalone target_path %s",target_path)
     if not target_path:
         logging.error(f"[ERREUR] Aucun chemin trouvé pour category={category}, subcategory={subcategory}")

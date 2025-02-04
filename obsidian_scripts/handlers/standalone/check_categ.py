@@ -5,23 +5,20 @@ from pathlib import Path
 import shutil
 import os
 from difflib import get_close_matches
-from handlers.process.get_type import extract_category_and_subcategory, get_path_from_classification, load_note_paths, get_path_by_category_and_subcategory, categ_extract
+from handlers.utils.process_note_paths import get_path_from_classification, load_note_paths, get_path_by_category_and_subcategory, categ_extract
 from handlers.process.headers import add_metadata_to_yaml
 from handlers.process_imports.import_syntheses import process_import_syntheses
 from handlers.utils.files import make_relative_link
-from handlers.process.extract_yaml_header import extract_yaml_header
+from handlers.utils.extract_yaml_header import extract_yaml_header, extract_category_and_subcategory, extract_metadata, extract_summary, extract_tags
 
 logger = logging.getLogger()
 
-note_paths_file = os.getenv('NOTE_PATHS_FILE')
-NOTE_PATHS = load_note_paths(note_paths_file)
-note_paths = NOTE_PATHS
-
-def validate_category_and_subcategory(category, subcategory, note_paths):
+def validate_category_and_subcategory(category, subcategory):
     """
     Valide la catégorie et sous-catégorie en les comparant avec NOTE_PATHS.
     Renvoie le chemin attendu en cas de succès, sinon None.
     """
+    note_paths = load_note_paths()
     for key, info in note_paths.items():
         if info["category"] == category and info["subcategory"] == subcategory:
             return info["path"]
@@ -51,7 +48,7 @@ def verify_and_correct_category(filepath):
             return False
 
         # Valider la catégorie et sous-catégorie
-        expected_path = validate_category_and_subcategory(category, subcategory, NOTE_PATHS)
+        expected_path = validate_category_and_subcategory(category, subcategory)
         logging.debug(f"[DEBUG] validation catégorie/sous-catégorie {category} / {subcategory}")
         if not expected_path:
             logging.error(f"[ERREUR] Catégorie ou sous-catégorie non valide pour {filepath}. Opération annulée.")
@@ -90,7 +87,7 @@ def verify_and_correct_category(filepath):
             filepath.unlink(missing_ok=True)
 
             # Lancer le processus de régénération de synthèse (appel à une fonction dédiée)
-            process_import_syntheses(new_path, category, subcategory)
+            #process_import_syntheses(new_path, category, subcategory)
             logging.info(f"[INFO] Synthèse régénérée pour category={category}, subcategory={subcategory}")
 
             return True
@@ -121,22 +118,25 @@ def process_sync_entete_with_path(filepath):
     """
     Synchronise l'entête YAML avec le chemin physique du fichier.
     """
+    note_paths = load_note_paths()
     filepath = Path(filepath)  # Nouveau chemin
     file = filepath.name
     base_folder = filepath.parent  # Simplification avec Path
+    
     new_category, new_subcategory = categ_extract(filepath)  # Nouvelles catégories
 
     logging.debug("[DEBUG] process_sync_entete_with_path %s", filepath)
 
     category, subcategory = extract_category_and_subcategory(filepath)  # Anciennes catégories
     logging.debug("[DEBUG] process_sync_entete_with_path %s %s", category, subcategory)
-    path_src = get_path_by_category_and_subcategory(category, subcategory, note_paths)  # Ancien chemin
+    path_src = get_path_by_category_and_subcategory(category, subcategory)  # Ancien chemin
     logging.debug("[DEBUG] process_sync_entete_with_path %s ", path_src)
+    logging.debug("[DEBUG] process_sync_entete_with_path %s ", type(path_src))
     file_path_src = path_src / file
     archives_path_src = add_archives_to_path(file_path_src)  # Ancien chemin archive
     logging.debug("[DEBUG] process_sync_entete_with_path %s ", archives_path_src)
     archives_path_dest = add_archives_to_path(filepath)  # Nouveau chemin archive
-    logging.debug("[DEBUG] process_sync_entete_with_path %s ", archives_path_src)
+    logging.debug("[DEBUG] process_sync_entete_with_path %s ", archives_path_dest)
 
     # Vérifier que le fichier source existe avant de copier
     if archives_path_src.exists():
@@ -156,30 +156,9 @@ def process_sync_entete_with_path(filepath):
     status_existant = ""
     yaml_header_archive, body_content_archive = extract_yaml_header(archive_content)
     logging.debug(f"[DEBUG] yaml_header_archive : {yaml_header_archive}")
-    
-    in_summary = False  # Pour détecter si on est dans le bloc summary
-
-    for line in yaml_header_archive:
-        if line.startswith("tags:"):
-            tags_str = line.replace("tags:", "").strip()
-            tags_str = tags_str.strip("[]")  # 🔥 Enlève les crochets 🔥
-            tags_existants = [tag.strip() for tag in tags_str.split(",")]
-
-        elif line.startswith("summary:"):
-            in_summary = True  # On entre dans le bloc summary
-            resume_existant = []  # Réinitialise la liste pour stocker le bloc de texte
-
-        elif in_summary:
-            if line.strip() == "":  # Si on rencontre une ligne vide, on sort du bloc summary
-                in_summary = False
-            else:
-                resume_existant.append(line.strip())  # On stocke chaque ligne du summary
-
-        elif line.startswith("status:"):
-            status_existant = line.replace("status:", "").strip()
-
-    # Reformater summary proprement en bloc de texte
-    resume_existant = "\n".join(resume_existant)
+    tags_existants = extract_tags(yaml_header_archive)
+    resume_existant = extract_summary(yaml_header_archive)
+    status_existant = extract_metadata(yaml_header_archive, key_to_extract="status")
 
     logging.debug(f"[DEBUG] Extraction terminée : Tags={tags_existants}, Summary=\n{resume_existant}, Status={status_existant}")
 
@@ -195,33 +174,15 @@ def process_sync_entete_with_path(filepath):
     yaml_header, body_content = extract_yaml_header(content)
     logging.debug(f"[DEBUG] Contenu actuel de yaml_header : {yaml_header}")
     # Récupérer les valeurs existantes
-    tags_existants = []
-    resume_existant = []
-    status_existant = ""
-    in_summary = False  # Pour détecter si on est dans le bloc summary
-
-    for line in yaml_header:
-        if line.startswith("tags:"):
-            tags_str = line.replace("tags:", "").strip()
-            tags_str = tags_str.strip("[]")  # 🔥 Enlève les crochets 🔥
-            tags_existants = [tag.strip() for tag in tags_str.split(",")]
-
-        elif line.startswith("summary:"):
-            in_summary = True  # On entre dans le bloc summary
-            resume_existant = []  # Réinitialise la liste pour stocker le bloc de texte
-
-        elif in_summary:
-            if line.strip() == "":  # Si on rencontre une ligne vide, on sort du bloc summary
-                in_summary = False
-            else:
-                resume_existant.append(line.strip())  # On stocke chaque ligne du summary
-
-        elif line.startswith("status:"):
-            status_existant = line.replace("status:", "").strip()
-
-    # Reformater summary proprement en bloc de texte
-    resume_existant = "\n".join(resume_existant)
-        
+    tags_existants = extract_tags(yaml_header)
+    resume_existant = extract_summary(yaml_header)
+    status_existant = extract_metadata(yaml_header, key_to_extract="status")
+    
+    
+    logging.debug(f"[DEBUG] tags envoyés : {tags_existants}")    
+    logging.debug(f"[DEBUG] résumé envoyés : {resume_existant}")
+    #tags_formatted = f"[{', '.join(tags_existants)}]"
+ 
     # Mettre à jour l'entête avec les nouvelles catégories tout en conservant les autres valeurs
     add_metadata_to_yaml(filepath, tags_existants, resume_existant, new_category, new_subcategory, status_existant)
 

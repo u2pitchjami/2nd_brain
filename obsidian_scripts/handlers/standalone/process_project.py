@@ -1,4 +1,4 @@
-from handlers.process.extract_yaml_header import extract_yaml_header
+from handlers.utils.extract_yaml_header import extract_yaml_header
 import logging
 from pathlib import Path
 import shutil

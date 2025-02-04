@@ -1,8 +1,8 @@
 from handlers.process.ollama import ollama_generate
-from handlers.process.extract_yaml_header import extract_yaml_header
+from handlers.utils.extract_yaml_header import extract_yaml_header
 from handlers.process.headers import make_properties
 from handlers.process.keywords import process_and_update_file
-from handlers.process.get_type import load_note_paths
+from handlers.utils.process_note_paths import get_prompt_name
 from handlers.utils.divers import read_note_content, clean_content
 from handlers.utils.files import copy_file_with_date, move_file_with_date, make_relative_link, copy_to_archives
 from handlers.process.prompts import PROMPTS
@@ -12,10 +12,6 @@ import os
 
 logger = logging.getLogger()
 
-note_paths_file = os.getenv('NOTE_PATHS_FILE')    
-NOTE_PATHS = load_note_paths(note_paths_file)
-note_paths = NOTE_PATHS
- 
 def process_import_syntheses(filepath, category, subcategory):
     logging.info(f"[INFO] Génération de la synthèse pour : {filepath}")
     logging.debug(f"[DEBUG] démarrage du process_import_synthèse pour : {category} / {subcategory}")
@@ -54,7 +50,7 @@ def make_syntheses(filepath, content, header_lines, category, subcategory, origi
     logging.debug(f"[DEBUG] démarrage de make_synthèse pour {filepath}")
     try:
         try:
-            prompt_name = get_prompt_name(category, subcategory, NOTE_PATHS)
+            prompt_name = get_prompt_name(category, subcategory)
         except Exception as e:
             logging.error(f"[ERREUR] make_syntheses pb prompt : {e}")   
             prompt_name = "divers"
@@ -105,15 +101,3 @@ def make_syntheses(filepath, content, header_lines, category, subcategory, origi
         return
     except Exception as e:
         print(f"[ERREUR] make_syntheses : Impossible de traiter : {e}")    
-            
-            
-def get_prompt_name(category, subcategory, note_paths):
-    """
-    Récupère le nom du prompt basé sur la catégorie et la sous-catégorie de manière sécurisée.
-    """
-    logging.debug(f"[DEBUG] get_prompt_name category {category}, subcategory {subcategory}, note_paths {note_paths}")
-    for details in note_paths.values():
-        # Vérifie que les clés nécessaires existent avant de comparer
-        if details.get("category") == category and details.get("subcategory") == subcategory:
-            return details.get("prompt_name", None)
-    return None  # Retourne None si aucune correspondance

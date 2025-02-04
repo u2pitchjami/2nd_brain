@@ -1,6 +1,6 @@
 import os
 import re
-from handlers.process.extract_yaml_header import extract_yaml_header
+from handlers.utils.extract_yaml_header import extract_yaml_header
 from handlers.process.ollama import ollama_generate
 from handlers.process.prompts import PROMPTS
 import logging

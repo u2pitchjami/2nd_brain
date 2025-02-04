@@ -124,20 +124,26 @@ Follow the specific instructions below:
     """,
     "tags": """
     You are a bot in a read-it-later app and your responsibility is to help with automatic tagging.
-    Please analyze the text between the sentences "CONTENT START HERE" and "CONTENT END HERE" and suggest relevant tags that describe its key themes, topics, and main ideas. The rules are:
-    - Aim for a variety of tags, including broad categories, specific keywords, and potential sub-genres.
-    - The tags language must be in English.
-    - If it's a famous website you may also include a tag for the website. If the tag is not generic enough, don't include it.
-    - The content can include text for cookie consent and privacy policy, ignore those while tagging.
-    - Aim for 3-5 tags.
-    - if a specific hardware and/or specific software are use add tags with the names for each.
-    - If there are no good tags, leave the array empty.
-    
     CONTENT START HERE
     {content}
     CONTENT END HERE
     
-    Respond in JSON with the key "tags" and the value as an array of string tags.
+    Instructions:
+      1. Read the content
+      2. suggest relevant tags that describe its key themes, topics, and main ideas. The rules are:
+        - Aim for a variety of tags, including broad categories, specific keywords, and potential sub-genres.
+        - The tags language must be in English.
+        - If it's a famous website you may also include a tag for the website. If the tag is not generic enough, don't include it.
+        - The content can include text for cookie consent, ads and privacy policy, ignore those while tagging.
+        - Aim for 3-5 tags.
+        - if a specific hardware and/or specific software are use add tags with the names for each.
+        - If there are no good tags, leave the array empty.
+      3. The tags must be returned in **strict JSON format**.
+      4. Do **not** use YAML, markdown, bullet points, or any other formatting.
+      5. Return **only** the JSON object with the key "tags" and an array of strings as the value.
+      6. **Do not include** any explanations, titles, or additional text in the response.
+      7. Do **not** add any elements that start with `#` (hashtags or titles) or `-` (bullet points or lists).
+              
     """,
     "summary": """
     Provide a concise summary of the key points discussed in the following text.

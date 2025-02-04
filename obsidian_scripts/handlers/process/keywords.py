@@ -2,7 +2,7 @@ import re
 import yaml
 import os
 import logging
-from handlers.process.extract_yaml_header import extract_yaml_header
+from handlers.utils.extract_yaml_header import extract_yaml_header
 from handlers.utils.files import copy_file_with_date
 
 logger = logging.getLogger()

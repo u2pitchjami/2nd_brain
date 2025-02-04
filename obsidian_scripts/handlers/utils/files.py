@@ -7,7 +7,7 @@ import fnmatch
 from pathlib import Path
 import time
 from handlers.process.prompts import PROMPTS
-from handlers.process.get_type import get_path_from_classification
+from handlers.utils.process_note_paths import get_path_from_classification, load_note_paths
 from handlers.process.ollama import ollama_generate
 import fnmatch
 
@@ -90,7 +90,8 @@ def copy_to_archives(filepath):
     except ValueError:
         logging.error(f"Impossible de copier le fichier vers : {archives_dir}")
         return None
-    
+
+### NON UTILISE    
 def generate_unique_filename_from_folder(filepath, base_folder):
     """
     Génère un nom de fichier unique basé sur le contenu et vérifie dans un dossier cible.
@@ -221,7 +222,7 @@ def read_note_content(filepath):
 from pathlib import Path
 import time
 
-def get_recently_modified_files(base_dirs, time_threshold_seconds, excluded_patterns):
+def get_recently_modified_files(base_dirs, time_threshold_seconds):
     """
     Parcourt les dossiers et retourne les fichiers modifiés depuis un certain temps,
     en excluant les répertoires ou fichiers correspondant à des patterns globaux.
@@ -231,6 +232,7 @@ def get_recently_modified_files(base_dirs, time_threshold_seconds, excluded_patt
     :param excluded_patterns: Liste des patterns globaux à exclure.
     :return: Liste des chemins de fichiers modifiés récemment.
     """
+    note_paths = load_note_paths()
     recent_files = []
     current_time = time.time()
 
@@ -244,7 +246,7 @@ def get_recently_modified_files(base_dirs, time_threshold_seconds, excluded_patt
         for file in base_path.rglob("*"):
             if file.is_file():  # Vérifier que c'est un fichier
                 # Utilise la fonction is_in_excluded_folder pour vérifier les exclusions
-                if is_in_excluded_folder(file):
+                if not is_folder_included(file, include_types=['storage']):
                     continue
                 
                 # Vérifier la date de modification
@@ -287,3 +289,4 @@ def is_in_excluded_folder(path):
 
     # Vérifie si une des parties du chemin correspond à un dossier exclu
     return any(excluded in path_parts for excluded in excluded_dirs)
+
