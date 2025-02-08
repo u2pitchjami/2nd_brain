@@ -1,4 +1,5 @@
 import yaml
+import time
 import re
 import logging
 from pathlib import Path
@@ -15,31 +16,62 @@ logger = logging.getLogger()
 
 def validate_category_and_subcategory(category, subcategory):
     """
-    Valide la catégorie et sous-catégorie en les comparant avec NOTE_PATHS.
+    Valide la catégorie et sous-catégorie en les comparant avec note_paths.json.
     Renvoie le chemin attendu en cas de succès, sinon None.
     """
+    logging.debug(f"[DEBUG] Validate_category_and_subcategory {category} / {subcategory}")
     note_paths = load_note_paths()
-    for key, info in note_paths.items():
-        if info["category"] == category and info["subcategory"] == subcategory:
-            return info["path"]
-    # Recherche d'une correspondance approximative pour la catégorie
-    closest_category = get_close_matches(category, [info["category"] for info in note_paths.values()], n=1, cutoff=0.8)
-    closest_subcategory = get_close_matches(subcategory, [info["subcategory"] for info in note_paths.values()], n=1, cutoff=0.8)
+    categories = note_paths.get("categories", {})
+    folders = note_paths.get("folders", {})
     
+    # Vérification directe de la catégorie et sous-catégorie
+    if category in categories:
+        logging.debug("[DEBUG] Validate_category_and_subcategory categ trouvée")
+        if subcategory:
+            subcategories = categories[category].get("subcategories", {})
+            if subcategory in subcategories:
+                # Recherche du chemin dans la section 'folders'
+                logging.debug("[DEBUG] Validate_category_and_subcategory categ / subcateg trouvées")
+                for folder_path, folder_info in folders.items():
+                    if folder_info["category"] == category and folder_info.get("subcategory") == subcategory:
+                        logging.debug(f"[DEBUG] Validate_category_and_subcategory folder_info trouvé : {folder_info['path']}")
+                        return folder_info["path"]
+        else:
+            # 🔹 Si aucune sous-catégorie n'est spécifiée, retourner le chemin de la catégorie
+            for folder_info in folders.values():
+                if folder_info["category"] == category and folder_info.get("subcategory") is None:
+                    path = Path(folder_info["path"])  # 🔥 Conversion explicite en `Path`
+                    logging.debug(f"[DEBUG] Validate_category_and_subcategory - Catégorie uniquement : {path}")
+                    return path
+
+    # 🔎 Recherche d'une correspondance approximative pour la catégorie et la sous-catégorie
+    all_categories = categories.keys()
+    all_subcategories = [
+        sub for cat in categories.values() for sub in cat.get("subcategories", {}).keys()
+    ]
+
+    closest_category = get_close_matches(category, all_categories, n=1, cutoff=0.8)
+    closest_subcategory = get_close_matches(subcategory, all_subcategories, n=1, cutoff=0.8)
+
     if closest_category or closest_subcategory:
-        logging.warning(f"[ATTENTION] Correction suggérée : "
-                        f"category={closest_category[0] if closest_category else category}, "
-                        f"subcategory={closest_subcategory[0] if closest_subcategory else subcategory}")
+        logging.warning(
+            f"[ATTENTION] Correction suggérée : category={closest_category[0] if closest_category else category}, "
+            f"subcategory={closest_subcategory[0] if closest_subcategory else subcategory}"
+        )
         return None
 
     logging.error(f"[ERREUR] Catégorie ou sous-catégorie invalide : {category}/{subcategory}")
     return None
+
 
 def verify_and_correct_category(filepath):
     """
     Vérifie et corrige la catégorie d'une synthèse, en déplaçant et modifiant si nécessaire.
     """
     try:
+        logging.debug(f"[DEBUG] verify_and_correct_category {type(filepath)}")
+        filepath = Path(filepath)
+        logging.debug(f"[DEBUG] verify_and_correct_category {type(filepath)}")
         # Extraire la catégorie et sous-catégorie
         category, subcategory = extract_category_and_subcategory(filepath)
         logging.debug(f"[DEBUG] catégorie/sous-catégorie {category} / {subcategory}")
@@ -48,14 +80,17 @@ def verify_and_correct_category(filepath):
             return False
 
         # Valider la catégorie et sous-catégorie
-        expected_path = validate_category_and_subcategory(category, subcategory)
+        expected_path = Path(validate_category_and_subcategory(category, subcategory))
         logging.debug(f"[DEBUG] validation catégorie/sous-catégorie {category} / {subcategory}")
         if not expected_path:
             logging.error(f"[ERREUR] Catégorie ou sous-catégorie non valide pour {filepath}. Opération annulée.")
             return False
 
+        logging.debug(f"[DEBUG] expected_path type: {type(expected_path)} - value: {expected_path}")
+
         # Vérifier si le fichier est déjà dans le bon dossier
         current_path = filepath.parent.resolve()
+        logging.debug(f"[DEBUG] current_path {type(current_path)}")
         logging.debug(f"[DEBUG] current_path {current_path}")
         if current_path != expected_path.resolve():
             logging.debug(f"[DEBUG] current_path {current_path} != {category} / {subcategory}")
@@ -123,7 +158,7 @@ def process_sync_entete_with_path(filepath):
     file = filepath.name
     base_folder = filepath.parent  # Simplification avec Path
     
-    new_category, new_subcategory = categ_extract(filepath)  # Nouvelles catégories
+    new_category, new_subcategory = categ_extract(base_folder)  # Nouvelles catégories
 
     logging.debug("[DEBUG] process_sync_entete_with_path %s", filepath)
 
@@ -140,13 +175,15 @@ def process_sync_entete_with_path(filepath):
 
     # Vérifier que le fichier source existe avant de copier
     if archives_path_src.exists():
-        shutil.copy(archives_path_src, archives_path_dest)
-        logging.info(f"[INFO] Copy réussi vers : {archives_path_dest}")
-        # Supprimer l'ancien fichier archive
-        archives_path_src.unlink(missing_ok=True)
+            shutil.move(archives_path_src, archives_path_dest)
+            logging.info(f"[INFO] Move réussi vers : {archives_path_dest}")
+            # Supprimer l'ancien fichier archive
+            #archives_path_src.unlink(missing_ok=True)
     else:
-        logging.warning(f"[WARN] Archive source introuvable : {archives_path_src}")
+        logging.warning(f"[WARN] Archive source introuvable : {archives_path_src}") 
 
+    time.sleep(5)
+    
     ##### MODIF CATEG ARCHIVE
     with open(archives_path_dest, "r", encoding="utf-8") as file:
         archive_content = file.read()
@@ -162,10 +199,13 @@ def process_sync_entete_with_path(filepath):
 
     logging.debug(f"[DEBUG] Extraction terminée : Tags={tags_existants}, Summary=\n{resume_existant}, Status={status_existant}")
 
-            
-            
+    
     # Mettre à jour l'entête avec les nouvelles catégories tout en conservant les autres valeurs
     add_metadata_to_yaml(archives_path_dest, tags_existants, resume_existant, new_category, new_subcategory, status_existant)
+    
+            
+            
+    
     ##### MODIF CATEG SYNTHESE + LIEN ARCHIVE
     with open(filepath, "r", encoding="utf-8") as file:
         content = file.read()

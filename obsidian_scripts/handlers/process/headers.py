@@ -59,6 +59,8 @@ def add_metadata_to_yaml(filepath, tags, summary, category, subcategory, status)
         if not title:
             title = os.path.basename(filepath).replace(".md", "")
 
+        logging.debug(f"[DEBUG] make_properties() - Données extraites : Status={status}, Tags={tags}, Source={source_yaml}, Author={author}")
+
         # Créer une nouvelle entête YAML complète
         yaml_block = [
             "---\n",

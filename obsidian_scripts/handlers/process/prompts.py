@@ -190,7 +190,7 @@ here the content :
 
 Instructions:
 1. Read the content
-2. Identify the best **category** and only one between :
+2. Identify the best **category** and only one, you can propose a new one but use as a priority an existing one in the list below :
   {categ_dict}
 3. and propose an appropriate **subcategory** and only one.
   you can take inspiration from this list :

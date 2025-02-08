@@ -8,6 +8,7 @@ from handlers.process.prompts import PROMPTS
 from datetime import datetime
 import logging
 import re
+import os
 from pathlib import Path
 from handlers.process_imports.import_syntheses import process_import_syntheses
 
@@ -15,6 +16,7 @@ logger = logging.getLogger()
 
 def process_clean_gpt(filepath):
     logging.debug(f"[DEBUG] démarrage du process_clean_gpt pour : {filepath}")
+    sav_dir = Path(os.getenv('SAV_PATH'))
     copy_file_with_date(filepath, sav_dir)
     content = read_note_content(filepath)
         
@@ -38,10 +40,10 @@ def process_import_gpt(filepath):
     Traite toutes les notes dans gpt_import, en les découpant si la ligne 1 contient un titre.
     """
     logging.debug(f"[DEBUG] démarrage du process_import_gpt pour : {filepath}")
-     # Définition des chemins sur le serveur Unraid
-    gpt_import_dir = Path("/mnt/user/Documents/Obsidian/notes/gpt_import")
-    gpt_output_dir = Path("/mnt/user/Documents/Obsidian/notes/gpt_output")
-
+    # Définition des chemins sur le serveur Unraid
+    gpt_import_dir = Path(os.getenv('GPT_IMPORT_DIR'))
+    gpt_output_dir = Path(os.getenv('GPT_OUTPUT_DIR')) 
+    
     # Vérifier et créer les dossiers si nécessaire
     if not gpt_import_dir.exists():
         gpt_import_dir.mkdir(parents=True, exist_ok=True)
@@ -144,13 +146,13 @@ def process_class_gpt(filepath, category, subcategory):
     logging.debug(f"[DEBUG] démarrage du process_clean_gpt pour : {filepath}")
     
     content = read_note_content(filepath)
-        
-        
+    base_folder = os.path.dirname(filepath)    
+    category, subcategory = categ_extract(base_folder)    
     process_and_update_file(filepath)
     content = read_note_content(filepath)
     logging.debug(f"[DEBUG] content : {content}")
     
-    process_import_syntheses(filepath, category, subcategory)
-    make_properties(content, filepath, category, subcategory)
     
+    make_properties(content, filepath, category, subcategory, status = "archive")
+    process_import_syntheses(filepath, category, subcategory)
     return

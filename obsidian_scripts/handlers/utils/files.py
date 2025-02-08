@@ -8,8 +8,10 @@ from pathlib import Path
 import time
 from handlers.process.prompts import PROMPTS
 from handlers.utils.process_note_paths import get_path_from_classification, load_note_paths
+from handlers.utils.process_note_paths import is_folder_included
 from handlers.process.ollama import ollama_generate
 import fnmatch
+import unicodedata
 
 logger = logging.getLogger()
 
@@ -224,37 +226,49 @@ import time
 
 def get_recently_modified_files(base_dirs, time_threshold_seconds):
     """
-    Parcourt les dossiers et retourne les fichiers modifiés depuis un certain temps,
-    en excluant les répertoires ou fichiers correspondant à des patterns globaux.
+    Parcourt les dossiers `storage` et retourne les fichiers Markdown modifiés récemment.
 
     :param base_dirs: Liste des dossiers à scanner.
     :param time_threshold_seconds: Temps en secondes (ex: 3600 pour 1h).
-    :param excluded_patterns: Liste des patterns globaux à exclure.
-    :return: Liste des chemins de fichiers modifiés récemment.
+    :return: Liste des chemins de fichiers Markdown modifiés récemment.
     """
     note_paths = load_note_paths()
-    recent_files = []
     current_time = time.time()
+    recent_files = []
 
+    # 1️⃣ Charger une seule fois tous les dossiers `storage`
+    storage_folders = {
+        folder_info["path"]
+        for folder_info in note_paths["folders"].values()
+        if folder_info.get("folder_type") == "storage"
+    }
+
+    logging.debug(f"[DEBUG] Dossiers 'storage' chargés : {len(storage_folders)}")
+
+    # 2️⃣ Parcourir uniquement les dossiers `storage`
     for base_dir in base_dirs:
         base_path = Path(base_dir)
         if not base_path.exists():
-            print(f"[ATTENTION] Le dossier {base_dir} n'existe pas.")
+            logging.warning(f"[ATTENTION] Le dossier {base_dir} n'existe pas.")
             continue
-        
-        # Parcourir tous les fichiers dans le dossier et ses sous-dossiers
-        for file in base_path.rglob("*"):
-            if file.is_file():  # Vérifier que c'est un fichier
-                # Utilise la fonction is_in_excluded_folder pour vérifier les exclusions
-                if not is_folder_included(file, include_types=['storage']):
-                    continue
-                
-                # Vérifier la date de modification
-                last_modified = file.stat().st_mtime
-                if current_time - last_modified <= time_threshold_seconds:
-                    recent_files.append(file)
 
+        for folder in storage_folders:
+            folder_path = Path(folder)
+            if not folder_path.exists():
+                continue  # Ignorer les dossiers supprimés
+
+            # 3️⃣ Rechercher uniquement les fichiers Markdown dans ces dossiers
+            for file in folder_path.glob("*.md"):  # 🔹 Pas de rglob, + rapide
+                if file.is_file() and not file.name.startswith('.'):  # 🔹 Ignore fichiers cachés
+                    # Vérifier la date de modification
+                    last_modified = file.stat().st_mtime
+                    if current_time - last_modified <= time_threshold_seconds:
+                        logging.info(f"[INFO] Fichier modifié récemment : {file}")
+                        recent_files.append(file)
+
+    logging.debug(f"[DEBUG] Total fichiers récents trouvés : {len(recent_files)}")
     return recent_files
+
 
 def load_excluded_patterns(file_path):
     """
@@ -289,4 +303,3 @@ def is_in_excluded_folder(path):
 
     # Vérifie si une des parties du chemin correspond à un dossier exclu
     return any(excluded in path_parts for excluded in excluded_dirs)
-

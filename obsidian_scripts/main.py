@@ -1,7 +1,9 @@
 # pylint: disable=C0413
 import os
 import sys
+import logging
 from dotenv import load_dotenv
+import threading
 
 # Chemin dynamique basé sur le script en cours
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,10 +12,16 @@ env_path = os.path.join(script_dir, ".env")
 load_dotenv(env_path)
 base_script = os.getenv('BASE_SCRIPT')
 sys.path.append(os.path.abspath(base_script))
-from handlers.start.watcher import start_watcher
+
+from handlers.utils.backup_note_paths import backup_note_paths
 from handlers.logger_setup import setup_logging
-# Emplacement du fichier log
+from handlers.start.watcher import start_watcher
 setup_logging()
+
+
+# 🔥 Démarrer la sauvegarde automatique en parallèle du watcher
+backup_thread = threading.Thread(target=backup_note_paths, daemon=True)
+backup_thread.start()
 
 if __name__ == "__main__":
     start_watcher()

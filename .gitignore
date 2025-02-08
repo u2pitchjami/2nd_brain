@@ -5,3 +5,17 @@
 obsidian_scripts/handlers/process/__pycache__/
 obsidian_scripts/handlers/standalone/__pycache__/
 obsidian_scripts/handlers/utils/__pycache__/
+obsidian_scripts/handlers/standalone/structured_note_paths.json.old
+obsidian_scripts/handlers/standalone/note_paths.json.old
+obsidian_scripts/handlers/standalone/note_paths.json
+obsidian_scripts/handlers/process_imports/__pycache__/
+obsidian_scripts/handlers/standalone/note_paths.json
+obsidian_scripts/handlers/process_imports/__pycache__/
+obsidian_scripts/handlers/standalone/restructuration_note_paths.py
+obsidian_scripts/handlers/standalone/__pycache__/
+obsidian_scripts/handlers/standalone/__pycache__/
+obsidian_scripts/handlers/utils/note_paths.json
+obsidian_scripts/handlers/utils/__pycache__/
+obsidian_scripts/handlers/utils/validate_note_paths.py
+obsidian_scripts/backup/
+obsidian_scripts/handlers/utils/note_paths.json.lock

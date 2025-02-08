@@ -35,7 +35,7 @@ def make_synthese_standalone(filepath):
             original_file.unlink()  # Supprimer le fichier
             logging.info(f"[INFO] Synthèse originale supprimée : {original_file}")
         except Exception as e:
-            logging.error(f"[ERREUR] Échec de la suppression de {original_file} : {e}")
+            logging.warning(f"[ATTENTION] Impossible de supprimer {original_file} (peut-être déjà supprimé ?) : {e}")
             raise
     else:
         logging.warning(f"[ATTENTION] Aucun fichier à supprimer trouvé pour : {original_file}")
@@ -77,16 +77,34 @@ def make_header_standalone(filepath):
     
     # Étape 4 : Construire le chemin complet de l'ancienne synthèse
     filename = os.path.basename(filepath)
+    logging.debug(f"[DEBUG] filename {filename}")
     if status == "archive":
-        original_file = target_path / status / filename
+        original_file = Path(target_path) / status / filename
     else:
-        original_file = target_path / filename
-        
-    target_path = original_file   
-       
-    # Déplacer le fichier
-    shutil.move(filepath, target_path)
-    filepath = original_file
+        original_file = Path(target_path) / filename
+
+    target_path = original_file
+    logging.debug(f"[DEBUG] target_path {filename}")
+    # 🔍 Vérifications avant le déplacement
+    logging.debug(f"[DEBUG] Vérification du déplacement de {filepath} vers {target_path}")
+
+    if not Path(filepath).exists():
+        logging.error(f"[ERREUR] Le fichier source {filepath} n'existe plus, annulation du déplacement.")
+        return
+
+    if not Path(target_path).parent.exists():
+        logging.warning(f"[WARNING] Le dossier de destination {Path(target_path).parent} n'existe pas, création en cours.")
+        Path(target_path).parent.mkdir(parents=True, exist_ok=True)
+
+    # Déplacement du fichier
+    try:
+        shutil.move(filepath, target_path)
+        logging.info(f"[INFO] Fichier déplacé avec succès vers {target_path}")
+    except Exception as e:
+        logging.error(f"[ERREUR] Impossible de déplacer {filepath} vers {target_path} : {e}")
+        return
+
+    filepath = original_file  # Mise à jour du chemin
     # Étape 5 : Relancer la génération de synthèse
     
     try:
@@ -96,6 +114,7 @@ def make_header_standalone(filepath):
             process_and_update_file(filepath)
             logging.info(f"[INFO] Keywords mis à jour")
         logging.debug(f"[DEBUG] vers make_properties {filepath}")
+        logging.debug(f"[DEBUG] make_properties() - File: {filepath}, Category: {category}, Subcategory: {subcategory}, Status: {status}")
         make_properties(content, filepath, category, subcategory, status)
         logging.info(f"[INFO] Entête régénérée")    
         

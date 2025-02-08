@@ -2,6 +2,7 @@ from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
 from queue import Queue
+from handlers.utils.note_index import update_note_index, remove_note_from_index
 from handlers.start.process_single_note import process_single_note
 from handlers.start.process_note_event import process_note_event
 from handlers.start.process_folder_event import process_folder_event  # Nouvelle fonction à créer
@@ -81,8 +82,7 @@ class NoteHandler(FileSystemEventHandler):
             
             # 🎯 Mise à jour immédiate de note_paths.json pour le déplacement
             if event_type == 'file' and event.src_path.endswith('.md'):
-                process_note_event({'path': event.src_path, 'action': 'deleted'})  # Supprimer l'ancien
-                process_note_event({'path': event.dest_path, 'action': 'created'})  # Ajouter le nouveau
+                process_note_event({'path': event.dest_path, 'src_path': event.src_path, 'action': 'moved'})
             elif event_type == 'directory':
                 process_folder_event({'path': event.src_path, 'action': 'deleted'})
                 process_folder_event({'path': event.dest_path, 'action': 'created'})

@@ -12,7 +12,7 @@ from Levenshtein import ratio
 from handlers.process.ollama import ollama_generate
 from handlers.utils.extract_yaml_header import extract_yaml_header
 from handlers.process.prompts import PROMPTS
-from handlers.utils.process_note_paths import load_note_paths, get_path_from_classification, save_note_paths
+from handlers.utils.process_note_paths import get_path_from_classification, save_note_paths, load_note_paths
 from handlers.utils.extract_yaml_header import extract_category_and_subcategory
 
 logger = logging.getLogger()
@@ -21,11 +21,11 @@ similarity_warnings_log = os.getenv('SIMILARITY_WARNINGS_LOG')
 uncategorized_log = os.getenv('UNCATEGORIZED_LOG')
 uncategorized_path = Path(os.getenv('UNCATEGORIZED_PATH'))
 uncategorized_path.mkdir(parents=True, exist_ok=True)
-
+uncategorized_data = "uncategorized_notes.json"
 
 def process_get_note_type(filepath):
     """Analyse le type de note via Llama3.2."""
-    logging.debug("[DEBUG] entrée process_get_note_type")
+    logging.debug("[DEBUG] Entrée process_get_note_type")
 
     with open(filepath, 'r', encoding='utf-8') as file:
         content = file.read()
@@ -35,63 +35,59 @@ def process_get_note_type(filepath):
         subcateg_dict = generate_optional_subcategories()
         categ_dict = generate_categ_dictionary()
         entry_type = "type"
-        # Construire le prompt
-        prompt = PROMPTS[entry_type].format(categ_dict=categ_dict,
-                    subcateg_dict=subcateg_dict, content=content_lines[:1000])
 
-        # Appel à l'API de Llama3.2
+        prompt = PROMPTS[entry_type].format(categ_dict=categ_dict,
+                    subcateg_dict=subcateg_dict, content=content_lines[:1500])
+
         logging.debug("[DEBUG] process_get_note_type : %s", prompt)
         response = ollama_generate(prompt)
         logging.debug("[DEBUG] process_get_note_type response : %s", response)
-        # Récupération et traitement de la réponse
+
         parse_category = parse_category_response(response)
+        if parse_category is None:
+            logging.warning("[WARNING] Classification invalide, tentative de reclassement ultérieur.")
+            handle_uncategorized(filepath, "Invalid format", "")
+            return None
+        
         logging.debug("[DEBUG] process_get_note_type parse_category %s", parse_category)
         note_type = clean_note_type(parse_category)
 
         logging.info("Type de note détecté pour %s : %s", filepath, note_type)
     except Exception as e:
         logging.error("Erreur lors de l'analyse : %s", e)
-        raise ValueError("Erreur détectée dans le traitement") from e
+        handle_uncategorized(filepath, "Error", "")
+        return None
 
     dir_type_name = get_path_safe(note_type, filepath)
     if dir_type_name is None:
-        # Cas où la note est déplacée dans 'uncategorized'
-        logging.warning(
-            "La note %s a été déplacée dans 'uncategorized'. Aucune action nécessaire."
-            , filepath)
-        return None# Arrêter le traitement ici pour ce fichier
+        logging.warning("La note %s a été déplacée dans 'uncategorized'.", filepath)
+        return None
 
-# Continuer le traitement avec un chemin valide
     try:
         dir_type_name = Path(dir_type_name)
         dir_type_name.mkdir(parents=True, exist_ok=True)
         logging.debug("[DEBUG] dirtype_name %s", type(dir_type_name))
         logging.info("[INFO] Catégorie définie %s", dir_type_name)
     except Exception as e:
-        logging.error("[ERREUR] Anomalie lors du process de Categorisation : %s", e)
-        raise
+        logging.error("[ERREUR] Anomalie lors du process de catégorisation : %s", e)
+        handle_uncategorized(filepath, note_type, "")
+        return None
 
     try:
         new_path = shutil.move(filepath, dir_type_name)
-        logging.info("[INFO] note déplacée vers : %s", new_path)
+        logging.info("[INFO] Note déplacée vers : %s", new_path)
         return new_path
     except Exception as e:
         logging.error("[ERREUR] Pb lors du déplacement : %s", e)
-        raise
+        handle_uncategorized(filepath, note_type, "")
+        return None
 
 def parse_category_response(response):
-    """
-    Extrait la catégorie et sous-catégorie d'une réponse au format 'categ/souscateg'
-    """
-    pattern = r'([A-Za-z0-9_ ]+)/([A-Za-z0-9_ ]+)'  # Capture 'categ/souscateg'
-
+    pattern = r'([A-Za-z0-9_ ]+)/([A-Za-z0-9_ ]+)'
     match = re.search(pattern, response)
     if match:
-        category = match.group(1).strip()
-        subcategory = match.group(2).strip()
-        return f"{category}/{subcategory}"
-
-    return "Uncategorized"
+        return f"{match.group(1).strip()}/{match.group(2).strip()}"
+    return None
 
 
 def clean_note_type(response):
@@ -114,26 +110,23 @@ def clean_note_type(response):
 
 def generate_classification_dictionary():
     """
-    Génère la section 'Classification Dictionary' du prompt à partir de NOTE_PATHS.
-    :param note_paths: Dictionnaire NOTE_PATHS
+    Génère la section 'Classification Dictionary' du prompt à partir de note_paths.json.
     :return: Texte formaté pour le dictionnaire
     """
     note_paths = load_note_paths()
     logging.debug("[DEBUG] generate_classification_dictionary")
     classification_dict = "Classification Dictionary:\n"
-    categories = {}
 
-    for _, value in note_paths.items():
-        category = value["category"]
-        subcategory = value["subcategory"]
-        explanation = value.get("explanation", "No description available.")
-
-        if category not in categories:
-            categories[category] = []
-        categories[category].append(f'  - "{subcategory}": {explanation}')
-
-    for category, subcategories in categories.items():
-        classification_dict += f'- "{category}":\n' + "\n".join(subcategories) + "\n"
+    categories = note_paths.get("categories", {})
+    
+    for category, details in categories.items():
+        description = details.get("description", "No description available.")
+        classification_dict += f'- "{category}": {description}\n'
+        
+        subcategories = details.get("subcategories", {})
+        for subcategory, sub_details in subcategories.items():
+            sub_description = sub_details.get("description", "No description available.")
+            classification_dict += f'  - "{subcategory}": {sub_description}\n'
 
     return classification_dict
 
@@ -142,58 +135,50 @@ def generate_optional_subcategories():
     Génère uniquement la liste des sous-catégories disponibles, 
     en excluant les catégories sans sous-catégories.
     
-    :param note_paths: Dictionnaire contenant les informations des notes.
     :return: Texte formaté avec les sous-catégories optionnelles.
     """
     logging.debug("[DEBUG] generate_optional_subcategories")
     subcateg_dict = "Optional Subcategories:\n"
-    subcategories = {}
-
+    
     note_paths = load_note_paths()
-    for _, value in note_paths.items():
-        category = value["category"]
-        subcategory = value.get("subcategory", None)
 
-        if subcategory:  # 🔹 Ignore les sous-catégories nulles ou vides ("")
-            if category not in subcategories:
-                subcategories[category] = set()
-            subcategories[category].add(subcategory)
+    # 🔍 Vérification que note_paths["categories"] est bien un dictionnaire
+    categories = note_paths.get("categories", {})
+    if not isinstance(categories, dict):
+        logging.error("[ERREUR] `categories` n'est pas un dictionnaire mais %s : %s", type(categories), categories)
+        return ""  # Évite un crash
 
-    # Vérifier s'il y a des sous-catégories avant d'afficher
-    if subcategories:
-        for category, subcateg_list in subcategories.items():
-            subcateg_dict += f'- "{category}": {", ".join(sorted(subcateg_list))}\n'
-    else:
-        return ""  # 🔹 Retourne une chaîne vide si aucune sous-catégorie n'est trouvée
+    for category, details in categories.items():
+        if not isinstance(details, dict):
+            logging.error("[ERREUR] Détails de la catégorie %s invalide : type %s", category, type(details))
+            continue  # Passe à la catégorie suivante
+        
+        subcategories = details.get("subcategories", {})
+        if not isinstance(subcategories, dict):
+            logging.error("[ERREUR] `subcategories` pour %s n'est pas un dict mais %s", category, type(subcategories))
+            continue  # Passe à la catégorie suivante
+        
+        if subcategories:  # 🔹 Ignore les catégories sans sous-catégories
+            subcateg_names = ", ".join(sorted(subcategories.keys()))
+            subcateg_dict += f'- "{category}": {subcateg_names}\n'
 
-    return subcateg_dict
+    return subcateg_dict if subcateg_dict != "Optional Subcategories:\n" else ""
 
 def generate_categ_dictionary():
     """
-    Génère la section 'Classification Dictionary' du prompt à partir de NOTE_PATHS,
-    en excluant les catégories ayant une sous-catégorie
-    et en affichant l'explication sur la même ligne.
-    :param note_paths: Dictionnaire contenant les chemins de notes et leurs informations.
-    :return: Texte formaté ne contenant que les catégories sans sous-catégories.
+    Génère la liste de toutes les catégories avec leurs descriptions, 
+    qu'elles aient des sous-catégories ou non.
+    
+    :return: Texte formaté avec toutes les catégories.
     """
     note_paths = load_note_paths()
     logging.debug("[DEBUG] generate_categ_dictionary")
     categ_dict = "Categ Dictionary:\n"
-    categories = {}
 
-    # Regroupement des explications uniquement pour les catégories sans sous-catégorie
-    for _, value in note_paths.items():
-        category = value["category"]
-        subcategory = value.get("subcategory", None)  # Vérifie si une sous-catégorie existe
-        explanation = value.get("explanation", "No description available.")
+    categories = note_paths.get("categories", {})
 
-        # On ne prend en compte que les catégories sans sous-catégorie
-        if subcategory is None:
-            if category not in categories:
-                categories[category] = explanation  # On garde UNE explication (la première trouvée)
-
-    # Formatage du texte de sortie
-    for category, explanation in categories.items():
+    for category, details in categories.items():
+        explanation = details.get("description", "No description available.")
         categ_dict += f'- "{category}": {explanation}\n'
 
     return categ_dict
@@ -201,152 +186,235 @@ def generate_categ_dictionary():
 # Trouver ou créer un chemin
 def get_path_safe(note_type, filepath):
     """
-    chercher et créer le chemin si besoin.
+    Vérifie et crée les chemins si besoin pour une note importée.
+    - Vérifie si la catégorie et la sous-catégorie existent.
+    - Si non, elles sont créées automatiquement.
+    - Vérifie aussi si une catégorie similaire existe avant d’en créer une nouvelle.
     """
     logging.debug("entrée get_path_safe avec note_type: %s", note_type)
     note_paths = load_note_paths()
+
     try:
         category, subcategory = note_type.split("/")
+        
+        # 🔹 Vérifie si la catégorie existe
+        if category not in note_paths.get("categories", {}):
+            logging.info(f"[INFO] Catégorie absente : {category}. Vérification de la similarité...")
+
+            existing_categories = list(note_paths.get("categories", {}).keys())
+            validated_category = check_and_handle_similarity(category, existing_categories, entity_type="category")
+
+            if validated_category is None:
+                logging.debug("get_path_safe: uncategorized (catégorie inconnue)")
+                handle_uncategorized(filepath, note_type, llama_proposition=category)
+                return None
+
+            if validated_category == category:
+                logging.debug("get_path_safe: %s == %s (Nouvelle catégorie validée)", validated_category, category)
+                add_dynamic_category(category)
+            else:
+                logging.info(f"[INFO] Fusion avec la catégorie existante : {validated_category}")
+                category = validated_category  # ✅ On utilise la catégorie existante validée
+
+        # 🔹 Vérifie si la sous-catégorie existe
         try:
             return get_path_from_classification(category, subcategory)
         except KeyError:
-            logging.info("Sous-catégorie absente : %s. Vérification de la validité...", subcategory)
-            existing_subcategories = [
-                details["subcategory"]
-                for details in note_paths.values()
-                if details["category"] == category
-            ]
-            validated_subcategory = check_and_handle_similarity(subcategory, existing_subcategories)
+            logging.info("Sous-catégorie absente : %s. Vérification de la similarité...", subcategory)
+            existing_subcategories = list(
+                note_paths.get("categories", {}).get(category, {}).get("subcategories", {}).keys()
+            )
+            validated_subcategory = check_and_handle_similarity(subcategory, existing_subcategories, entity_type="subcategory")
+            
             if validated_subcategory is None:
-                # Cas douteux : basculer en uncategorized
-                logging.debug("get_path_safe: uncategorized")
+                logging.debug("get_path_safe: uncategorized (sous-catégorie inconnue)")
                 handle_uncategorized(filepath, note_type, llama_proposition=subcategory)
                 return None
+            
             if validated_subcategory == subcategory:
-                logging.debug("get_path_safe: %s == %s", validated_subcategory, subcategory)
-                # Nouvelle sous-catégorie validée
+                logging.debug("get_path_safe: %s == %s (Nouvelle sous-catégorie validée)", validated_subcategory, subcategory)
                 return add_dynamic_subcategory(category, subcategory)
 
-            # Fusion avec une sous-catégorie existante
             return get_path_from_classification(category, validated_subcategory)
+
     except ValueError:
         logging.error("Format inattendu du résultat Llama : %s", note_type)
         handle_uncategorized(filepath, note_type, llama_proposition="Invalid format")
         return None
 
 
+
 # Ajouter une sous-catégorie dynamiquement
 def add_dynamic_subcategory(category, subcategory):
     """
-    Ajoute une sous-catégorie à une catégorie existante
-    (uniquement si elle n'a pas déjà une sous-catégorie).
-    :param category: Nom de la catégorie principale.
-    :param subcategory: Nom de la sous-catégorie à ajouter.
-    :param note_paths: Dictionnaire contenant les catégories et leurs chemins.
-    :return: Le chemin de la nouvelle sous-catégorie.
+    Ajoute une sous-catégorie dynamiquement.
     """
     note_paths = load_note_paths()
-    base_path = None
+    categories = note_paths.get("categories", {})
+    folders = note_paths.get("folders", {})
+
     logging.debug("[DEBUG] add_dynamic_subcategory")
 
-    # 🔹 Recherche de la catégorie avec subcategory=None
-    for _, details in note_paths.items():
-        logging.debug("[DEBUG] Détails de la catégorie : %s", details["category"])
-        if details["category"].lower() == category.lower() and details.get("subcategory") is None:
-            base_path = Path(details["path"])  # Utilisation de pathlib pour plus de robustesse
-            break
+    # 🔹 Vérifier que la catégorie existe, sinon la créer
+    if category not in categories:
+        logging.warning(f"[WARN] La catégorie {category} n'existe pas. Création en cours...")
+        add_dynamic_category(category)
 
-    if not base_path:
-        raise ValueError(f"[❌] Catégorie inconnue ou déjà avec sous-catégorie : {category}")
+    # 🔹 Récupérer le chemin de la catégorie
+    base_path_str = next(
+        (folder["path"] for folder in folders.values()
+         if folder["category"] == category and folder.get("subcategory") is None),
+        None
+    )
 
-    # 🔹 Création du chemin pour la nouvelle sous-catégorie
+    if not base_path_str:
+        raise ValueError(f"[❌] Chemin introuvable pour la catégorie : {category}")
+
+    base_path = Path(base_path_str)
     new_subcategory_name = subcategory.capitalize()
     new_path = base_path / new_subcategory_name
 
-    # 🔹 Création physique du dossier si inexistant
+    # 🔹 Création du dossier si inexistant
     if not new_path.exists():
         logging.info("[INFO] Création du dossier : %s", new_path)
         new_path.mkdir(parents=True, exist_ok=True)
 
-    # 🔹 Construction de la clé pour note_paths.json
-    new_key = f"{base_path.relative_to('/mnt/user/Documents/Obsidian/notes')}/{new_subcategory_name}"
-    
-    note_paths[new_key] = {
-        "category": category.lower(),
-        "subcategory": subcategory.lower(),
-        "path": str(new_path),  # Assurer que le chemin est converti en string pour JSON
-        "prompt_name": "divers",
-        "explanation": f"Note about {subcategory.lower()}",
+    # 🔹 Ajout de la sous-catégorie dans `categories`
+    categories[category]["subcategories"][subcategory] = {
+        "description": f"Note about {subcategory.lower()}",
+        "prompt_name": "divers"
+    }
+
+    # 🔹 Ajout du dossier dans `folders`
+    folder_key = f"notes/{category}/{new_subcategory_name}"
+    folders[folder_key] = {
+        "path": str(new_path),
+        "category": category,
+        "subcategory": subcategory,
         "folder_type": "storage"
     }
 
-    # 🔹 Sauvegarde du fichier JSON (en supposant une fonction existante `save_note_paths`)
+    # 🔹 Sauvegarde de `note_paths.json`
+    note_paths["categories"] = categories
+    note_paths["folders"] = folders
     save_note_paths(note_paths)
 
     return new_path
 
 # Gérer les notes non catégorisées
 def handle_uncategorized(filepath, note_type, llama_proposition):
-    """
-    création de logs pour les fichier uncategorized.
-    """
     new_path = uncategorized_path / Path(filepath).name
     shutil.move(filepath, new_path)
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(uncategorized_log, "a", encoding='utf-8') as log_file:
-        log_file.write("Date: %s \n", current_time)
-        log_file.write("Note: %s \n", new_path)
-        log_file.write("Proposition Llama3.2: %s \n", llama_proposition)
-        log_file.write("Note type original: %s \n", note_type)
-        log_file.write("-" * 50 + "\n")
+        log_file.write(f"[{current_time}] Note: {new_path} | Proposition: {llama_proposition} | Type original: {note_type}\n")
     logging.warning("Note déplacée vers 'uncategorized' : %s", new_path)
+    
+    # Sauvegarde pour reclassement ultérieur
+    try:
+        if os.path.exists(uncategorized_data):
+            with open(uncategorized_data, "r", encoding='utf-8') as file:
+                uncategorized_notes = json.load(file)
+        else:
+            uncategorized_notes = {}
+        uncategorized_notes[str(new_path)] = {
+            "original_type": note_type,
+            "llama_proposition": llama_proposition,
+            "date": current_time
+        }
+        with open(uncategorized_data, "w", encoding='utf-8') as file:
+            json.dump(uncategorized_notes, file, indent=4)
+    except Exception as e:
+        logging.error("Erreur lors de la sauvegarde des notes non catégorisées : %s", e)
 
 # Vérification des similarités avec Levenshtein
-def find_similar_levenshtein(
-    subcategory, existing_subcategories, threshold_low=0.7):
+def find_similar_levenshtein(name, existing_names, threshold_low=0.7, entity_type="subcategory"):
     """
-    Vérifie les similarités.
+    Vérifie les similarités entre une catégorie/sous-catégorie et une liste existante avec Levenshtein.
     """
     similar = []
-    for existing in existing_subcategories:
-        similarity = ratio(subcategory, existing)
-        logging.debug("find_similar_levenshtein similarity : %s %s", subcategory, similarity)
+    for existing in existing_names:
+        similarity = ratio(name, existing)  # ✅ Utilisation de Levenshtein
+        logging.debug(f"find_similar_levenshtein ({entity_type}) : {name} <-> {existing} = {similarity:.2f}")
         if similarity >= threshold_low:
             similar.append((existing, similarity))
+    
     return sorted(similar, key=lambda x: x[1], reverse=True)
 
 # Gérer les similarités
-def check_and_handle_similarity(
-    new_subcategory, existing_subcategories, threshold_low=0.7):
+def check_and_handle_similarity(name, existing_names, threshold_low=0.7, entity_type="subcategory"):
     """
-    Vérifie les similarités pour une nouvelle sous-catégorie et applique une logique automatique.
+    Vérifie les similarités pour une nouvelle catégorie/sous-catégorie et applique une logique automatique.
+    :param name: Nom de la catégorie/sous-catégorie à tester.
+    :param existing_names: Liste des noms existants.
+    :param threshold_low: Seuil minimum de similarité.
+    :param entity_type: "category" ou "subcategory".
+    :return: Nom validé ou None en cas de doute.
     """
-    threshold_high = 0.9
-    similar = find_similar_levenshtein(
-        new_subcategory, existing_subcategories, threshold_low)
-    logging.debug("check_and_handle_similarity similar : %s", similar)
+    threshold_high = 0.9  # 🔥 Seuil de fusion automatique
+    similar = find_similar_levenshtein(name, existing_names, threshold_low, entity_type)
+
+    logging.debug(f"check_and_handle_similarity ({entity_type}) : {name} - Similar found: {similar}")
+
     if similar:
         closest, score = similar[0]
+        
         if score >= threshold_high:
-            # Fusion automatique si la similarité est très élevée
-            logging.info("Fusion automatique : %s -> %s (score: %.2f)"
-                         , new_subcategory, closest, score)
+            # 🔥 Fusion automatique si la similarité est très élevée
+            logging.info(f"[INFO] Fusion automatique ({entity_type}) : {name} -> {closest} (score: {score:.2f})")
             return closest
+        
         if threshold_low <= score < threshold_high:
-            # Loguer les similarités moyennes et NE PAS créer la sous-catégorie
+            # 🚨 Loguer les similarités moyennes et NE PAS créer la catégorie/sous-catégorie
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             log_message = (
-                f"[{current_time}] Doute : '{new_subcategory}' proche de '{closest}'"
-                f"(score: {score:.2f})\n")
-
-            logging.warning(
-            "Similitude moyenne détectée : '%s' proche de '%s' (score: %.2f)",
-            new_subcategory,
-            closest,
-            score
+                f"[{current_time}] Doute sur {entity_type}: '{name}' proche de '{closest}' (score: {score:.2f})\n"
             )
-            with open(similarity_warnings_log, "a", encoding='utf-8') as log_file:
+            logging.warning(f"[WARN] Similitude moyenne détectée ({entity_type}) : '{name}' proche de '{closest}' (score: {score:.2f})")
+            
+            with open(SIMILARITY_WARNING_LOG, "a", encoding='utf-8') as log_file:
                 log_file.write(log_message)
-            return None  # Retourne None pour éviter la création
-    # Si aucune similarité significative, considérer comme nouvelle sous-catégorie
-    return new_subcategory
+            
+            return None  # 🔥 Retourne None pour éviter la création automatique
+
+    # ✅ Si aucune similarité significative, considérer comme une nouvelle catégorie/sous-catégorie
+    return name
+
+def add_dynamic_category(category):
+    """
+    Ajoute une nouvelle catégorie à `note_paths.json` si elle n'existe pas.
+    """
+    note_paths = load_note_paths()
+    categories = note_paths.get("categories", {})
+    folders = note_paths.get("folders", {})
+
+    logging.info(f"[INFO] Création de la nouvelle catégorie : {category}")
+
+    # 🔹 Création du chemin physique pour la catégorie
+    base_path = Path(os.getenv('BASE_PATH')) / category
+    if not base_path.exists():
+        logging.info(f"[INFO] Création du dossier catégorie : {base_path}")
+        base_path.mkdir(parents=True, exist_ok=True)
+
+    # 🔹 Ajout dans `categories`
+    categories[category] = {
+        "description": f"Note about {category.lower()}",
+        "prompt_name": "divers",
+        "subcategories": {}  # Initialement vide
+    }
+
+    # 🔹 Ajout du dossier dans `folders`
+    folder_key = f"notes/{category}"
+    folders[folder_key] = {
+        "path": str(base_path),
+        "category": category,
+        "subcategory": None,
+        "folder_type": "storage"
+    }
+
+    # 🔹 Mise à jour et sauvegarde de `note_paths.json`
+    note_paths["categories"] = categories
+    note_paths["folders"] = folders
+    save_note_paths(note_paths)
+
+    return base_path

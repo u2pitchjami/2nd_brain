@@ -60,25 +60,7 @@ def process_single_note(filepath, dest_path=None):
         
         elif "Z_technical/imports" in base_folder:
             process_import(filepath, base_folder)
-        
-        elif "Z_technical/gpt_output" in base_folder:
-            logging.info(f"[INFO] Import issu d'une conversation GPT : {filepath}")
-            try:
-                process_clean_gpt(filepath)
-                new_path = process_get_note_type(filepath)
-                base_folder = os.path.dirname(new_path)
-                filepath = new_path
-                new_path = rename_file(filepath)
-                logging.info(f"[INFO] Note renommée : {filepath} --> {new_path}")
-                filepath = new_path
-                category, subcategory = categ_extract(base_folder)
-                process_class_gpt(filepath, category, subcategory)
-                logging.info(f"[INFO] Import terminé pour : {filepath}")
-                return
-            except Exception as e:
-                logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
-                return
-
+                
         # 1.2 Autres déplacements (exemple : ZMake)
         elif "Z_technical/ZMake_Synthese" in dest_folder:
             logging.info(f"[INFO] Déplacement manuel vers ZMake_Synthese : {filepath} -> {dest_path}")
@@ -113,7 +95,23 @@ def process_single_note(filepath, dest_path=None):
             except Exception as e:
                 logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
                 return
-
+        elif "Z_technical/gpt_output" in base_folder:
+            logging.info(f"[INFO] Import issu d'une conversation GPT : {filepath}")
+            try:
+                process_clean_gpt(filepath)
+                new_path = process_get_note_type(filepath)
+                base_folder = os.path.dirname(new_path)
+                filepath = new_path
+                new_path = rename_file(filepath)
+                logging.info(f"[INFO] Note renommée : {filepath} --> {new_path}")
+                filepath = new_path
+                category, subcategory = categ_extract(base_folder)
+                process_class_gpt(filepath, category, subcategory)
+                logging.info(f"[INFO] Import terminé pour : {filepath}")
+                return
+            except Exception as e:
+                logging.error(f"[ERREUR] Anomalie l'import gpt : {e}")
+                return
         
 
         else:
