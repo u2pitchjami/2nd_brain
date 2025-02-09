@@ -7,7 +7,7 @@ import logging
 
 
 BACKUP_INTERVAL = 600  # ⏳ 10 minutes
-MAX_BACKUPS = 10  # 🔄 On garde 10 backups max
+MAX_BACKUPS = 100  # 🔄 On garde 10 backups max
 backup_dir = os.getenv('BACKUP_DIR')
 
 def rotate_backups():

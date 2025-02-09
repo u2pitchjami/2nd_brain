@@ -4,13 +4,14 @@ import logging
 import time
 from pathlib import Path
 from dotenv import load_dotenv
-from handlers.utils.process_note_paths import load_note_paths, save_note_paths, detect_folder_type
+from handlers.utils.process_note_paths import load_note_paths, save_note_paths, detect_folder_type, categ_extract
 
 base_path = os.getenv('BASE_PATH')
 
 def process_folder_event(event):
     folder_path = event.get('path')
     action = event.get('action')
+    logging.debug(f"[DEBUG] process_folder_event() a reçu un {action} pour {event['path']}")
 
     if folder_path.startswith('.') or 'untitled' in folder_path.lower():
         logging.info(f"[INFO] Dossier ignoré : {folder_path}")
@@ -30,9 +31,12 @@ def process_folder_event(event):
     parts = Path(relative_path).parts
     category = None
     subcategory = None
-
     folder_type = detect_folder_type(Path(folder_path))
-
+    category, subcategory = categ_extract(folder_path)
+    logging.debug(f"[DEBUG] process_folder_event category : {category} / {subcategory}")
+    # Normalisation du chemin pour éviter les incohérences
+    normalized_path = Path(relative_path).resolve()
+    logging.debug(f"[DEBUG] normalized_path : {normalized_path}")
     if action == 'created':
         # Vérifier si la catégorie doit être créée (uniquement si folder_type == storage)
         if folder_type == "storage":
@@ -58,16 +62,42 @@ def process_folder_event(event):
                     }
                     logging.info(f"[INFO] Sous-catégorie ajoutée : {subcategory} dans {category}")
 
-        # Ajouter dans folders (toujours)
-        note_paths['folders'][relative_path] = {
-            "path": folder_path,
-            "category": category,
-            "subcategory": subcategory,
-            "folder_type": folder_type
-        }
-        logging.info(f"[INFO] Dossier ajouté : {relative_path}")
+        if not normalized_path in note_paths['folders']:
+            # Ajouter dans folders (toujours)
+            note_paths['folders'][relative_path] = {
+                "path": folder_path,
+                "category": category,
+                "subcategory": subcategory,
+                "folder_type": folder_type
+            }
+            logging.info(f"[INFO] Dossier ajouté : {relative_path}")
+        else:
+            logging.info(f"[INFO] Dossier déjà présent, pas d'ajout : {relative_path}")
 
     elif action == 'deleted':
+        logging.debug(f"[DEBUG] process_folder_event() a reçu un {action} pour {event['path']}")
+        # Suppression des sous-catégories uniquement si elles existent
+        if category and subcategory:
+            try:
+                if category in note_paths['categories'] and subcategory in note_paths['categories'][category]['subcategories']:
+                    del note_paths['categories'][category]['subcategories'][subcategory]
+                    logging.info(f"[INFO] Sous-catégorie supprimée : {subcategory} dans {category}")
+                # Vérifier si la catégorie n'a plus de sous-catégories avant de la supprimer
+                if not note_paths['categories'][category]['subcategories']:
+                    del note_paths['categories'][category]
+                    logging.info(f"[INFO] Catégorie supprimée car vide : {category}")
+            except KeyError:
+                logging.warning(f"[WARNING] Tentative de suppression d'une sous-catégorie inexistante : {subcategory} dans {category}")
+
+        elif category and not subcategory:
+            try:
+                if category in note_paths['categories'] and not note_paths['categories'][category]['subcategories']:
+                    del note_paths['categories'][category]
+                    logging.info(f"[INFO] Catégorie supprimée car vide : {category}")
+            except KeyError:
+                logging.warning(f"[WARNING] Tentative de suppression d'une catégorie inexistante : {category}")
+        
+        
         # Attendre un court instant pour éviter les conflits avec Obsidian
         time.sleep(0.5)
         
@@ -91,26 +121,7 @@ def process_folder_event(event):
         except KeyError:
             logging.warning(f"[WARNING] Tentative de suppression d'un dossier inexistant : {relative_path}")
 
-        # Suppression des sous-catégories uniquement si elles existent
-        if category and subcategory:
-            try:
-                if category in note_paths['categories'] and subcategory in note_paths['categories'][category]['subcategories']:
-                    del note_paths['categories'][category]['subcategories'][subcategory]
-                    logging.info(f"[INFO] Sous-catégorie supprimée : {subcategory} dans {category}")
-                # Vérifier si la catégorie n'a plus de sous-catégories avant de la supprimer
-                if not note_paths['categories'][category]['subcategories']:
-                    del note_paths['categories'][category]
-                    logging.info(f"[INFO] Catégorie supprimée car vide : {category}")
-            except KeyError:
-                logging.warning(f"[WARNING] Tentative de suppression d'une sous-catégorie inexistante : {subcategory} dans {category}")
-
-        elif category and not subcategory:
-            try:
-                if category in note_paths['categories'] and not note_paths['categories'][category]['subcategories']:
-                    del note_paths['categories'][category]
-                    logging.info(f"[INFO] Catégorie supprimée car vide : {category}")
-            except KeyError:
-                logging.warning(f"[WARNING] Tentative de suppression d'une catégorie inexistante : {category}")
+        
 
     save_note_paths(note_paths)
 

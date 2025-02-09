@@ -45,11 +45,12 @@ def process_note_event(event):
                 logging.error(f"[ERREUR] Titre introuvable pour le fichier : {filepath}")
                 return
             
-            # Vérification des doublons avant ajout
-            if check_duplicate(note_title, filepath):
-                logging.warning(f"[DOUBLON] Note similaire déjà existante : {note_title}")
-                return  # On arrête le traitement si doublon
-            logging.debug(f"[DEBUG] sortie check_duplicate")
+            if "Z_technical" in relative_path:
+                # Vérification des doublons avant ajout
+                if check_duplicate(note_title, filepath):
+                    logging.warning(f"[DOUBLON] Note similaire déjà existante : {note_title}")
+                    return  # On arrête le traitement si doublon
+                logging.debug(f"[DEBUG] sortie check_duplicate")
             
             # Extraction des métadonnées depuis l'entête YAML
             
@@ -170,14 +171,9 @@ def process_note_event(event):
 def check_duplicate(note_title, filepath):
     """
     Vérifie si un titre de note est un doublon.
-    Seule la comparaison est limitée aux notes situées dans des dossiers `storage`.
-    Ignorer les fichiers placés dans `ZMake_Header/`.
+    Les fichiers dans `ZMake_Header/` ou `Archives/` sont ignorés.
     """
-    logging.debug("check_duplicate")
-
-    # 🔍 Charger `note_paths.json`
-    note_paths = load_note_paths()
-    folders = note_paths.get("folders", {})
+    logging.debug("[DEBUG] check_duplicate")
 
     # 🔍 Convertir `parent_folder` en chemin relatif
     base_path = os.getenv('BASE_PATH')
@@ -186,41 +182,26 @@ def check_duplicate(note_title, filepath):
 
     logging.debug("[DEBUG] Parent folder (relatif) : %s", parent_folder)
 
-    # 🚨 Empêcher la détection des doublons si le fichier est dans `ZMake_Header/`
-    if "Z_technical/ZMake_Header" in parent_folder or "/Archives/" in parent_folder:
+    # 🚨 Ignorer certains dossiers
+    if "ZMake_" in parent_folder :
         logging.debug("[INFO] Ignoré: %s car dans ZMake_Header ou Archives", filepath)
         return False  
 
-    # 🔍 Vérification des doublons uniquement avec `storage`
-    storage_notes = {
-        title: path
-        for title, path in load_note_index().items()
-        if folders.get(os.path.dirname(path), {}).get("folder_type") == "storage"
-        
-    }
+    # 📥 Charger l'index (qui ne contient que les notes `synthesis`)
+    note_index = load_note_index()
+    logging.debug("[DEBUG] Nombre de notes à comparer : %d", len(note_index))
 
-    logging.debug(f"[DEBUG] load_note_index: {load_note_index()}")
- 
-    for title, path in load_note_index().items():
-        folder = os.path.dirname(path)
-        logging.debug(f"[DEBUG] Vérification dossier: {folder}, Existant: {folder in folders}")
-
-    if folders.get(folder, {}).get("folder_type") == "storage":
-        storage_notes[title] = path  # Ajout manuel dans un dictionnaire classique
-
-        
-
-    logging.debug("[DEBUG] Nombre de notes en `storage` pour comparaison : %d", len(storage_notes))
-
-    for existing_title, existing_path in storage_notes.items():
+    # 🔍 Vérifier la similarité des titres
+    for existing_title, existing_path in note_index.items():
         similarity = ratio(clean_title(note_title), clean_title(existing_title))
 
         if similarity >= 0.9:
-            logging.warning("[DOUBLON] Note similaire détectée dans `storage`: %s (similarité : %.2f)", existing_title, similarity)
+            logging.warning("[DOUBLON] Note similaire détectée : %s (similarité : %.2f)", existing_title, similarity)
             move_duplicate_to_folder(filepath)
             return True  
 
     return False  
+  
 
 
 

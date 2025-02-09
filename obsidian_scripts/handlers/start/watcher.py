@@ -1,11 +1,10 @@
 from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
-from queue import Queue
 from handlers.utils.note_index import update_note_index, remove_note_from_index
-from handlers.start.process_single_note import process_single_note
 from handlers.start.process_note_event import process_note_event
-from handlers.start.process_folder_event import process_folder_event  # Nouvelle fonction à créer
+from handlers.start.process_folder_event import process_folder_event
+from handlers.utils.queue_manager import log_event_queue, process_queue, event_queue
 import os
 import logging
 import time
@@ -14,9 +13,6 @@ logger = logging.getLogger()
 
 print(f"🔎 {__name__} → Niveau du logger: {logger.level}")
 print(f"🔍 Vérif logger {__name__} → Handlers: {logger.handlers}, Level: {logger.level}")
-
-# File d'attente pour les événements
-event_queue = Queue()
 
 # Chemin vers le dossier contenant les notes Obsidian
 obsidian_notes_folder = os.getenv('BASE_PATH')
@@ -98,33 +94,3 @@ class NoteHandler(FileSystemEventHandler):
     @staticmethod
     def is_hidden(path):
         return any(part.startswith('.') for part in path.split(os.sep))
-
-
-def process_queue():
-    while True:
-        try:
-            event = event_queue.get()  # Timeout pour éviter un blocage
-            logging.debug(f"[DEBUG] Event récupéré depuis la file : {event}")
-
-            if event['type'] == 'file':
-                if event['action'] == 'moved':
-                    process_single_note(event['src_path'], event['dest_path'])
-                else:
-                    process_single_note(event['path'])
-            elif event['type'] == 'directory':
-                if event['action'] == 'moved':
-                    # Traiter le déplacement d'un dossier comme une création pour le nouveau nom
-                    process_folder_event({'action': 'created', 'path': event['dest_path']})
-                    # Optionnel : Supprimer l'ancienne entrée si elle existait
-                    process_folder_event({'action': 'deleted', 'path': event['src_path']})
-                else:
-                    process_folder_event(event)
-
-            log_event_queue(event_queue)
-            event_queue.task_done()
-        except Exception as e:
-            logging.error(f"[ERREUR] Erreur dans le traitement de la file d'attente : {e}")
-            time.sleep(1)  # Attendre avant de vérifier à nouveau pour éviter une boucle infinie en cas d'erreur
-
-def log_event_queue(queue):
-    logging.info(f"[DEBUG] Contenu de la file d'attente : {list(queue.queue)}")

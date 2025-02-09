@@ -7,6 +7,7 @@ from handlers.utils.files import rename_file
 from handlers.utils.process_note_paths import is_folder_included, categ_extract
 from handlers.standalone.standalone import make_synthese_standalone, make_header_standalone
 from handlers.standalone.check_categ import process_sync_entete_with_path
+from handlers.utils.queue_manager import log_event_queue
 import logging
 from pathlib import Path
 import fnmatch
@@ -20,11 +21,14 @@ def process_single_note(filepath, dest_path=None):
         return
     # Obtenir le dossier contenant le fichier
     base_folder = os.path.dirname(filepath)
+    log_event_queue()
     
+        
     def process_import(filepath, base_folder):
         """ Fonction interne pour éviter la duplication de code """
         logging.info(f"[INFO] Import détecté : {filepath}")
         try:
+            log_event_queue()
             new_path = process_get_note_type(filepath)
             logging.debug(f"[DEBUG] process_single_note fin get_note_type new_path : {new_path}")
             filepath = new_path
@@ -37,10 +41,13 @@ def process_single_note(filepath, dest_path=None):
                 logging.info(f"[INFO] Conversation GPT détectée, déplacement vers : {base_folder}")
                 return
             category, subcategory = categ_extract(base_folder)
+            log_event_queue()
             import_normal(filepath, category, subcategory)
             logging.debug(f"[DEBUG] process_single_note import normal terminé {category}/{subcategory}")
+            log_event_queue()
             process_import_syntheses(filepath, category, subcategory)
             logging.info(f"[INFO] Import terminé pour : {filepath}")
+            log_event_queue()
         except Exception as e:
             logging.error(f"[ERREUR] Problème lors de l'import : {e}")
 
@@ -79,10 +86,11 @@ def process_single_note(filepath, dest_path=None):
 
     # 2. Sinon : Gérer les créations ou modifications
     else:
-        logging.debug(f"[DEBUG] démarrage du process_single_note pour : création - modif")
         if not os.path.exists(filepath):
             logging.warning(f"[WARNING] Le fichier n'existe pas ou plus : {filepath}")
             return
+        logging.debug(f"[DEBUG] démarrage du process_single_note pour : création - modif")
+        
         if "Z_technical/imports" in base_folder:
             process_import(filepath, base_folder)
 

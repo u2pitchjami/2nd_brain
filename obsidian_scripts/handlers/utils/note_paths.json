@@ -19,6 +19,10 @@
                 "critique": {
                     "description": "note about critique",
                     "prompt_name": "divers"
+                },
+                "comedy": {
+                    "description": "note about comedy",
+                    "prompt_name": "divers"
                 }
             }
         },
@@ -43,6 +47,10 @@
                 "addiction": {
                     "description": "Note about addiction",
                     "prompt_name": "divers"
+                },
+                "adhd": {
+                    "description": "note about adhd",
+                    "prompt_name": "divers"
                 }
             }
         },
@@ -51,7 +59,7 @@
             "prompt_name": "divers",
             "subcategories": {
                 "hardware": {
-                    "description": "note about Hardware",
+                    "description": "Note about hardware",
                     "prompt_name": "divers"
                 }
             }
@@ -78,7 +86,12 @@
         "music": {
             "description": "Notes related to about musical news about artists, albums etc...",
             "prompt_name": "divers",
-            "subcategories": {}
+            "subcategories": {
+                "music_production": {
+                    "description": "Note about music_production",
+                    "prompt_name": "divers"
+                }
+            }
         },
         "music_production": {
             "description": "Notes related to eletro techno music production, technics, tools, software, hardware, tips",
@@ -141,6 +154,10 @@
                 },
                 "bash": {
                     "description": "note about bash",
+                    "prompt_name": "divers"
+                },
+                "musical_production": {
+                    "description": "Note about musical_production",
                     "prompt_name": "divers"
                 }
             }
@@ -409,12 +426,6 @@
             "subcategory": null,
             "folder_type": "archive"
         },
-        "notes/cinema/Subcategorie": {
-            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Cinema/Subcategorie",
-            "category": "cinema",
-            "subcategory": "subcategorie",
-            "folder_type": "storage"
-        },
         "Z_Storage/Cinema/Critique": {
             "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Cinema/Critique",
             "category": "cinema",
@@ -423,12 +434,6 @@
         },
         "Z_Storage/Cinema/Critique/Archives": {
             "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Cinema/Critique/Archives",
-            "category": null,
-            "subcategory": null,
-            "folder_type": "archive"
-        },
-        "Archives": {
-            "path": "/mnt/user/Documents/Obsidian/notes/Archives",
             "category": null,
             "subcategory": null,
             "folder_type": "archive"
@@ -471,6 +476,138 @@
         },
         "Z_Storage/Music_production/Electro_techno/Archives": {
             "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Music_production/Electro_techno/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Health/ADHD": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Health/ADHD",
+            "category": "health",
+            "subcategory": "adhd",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Health/ADHD/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Health/ADHD/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Cinema/Comedy": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Cinema/Comedy",
+            "category": "cinema",
+            "subcategory": "comedy",
+            "folder_type": "storage"
+        },
+        "Z_Storage/It/Hardware": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/IT/Hardware",
+            "category": "it",
+            "subcategory": "hardware",
+            "folder_type": "storage"
+        },
+        "Z_Storage/IT/Hardware/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/IT/Hardware/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Programming/Musical_production": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Programming/Musical_production",
+            "category": "programming",
+            "subcategory": "musical_production",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Programming/Musical_production/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Programming/Musical_production/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Music/Music_production": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Music/Music_production",
+            "category": "music",
+            "subcategory": "music_production",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Music/Music_production/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Music/Music_production/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/AI/Theorical/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/AI/Theorical/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/AI/Ollama": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/AI/Ollama",
+            "category": "ai",
+            "subcategory": "ollama",
+            "folder_type": "storage"
+        },
+        "Z_Storage/AI/Ollama/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/AI/Ollama/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Cinema/Comedy/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Cinema/Comedy/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Organization/Sans titre": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Organization/Sans titre",
+            "category": "organization",
+            "subcategory": "sans titre",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Organization/Obsidian": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Organization/Obsidian",
+            "category": "organization",
+            "subcategory": "obsidian",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Organization/Obsidian/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Organization/Obsidian/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/AI/Sans titre": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/AI/Sans titre",
+            "category": "ai",
+            "subcategory": "sans titre",
+            "folder_type": "storage"
+        },
+        "Z_Storage/AI/Open_ai": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/AI/Open_ai",
+            "category": "ai",
+            "subcategory": "open_ai",
+            "folder_type": "storage"
+        },
+        "Z_Storage/AI/Open_ai/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/AI/Open_ai/Archives",
+            "category": null,
+            "subcategory": null,
+            "folder_type": "archive"
+        },
+        "Z_Storage/Music_production/Sans titre": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Music_production/Sans titre",
+            "category": "music_production",
+            "subcategory": "sans titre",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Music_production/Mix_harmonique": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Music_production/Mix_harmonique",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "folder_type": "storage"
+        },
+        "Z_Storage/Music_production/Mix_harmonique/Archives": {
+            "path": "/mnt/user/Documents/Obsidian/notes/Z_Storage/Music_production/Mix_harmonique/Archives",
             "category": null,
             "subcategory": null,
             "folder_type": "archive"
@@ -606,125 +743,6 @@
             "modified_at": "2025-02-08 21:10:06",
             "path": "notes/Z_Storage/Cinema/Critique/Archives/250208_Pourquoi_nous_n'avons_pas_aimé_The_Substance_-_Frustration_Magazine.md"
         },
-        "notes/Archives/250201_Python_Course_6_Multiplying_and_Dividing_Binary_Numbers.md": {
-            "title": null,
-            "category": null,
-            "subcategory": null,
-            "tags": [],
-            "status": null,
-            "created_at": null,
-            "modified_at": null
-        },
-        "notes/Z_Storage/Health/Mental_health/250208_Les_attentes_et_les_effets_du_diagnostic_1.md": {
-            "title": "\"Les attentes et les effets du diagnostic\"",
-            "category": "health",
-            "subcategory": "mental_health",
-            "tags": [
-                "TDAH",
-                "Diagnostic",
-                "Adulte",
-                "Trouble_du_déficit_de_l'attention_avec_hyperactivité",
-                "Psychologie",
-                "Soutien",
-                "Thérapie"
-            ],
-            "status": "synthesis",
-            "created_at": "2005-12-05",
-            "modified_at": "2025-02-08 21:42:33"
-        },
-        "notes/Z_Storage/Health/Mental_health/Archives/250208_Les_attentes_et_les_effets_du_diagnostic_1.md": {
-            "title": "\"Les attentes et les effets du diagnostic\"",
-            "category": "health",
-            "subcategory": "mental_health",
-            "tags": [
-                "TDAH",
-                "ADHD",
-                "Adults",
-                "Psychological_Diagnosis",
-                "Mental_Health",
-                "Neurodiversity",
-                "Mental_Illness"
-            ],
-            "status": "archive",
-            "created_at": "2005-12-05",
-            "modified_at": "2025-02-08 21:41:53"
-        },
-        "notes/Z_Storage/Health/Mental_health/250208_TDAH_et_addictions.md": {
-            "title": "\"TDAH et addictions\"",
-            "category": "health",
-            "subcategory": "mental_health",
-            "tags": [
-                "Attention_Deficit_Hyperactivity_Disorder_(ADHD)",
-                "Comorbidité_du_TDAH",
-                "Travail_de_l'attention",
-                "Travailleurs_hyperactifs",
-                "Tabac",
-                "Consommation_d'alcool",
-                "Soutien_familial",
-                "Thérapies_cognitivo-comportementales",
-                "Psycho-éducation",
-                "Auto-médication"
-            ],
-            "status": "synthesis",
-            "created_at": "2006-10-29",
-            "modified_at": "2025-02-08 21:43:46"
-        },
-        "notes/Z_Storage/Health/Mental_health/Archives/250208_TDAH_et_addictions.md": {
-            "title": "\"TDAH et addictions\"",
-            "category": "health",
-            "subcategory": "mental_health",
-            "tags": [
-                "Attention_Deficit_Hyperactivity_Disorder_(ADHD)",
-                "Comorbidity",
-                "Mental_Health",
-                "Substance_Abuse",
-                "Cognitive_Behavioral_Therapy",
-                "Psychological_Treatment"
-            ],
-            "status": "archive",
-            "created_at": "2006-10-29",
-            "modified_at": "2025-02-08 21:43:10"
-        },
-        "notes/Z_Storage/Health/Mental_health/250208_Les_attentes_et_les_effets_du_diagnostic_1_1.md": {
-            "title": "\"Les attentes et les effets du diagnostic\"",
-            "category": "health",
-            "subcategory": "mental_health",
-            "tags": [
-                "TDAH",
-                "Attention_Deficit_Hyperactivity_Disorder",
-                "Diagnosis",
-                "Adults",
-                "Mental_Health",
-                "Psychology",
-                "Neurology"
-            ],
-            "status": "synthesis",
-            "created_at": "2005-12-05",
-            "modified_at": "2025-02-08 21:44:40"
-        },
-        "notes/Z_Storage/Health/Mental_health/Archives/250208_Les_attentes_et_les_effets_du_diagnostic_1_1.md": {
-            "title": "\"Les attentes et les effets du diagnostic\"",
-            "category": "health",
-            "subcategory": "mental_health",
-            "tags": [
-                "TDAH",
-                "Attention_Deficit_Hyperactivity_Disorder",
-                "Adults",
-                "Diagnosis",
-                "Psychology",
-                "Mental_Health",
-                "Neurodiversity",
-                "Self-Esteem",
-                "Social_Life",
-                "Family",
-                "Therapy",
-                "Treatment",
-                "Support_Groups"
-            ],
-            "status": "archive",
-            "created_at": "2005-12-05",
-            "modified_at": "2025-02-08 21:44:08"
-        },
         "notes/Z_Storage/AI/Practical/250208_Qu'est-ce_que_Ollama_—_Klu.md": {
             "title": "\"Qu'est-ce que Ollama? — Klu\"",
             "category": "ai",
@@ -818,38 +836,6 @@
             "created_at": "2020-05-20",
             "modified_at": "2025-02-08 21:49:40"
         },
-        "notes/Z_Storage/Music_production/Electro_techno/250208_Les_qualités_des_personnes_avec_TDAH.md": {
-            "title": "\"Les qualités des personnes avec TDAH\"",
-            "category": "music_production",
-            "subcategory": "electro_techno",
-            "tags": [
-                "Attention_Deficit_Hyperactivity_Disorder",
-                "ADHD",
-                "Productivity",
-                "Motivation",
-                "Personal_Development",
-                "Self_Help",
-                "Career_Advice"
-            ],
-            "status": "synthesis",
-            "created_at": "2023-08-29",
-            "modified_at": "2025-02-08 21:51:09"
-        },
-        "notes/Z_Storage/Music_production/Electro_techno/Archives/250208_Les_qualités_des_personnes_avec_TDAH.md": {
-            "title": "\"Les qualités des personnes avec TDAH\"",
-            "category": "music_production",
-            "subcategory": "electro_techno",
-            "tags": [
-                "ADHD",
-                "Attention_Deficit_Hyperactivity_Disorder",
-                "Personal_Development",
-                "Productivity_Hacks",
-                "Employee_Engagement"
-            ],
-            "status": "archive",
-            "created_at": "2023-08-29",
-            "modified_at": "2025-02-08 21:50:39"
-        },
         "notes/Z_Storage/Health/Addiction/250208_Comorbidités_du_TDAH_de_l'adulte.md": {
             "title": "\"Comorbidités du TDAH de l'adulte\"",
             "category": "health",
@@ -912,34 +898,1241 @@
             "created_at": "2005-12-05",
             "modified_at": "2025-02-08 22:34:43"
         },
-        "notes/Z_Storage/Health/Addiction/250208_Comorbidités_du_TDAH_de_l'adulte_1.md": {
-            "title": "\"Comorbidités du TDAH de l'adulte\"",
-            "category": "health",
-            "subcategory": "addiction",
-            "tags": [
-                "attention_deficit_hyperactivity_disorder",
-                "treatment_options",
-                "comorbidities",
-                "trouble_du_débit_d'attention/hyperactivité",
-                "Trouble_du_Débit_d'Attention/Hyperactivité"
-            ],
-            "status": "synthesis",
-            "created_at": "2021-10-18",
-            "modified_at": "2025-02-08 23:43:35"
-        },
-        "notes/Z_Storage/Health/Addiction/Archives/250208_Comorbidités_du_TDAH_de_l'adulte_1.md": {
+        "notes/Z_Storage/Health/Addiction/250209_Comorbidités_du_TDAH_de_l'adulte.md": {
             "title": "\"Comorbidités du TDAH de l'adulte\"",
             "category": "health",
             "subcategory": "addiction",
             "tags": [
                 "Attention_Deficit_Hyperactivity_Disorder",
-                "Comorbidities",
-                "Mental_Health",
-                "Neurodiverse_Conditions"
+                "TDAH",
+                "Psychology",
+                "Mental_Health"
+            ],
+            "status": "synthesis",
+            "created_at": "2021-10-18",
+            "modified_at": "2025-02-09 14:28:04"
+        },
+        "notes/Z_Storage/Health/Addiction/Archives/250209_Comorbidités_du_TDAH_de_l'adulte.md": {
+            "title": "\"Comorbidités du TDAH de l'adulte\"",
+            "category": "health",
+            "subcategory": "addiction",
+            "tags": [
+                "Childhood_ADHD",
+                "ADHD_comorbidities",
+                "Psychiatric_disorders",
+                "Neurodevelopmental_disorders"
             ],
             "status": "archive",
             "created_at": "2021-10-18",
-            "modified_at": "2025-02-08 23:42:56"
+            "modified_at": "2025-02-09 14:26:54"
+        },
+        "notes/Z_Storage/Health/ADHD/250208_Les_qualités_des_personnes_avec_TDAH.md": {
+            "title": "\"Les qualités des personnes avec TDAH\"",
+            "category": "health",
+            "subcategory": "adhd",
+            "tags": [
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "ADHD",
+                "Productivity",
+                "Motivation",
+                "Personal_Development",
+                "Self_Help",
+                "Career_Advice"
+            ],
+            "status": "synthesis",
+            "created_at": "2023-08-29",
+            "modified_at": "2025-02-09 14:50:00"
+        },
+        "notes/Z_Storage/Health/ADHD/Archives/250208_Les_qualités_des_personnes_avec_TDAH.md": {
+            "title": "\"Les qualités des personnes avec TDAH\"",
+            "category": "health",
+            "subcategory": "adhd",
+            "tags": [
+                "ADHD",
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "Personal_Development",
+                "Productivity_Hacks",
+                "Employee_Engagement"
+            ],
+            "status": "archive",
+            "created_at": "2023-08-29",
+            "modified_at": "2025-02-09 14:50:00"
+        },
+        "notes/Z_Storage/Music_production/Electro_techno/250209_5_Quick_and_Easy_Music_Theory_Tips_for_Electronic_Music_Producers__Envato_Tuts+.md": {
+            "title": "\"5 Quick and Easy Music Theory Tips for Electronic Music Producers | Envato Tuts+\"",
+            "category": "music_production",
+            "subcategory": "electro_techno",
+            "tags": [
+                "music_theory",
+                "songwriting",
+                "composition",
+                "melody",
+                "harmony",
+                "chord_progressions"
+            ],
+            "status": "synthesis",
+            "created_at": "2017-08-21",
+            "modified_at": "2025-02-09 19:11:18"
+        },
+        "notes/Z_Storage/Music_production/Electro_techno/Archives/250209_5_Quick_and_Easy_Music_Theory_Tips_for_Electronic_Music_Producers__Envato_Tuts+.md": {
+            "title": "\"5 Quick and Easy Music Theory Tips for Electronic Music Producers | Envato Tuts+\"",
+            "category": "music_production",
+            "subcategory": "electro_techno",
+            "tags": [
+                "music_production",
+                "songwriting",
+                "harmony_theory",
+                "melody_writing",
+                "ear_training",
+                "music_theory"
+            ],
+            "status": "archive",
+            "created_at": "2017-08-21",
+            "modified_at": "2025-02-09 19:10:23"
+        },
+        "notes/Z_Storage/Music_production/Electro_techno/250209_10_Top_Tips_to_Create_More_Powerful_Drops__Envato_Tuts+.md": {
+            "title": "\"10 Top Tips to Create More Powerful Drops | Envato Tuts+\"",
+            "category": "music_production",
+            "subcategory": "electro_techno",
+            "tags": [
+                "Electronic_Music_Production",
+                "Mastering_and_Audio_Engineering",
+                "Music_Composition_and_Production_Techniques",
+                "Ableton_Live_Tutorials"
+            ],
+            "status": "synthesis",
+            "created_at": "2017-11-13",
+            "modified_at": "2025-02-09 19:19:15"
+        },
+        "notes/Z_Storage/Music_production/Electro_techno/Archives/250209_10_Top_Tips_to_Create_More_Powerful_Drops__Envato_Tuts+.md": {
+            "title": "\"10 Top Tips to Create More Powerful Drops | Envato Tuts+\"",
+            "category": "music_production",
+            "subcategory": "electro_techno",
+            "tags": [
+                "music_production",
+                "electronic_dance_music",
+                "drop_building",
+                "buildup_techniques",
+                "DJing",
+                "Electronic_Music_Production"
+            ],
+            "status": "archive",
+            "created_at": "2017-11-13",
+            "modified_at": "2025-02-09 19:18:24"
+        },
+        "notes/Z_Storage/IT/Hardware/250209_Comparaison_des_gammes_Ventilateurs_chez_be_quiet!.md": {
+            "title": "\"Comparaison des gammes Ventilateurs chez be quiet!\"",
+            "category": "it",
+            "subcategory": "Hardware",
+            "tags": [
+                "BeQuiet",
+                "Ventilateurs_de_casque",
+                "PC_hardware",
+                "Cooling_solutions",
+                "Computer_fans",
+                "Silent_fans",
+                "Gaming_laptops",
+                "Desktop_computers"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 19:20:03"
+        },
+        "notes/Z_Storage/IT/Hardware/Archives/250209_Comparaison_des_gammes_Ventilateurs_chez_be_quiet!.md": {
+            "title": "\"Comparaison des gammes Ventilateurs chez be quiet!\"",
+            "category": "it",
+            "subcategory": "Hardware",
+            "tags": [
+                "Ventilateur",
+                "Bequiet",
+                "Silent_Wings_4",
+                "Light_Wings",
+                "Shadow_Wings_2",
+                "Pure_Wings_3",
+                "Pure_Wings_2"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 19:19:34"
+        },
+        "notes/Z_Storage/Programming/Musical_production/250209_ChatGPT_at_the_Heart_–_Building_a_Movie_Recommendation_Python_Web_App_in_2023_–_Be_on_the_Right_Side_of_Change.md": {
+            "title": "ChatGPT at the Heart – Building a Movie Recommendation Python Web App in 2023 – Be on the Right Side of Change",
+            "category": "programming",
+            "subcategory": "musical_production",
+            "tags": [
+                "chatgpt",
+                "openai",
+                "vercel",
+                "python",
+                "programming"
+            ],
+            "status": "synthesis",
+            "created_at": "2023-02-14",
+            "modified_at": "2025-02-09 19:52:05"
+        },
+        "notes/Z_Storage/Programming/Musical_production/Archives/250209_ChatGPT_at_the_Heart_–_Building_a_Movie_Recommendation_Python_Web_App_in_2023_–_Be_on_the_Right_Side_of_Change.md": {
+            "title": "\"ChatGPT at the Heart – Building a Movie Recommendation Python Web App in 2023 – Be on the Right Side of Change\"",
+            "category": "programming",
+            "subcategory": "musical_production",
+            "tags": [
+                "python",
+                "web_development",
+                "chatgpt",
+                "OpenAI",
+                "Vercel",
+                "github"
+            ],
+            "status": "archive",
+            "created_at": "2023-02-14",
+            "modified_at": "2025-02-09 19:51:27"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_MIX_HARMONIQUE_-_Comment_mixer_avec_la_roue_de_camelot.md": {
+            "title": "\"MIX HARMONIQUE - Comment mixer avec la roue de camelot\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "mixing_music",
+                "audio_production",
+                "music_editing"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:01:03"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_MIX_HARMONIQUE_-_Comment_mixer_avec_la_roue_de_camelot.md": {
+            "title": "\"MIX HARMONIQUE - Comment mixer avec la roue de camelot\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Mixing_Techniques",
+                "Audio_Mixing",
+                "Music_Production",
+                "Sound_Engineering",
+                "Music_Theory"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 19:59:57"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_Mix_Harmonique_-_Comment_mixer_tout_avec_n'importe_quoi__Key_Adjust,.md": {
+            "title": "\"Mix Harmonique - Comment mixer tout avec n'importe quoi ? Key Adjust,\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "DJ_equipment",
+                "Rekordbox",
+                "Traktor",
+                "audio_editing",
+                "music_production"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:03:33"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_Mix_Harmonique_-_Comment_mixer_tout_avec_n'importe_quoi__Key_Adjust,.md": {
+            "title": "\"Mix Harmonique - Comment mixer tout avec n'importe quoi ? Key Adjust,\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "mixing",
+                "harmonic_mix",
+                "key_adjust",
+                "Traktor",
+                "Mixed_in_Key",
+                "Rekordbox",
+                "music_production",
+                "sound_engineering"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:02:39"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_MIX_HARMONIQUE_-_Explications_approfondies_du_fonctionnement_de_la_rou.md": {
+            "title": "\"MIX HARMONIQUE - Explications approfondies du fonctionnement de la rou\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Camelot_wheel",
+                "cycle_of_fifths",
+                "music_theory",
+                "tonality",
+                "harmony",
+                "mixing_key",
+                "electronic_music"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:15:01"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_MIX_HARMONIQUE_-_Explications_approfondies_du_fonctionnement_de_la_rou.md": {
+            "title": "\"MIX HARMONIQUE - Explications approfondies du fonctionnement de la rou\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Cycle_of_Fifths",
+                "Camelot's_Wheel",
+                "Music_Theory",
+                "Harmony",
+                "Musical_Composition"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:14:22"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_MIX_HARMONIQUE_-_La_technique_secrète_d'Andy_Mac_Door.md": {
+            "title": "\"MIX HARMONIQUE - La technique secrète d'Andy Mac Door\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "music_mixing",
+                "bass_level",
+                "audio_engineering",
+                "sound_design"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:16:30"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_MIX_HARMONIQUE_-_La_technique_secrète_d'Andy_Mac_Door.md": {
+            "title": "\"MIX HARMONIQUE - La technique secrète d'Andy Mac Door\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "mixing_harmonique",
+                "key_adjust",
+                "Andy_Mac_Door",
+                "technique_secrete",
+                "cycle_des_quintes",
+                "roue_de_camelot"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:15:48"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_MIX_HARMONIQUE_-_Qu'est_ce_que_le_Mixage_Harmonique.md": {
+            "title": "\"MIX HARMONIQUE - Qu'est ce que le Mixage Harmonique ?\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "mixing",
+                "harmony",
+                "music_theory",
+                "DJ_techniques",
+                "key_identification",
+                "Roue_de_Camelot"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:17:46"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_MIX_HARMONIQUE_-_Qu'est_ce_que_le_Mixage_Harmonique.md": {
+            "title": "\"MIX HARMONIQUE - Qu'est ce que le Mixage Harmonique ?\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "DJ",
+                "music_theory",
+                "harmony",
+                "camelot_wheel",
+                "circle_of_fifths",
+                "key_recognition",
+                "mixed_in_key"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:17:01"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_MIXED_IN_KEY_-_Test_et_critique_de_la_version_7.md": {
+            "title": "\"MIXED IN KEY - Test et critique de la version 7\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "mixed-in-key",
+                "software_review",
+                "music_production",
+                "DJ_software",
+                "analisis_de_musique",
+                "tonalité_et_note_fondamentale"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:18:49"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_MIXED_IN_KEY_-_Test_et_critique_de_la_version_7.md": {
+            "title": "\"MIXED IN KEY - Test et critique de la version 7\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Mixed_In_Key",
+                "Music_Analysis_Software",
+                "DJ_Software",
+                "Beat_Detection",
+                "BPM_Analysis",
+                "Clé_Harmonique",
+                "Tonalité_Analysis",
+                "Audio_Editing",
+                "Music_Production"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:18:21"
+        },
+        "notes/Z_Storage/AI/Practical/250209_Nomic_Embed_Text_V1.5_·_Models_·_Dataloop.md": {
+            "title": "\"Nomic Embed Text V1.5 · Models · Dataloop\"",
+            "category": "ai",
+            "subcategory": "practical",
+            "tags": [
+                "tokenisation_de_texte",
+                "analyse_linguistique",
+                "génération_de_vecteurs_de_représentation",
+                "classification_du_texte",
+                "regroupement_de_documents"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 20:21:42"
+        },
+        "notes/Z_Storage/AI/Practical/Archives/250209_Nomic_Embed_Text_V1.5_·_Models_·_Dataloop.md": {
+            "title": "\"Nomic Embed Text V1.5 · Models · Dataloop\"",
+            "category": "ai",
+            "subcategory": "practical",
+            "tags": [
+                "NLP",
+                "Natural_Language_Processing",
+                "Transformers",
+                "Bert",
+                "PyTorch",
+                "Deep_Learning",
+                "Computer_Vision",
+                "Multimodal_Models"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:21:00"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_Nomic_Embeddings — A_cheaper_and_better_way_to_create_embeddings.md": {
+            "title": "\"Nomic Embeddings — A cheaper and better way to create embeddings\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Large_Language_Models",
+                "Nomic_v1.5",
+                "Ada_-_3",
+                "Text_Embeddings",
+                "Multimodal_RAG"
+            ],
+            "status": "synthesis",
+            "created_at": "2024-03-21",
+            "modified_at": "2025-02-09 20:23:58"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_Nomic_Embeddings — A_cheaper_and_better_way_to_create_embeddings.md": {
+            "title": "\"Nomic Embeddings — A cheaper and better way to create embeddings\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Nomic_Embeddings",
+                "OpenAI_Text_Embeddings",
+                "Multimodal_RAG",
+                "Natural_Language_Processing",
+                "Machine_Learning"
+            ],
+            "status": "archive",
+            "created_at": "2024-03-21",
+            "modified_at": "2025-02-09 20:23:08"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_Obsidian__une_puissante_application_pour_organiser_votre_base_de_connaissances.md": {
+            "title": "\"Obsidian",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "No_tags_found"
+            ],
+            "status": "synthesis",
+            "created_at": "2022-03-20",
+            "modified_at": "2025-02-09 20:25:48"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_Obsidian__une_puissante_application_pour_organiser_votre_base_de_connaissances.md": {
+            "title": "\"Obsidian",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Productivity",
+                "Note-taking",
+                "Task_management",
+                "Personal_knowledge_base",
+                "Digital_organization"
+            ],
+            "status": "archive",
+            "created_at": "2022-03-20",
+            "modified_at": "2025-02-09 20:25:01"
+        },
+        "notes/Z_Storage/Music_production/Electro_techno/250209_obsidian-copilotlocal_copilot.md_at_master_·_logancyangobsidian-copilot.md": {
+            "title": "\"obsidian-copilot/local_copilot.md at master · logancyang/obsidian-copilot\"",
+            "category": "music_production",
+            "subcategory": "electro_techno",
+            "tags": [
+                "nomic-embed-text",
+                "ollama",
+                "nomic-embed-large"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-01-22",
+            "modified_at": "2025-02-09 20:27:18"
+        },
+        "notes/Z_Storage/Music_production/Electro_techno/Archives/250209_obsidian-copilotlocal_copilot.md_at_master_·_logancyangobsidian-copilot.md": {
+            "title": "\"obsidian-copilot/local_copilot.md at master · logancyang/obsidian-copilot\"",
+            "category": "music_production",
+            "subcategory": "electro_techno",
+            "tags": [
+                "LM_Studio",
+                "Copilot",
+                "Obsidian",
+                "Local_Models",
+                "AI",
+                "Chatbots"
+            ],
+            "status": "archive",
+            "created_at": "2025-01-22",
+            "modified_at": "2025-02-09 20:26:40"
+        },
+        "notes/Z_Storage/AI/Practical/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md": {
+            "title": "\"OpenAI's Operator",
+            "category": "ai",
+            "subcategory": "practical",
+            "tags": [
+                "Artificial_Intelligence",
+                "Machine_Learning",
+                "Web_Interface",
+                "Language_Understanding",
+                "IA_Applications"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-01-24",
+            "modified_at": "2025-02-09 20:29:54"
+        },
+        "notes/Z_Storage/AI/Practical/Archives/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md": {
+            "title": "\"OpenAI's Operator",
+            "category": "ai",
+            "subcategory": "practical",
+            "tags": [
+                "AI_Agents",
+                "Accessibility",
+                "Computer_Use",
+                "Project_Mariner",
+                "Anthropic's_Claude_3.5_Sonnet"
+            ],
+            "status": "archive",
+            "created_at": "2025-01-24",
+            "modified_at": "2025-02-09 20:29:19"
+        },
+        "notes/Z_technical/imports/Llama2 and Text Summarization.md": {
+            "title": "Llama2 and Text Summarization",
+            "category": null,
+            "subcategory": null,
+            "tags": [],
+            "status": "Draft",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09"
+        },
+        "notes/Z_technical/imports/Mes techniques pour contrer les distractions.md": {
+            "title": "Mes techniques pour contrer les distractions",
+            "category": null,
+            "subcategory": null,
+            "tags": [],
+            "status": "Draft",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_Llama2_and_Text_Summarization.md": {
+            "title": "\"Llama2 and Text Summarization\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "text_summarization",
+                "LLaMA_2_model",
+                "natural_language_processing",
+                "machine_learning",
+                "data_preparation",
+                "template_generation",
+                "text_generation",
+                "summary_evaluation"
+            ],
+            "status": "synthesis",
+            "created_at": "2023-09-09",
+            "modified_at": "2025-02-09 22:10:28"
+        },
+        "notes/Z_technical/imports/Miracle ou mirage du modèle économique et social des pays scandinaves.md": {
+            "title": "Miracle ou mirage du modèle économique et social des pays scandinaves",
+            "category": null,
+            "subcategory": null,
+            "tags": [],
+            "status": "Draft",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09"
+        },
+        "notes/Z_technical/imports/Mise au point de Llama 3.2 et utilisation locale  Un guide pas à pas.md": {
+            "title": "Mise au point de Llama 3.2 et utilisation locale  Un guide pas à pas",
+            "category": null,
+            "subcategory": null,
+            "tags": [],
+            "status": "Draft",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_Llama2_and_Text_Summarization.md": {
+            "title": "\"Llama2 and Text Summarization\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Large_Language_Models",
+                "Text_Summarization",
+                "GPU_Resources",
+                "Computational_Complexity",
+                "NLP_Applications"
+            ],
+            "status": "archive",
+            "created_at": "2023-09-09",
+            "modified_at": "2025-02-09 22:10:09"
+        },
+        "notes/Z_technical/imports/OpenAI's Operator Examples, Use Cases, Competition & More.md": {
+            "title": "OpenAI's Operator Examples, Use Cases, Competition & More",
+            "category": null,
+            "subcategory": null,
+            "tags": [],
+            "status": "Draft",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09"
+        },
+        "notes/Z_Storage/Music/Music_production/250209_Mes_techniques_pour_contrer_les_distractions.md": {
+            "title": "\"Mes techniques pour contrer les distractions\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "sécurité_en_ligne",
+                "freedom.to",
+                "LeechBlock",
+                "verrouillage_d'applications_mobiles",
+                "mot_de_passe_sécurisé"
+            ],
+            "status": "synthesis",
+            "created_at": "2024-11-17",
+            "modified_at": "2025-02-09 22:11:12"
+        },
+        "notes/Z_Storage/Music/Music_production/Archives/250209_Mes_techniques_pour_contrer_les_distractions.md": {
+            "title": "\"Mes techniques pour contrer les distractions\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Freedom.to",
+                "distraction_blocking",
+                "productivity",
+                "Android",
+                "Windows",
+                "macOS"
+            ],
+            "status": "archive",
+            "created_at": "2024-11-17",
+            "modified_at": "2025-02-09 22:10:46"
+        },
+        "notes/Z_Storage/Politics/Europe/250209_Miracle_ou_mirage_du_modèle_économique_et_social_des_pays_scandinaves.md": {
+            "title": "\"Miracle ou mirage du modèle économique et social des pays scandinaves ?\"",
+            "category": "politics",
+            "subcategory": "europe",
+            "tags": [
+                "Scandinavian_economic_model",
+                "Social_dialogue",
+                "Fiscal_policy",
+                "Innovation",
+                "Competitiveness",
+                "Transition_to_renewable_energy"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 22:12:24"
+        },
+        "notes/Z_Storage/Politics/Europe/Archives/250209_Miracle_ou_mirage_du_modèle_économique_et_social_des_pays_scandinaves.md": {
+            "title": "\"Miracle ou mirage du modèle économique et social des pays scandinaves ?\"",
+            "category": "politics",
+            "subcategory": "europe",
+            "tags": [
+                "Scandinavian_Model",
+                "Flexisécurité_Danoise",
+                "Dialogue_Social",
+                "Fiscalité_Progressive",
+                "Paysage_Économique",
+                "Energie_Renouvelable",
+                "Énergies_Fossiles",
+                "France",
+                "UE",
+                "Egalité_Homme-Femme"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 22:11:42"
+        },
+        "notes/Z_Storage/AI/Theorical/250209_Mise_au_point_de_Llama_3.2_et_utilisation_locale__Un_guide_pas_à_pas.md": {
+            "title": "\"Mise au point de Llama 3.2 et utilisation locale",
+            "category": "ai",
+            "subcategory": "theorical",
+            "tags": [
+                "tutoriel_sur_les_outils_d'Hugging_Face",
+                "modèles_de_langage_génératifs",
+                "Llama_3.2",
+                "affinement_de_modèles",
+                "utilisation_de_Hugging_Face_Hub"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-01-16",
+            "modified_at": "2025-02-09 22:19:33"
+        },
+        "notes/Z_Storage/AI/Theorical/Archives/250209_Mise_au_point_de_Llama_3.2_et_utilisation_locale__Un_guide_pas_à_pas.md": {
+            "title": "\"Mise au point de Llama 3.2 et utilisation locale",
+            "category": "ai",
+            "subcategory": "theorical",
+            "tags": [
+                "llega",
+                "llm",
+                "Hugging_Face",
+                "Llama_3.2",
+                "Chatbot",
+                "IA",
+                "Assistance_à_la_clientèle"
+            ],
+            "status": "archive",
+            "created_at": "2025-01-16",
+            "modified_at": "2025-02-09 22:18:32"
+        },
+        "notes/Z_Storage/AI/Theorical/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md": {
+            "title": "\"OpenAI's Operator",
+            "category": "ai",
+            "subcategory": "theorical",
+            "tags": [
+                "Artificial_Intelligence",
+                "Web_browser",
+                "Machine_Learning",
+                "AI",
+                "OpenAI"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-01-24",
+            "modified_at": "2025-02-09 22:22:18"
+        },
+        "notes/Z_Storage/AI/Theorical/Archives/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md": {
+            "title": "\"OpenAI's Operator",
+            "category": "ai",
+            "subcategory": "theorical",
+            "tags": [
+                "AI",
+                "Agent",
+                "Accessibility",
+                "User_Interface",
+                "Computer_Use",
+                "Web_Interaction",
+                "DeepMind",
+                "Google",
+                "Project_Mariner",
+                "Anthropic",
+                "Claude_3.5_Sonnet"
+            ],
+            "status": "archive",
+            "created_at": "2025-01-24",
+            "modified_at": "2025-02-09 22:21:38"
+        },
+        "notes/Z_Storage/AI/Ollama/250208_Qu'est-ce_que_Ollama_—_Klu.md": {
+            "title": "\"Qu'est-ce que Ollama? — Klu\"",
+            "category": "ai",
+            "subcategory": "ollama",
+            "tags": [
+                "Language_Models",
+                "AI",
+                "Generative_Models",
+                "Machine_Learning"
+            ],
+            "status": "synthesis",
+            "created_at": "2023-07-04",
+            "modified_at": "2025-02-09 23:10:34"
+        },
+        "notes/Z_Storage/AI/Ollama/Archives/250208_Qu'est-ce_que_Ollama_—_Klu.md": {
+            "title": "\"Qu'est-ce que Ollama? — Klu\"",
+            "category": "ai",
+            "subcategory": "ollama",
+            "tags": [
+                "Machine_Learning",
+                "Artificial_Intelligence",
+                "Language_Models",
+                "Deep_Learning"
+            ],
+            "status": "archive",
+            "created_at": "2023-07-04",
+            "modified_at": "2025-02-09 23:10:34"
+        },
+        "notes/Z_Storage/AI/Ollama/250209_Mise_au_point_de_Llama_3.2_et_utilisation_locale__Un_guide_pas_à_pas.md": {
+            "title": "\"Mise au point de Llama 3.2 et utilisation locale",
+            "category": "ai",
+            "subcategory": "ollama",
+            "tags": [
+                "tutoriel_sur_les_outils_d'Hugging_Face",
+                "modèles_de_langage_génératifs",
+                "Llama_3.2",
+                "affinement_de_modèles",
+                "utilisation_de_Hugging_Face_Hub"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-01-16",
+            "modified_at": "2025-02-09 23:10:42"
+        },
+        "notes/Z_Storage/AI/Ollama/Archives/250209_Mise_au_point_de_Llama_3.2_et_utilisation_locale__Un_guide_pas_à_pas.md": {
+            "title": "\"Mise au point de Llama 3.2 et utilisation locale",
+            "category": "ai",
+            "subcategory": "theorical",
+            "tags": [
+                "llega",
+                "llm",
+                "Hugging_Face",
+                "Llama_3.2",
+                "Chatbot",
+                "IA",
+                "Assistance_à_la_clientèle"
+            ],
+            "status": "archive",
+            "created_at": "2025-01-16",
+            "modified_at": "2025-02-09 22:18:32",
+            "path": "notes/Z_Storage/AI/Ollama/Archives/250209_Mise_au_point_de_Llama_3.2_et_utilisation_locale__Un_guide_pas_à_pas.md"
+        },
+        "notes/Z_Storage/Cinema/Comedy/250208_Office_space__la_comédie_culte_sur_le_travail_néolibéral,_en_avance_sur_son_temps_-_Frustration_Magazine.md": {
+            "title": "\"Office space",
+            "category": "cinema",
+            "subcategory": "comedy",
+            "tags": [
+                "comédie",
+                "cinéma",
+                "film_culte",
+                "mouvement_quiet_quitting",
+                "grande_démission",
+                "diversification_de_la_main-d'œuvre"
+            ],
+            "status": "synthesis",
+            "created_at": "2024-10-03",
+            "modified_at": "2025-02-09 23:11:00"
+        },
+        "notes/Z_Storage/Cinema/Comedy/Archives/250208_Office_space__la_comédie_culte_sur_le_travail_néolibéral,_en_avance_sur_son_temps_-_Frustration_Magazine.md": {
+            "title": "\"Office space",
+            "category": "cinema",
+            "subcategory": "musical",
+            "tags": [
+                "Comédie_américaine",
+                "Film_satirique",
+                "Critique_de_la_société_capitaliste",
+                "Humour_social",
+                "Diversité_professionnelle",
+                "Études_américaines"
+            ],
+            "status": "archive",
+            "created_at": "2024-10-03",
+            "modified_at": "2025-02-08 21:06:43",
+            "path": "notes/Z_Storage/Cinema/Comedy/Archives/250208_Office_space__la_comédie_culte_sur_le_travail_néolibéral,_en_avance_sur_son_temps_-_Frustration_Magazine.md"
+        },
+        "notes/Z_Storage/Health/ADHD/250209_Comorbidités_du_TDAH_de_l'adulte.md": {
+            "title": "\"Comorbidités du TDAH de l'adulte\"",
+            "category": "health",
+            "subcategory": "adhd",
+            "tags": [
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "TDAH",
+                "Psychology",
+                "Mental_Health"
+            ],
+            "status": "synthesis",
+            "created_at": "2021-10-18",
+            "modified_at": "2025-02-09 23:14:14"
+        },
+        "notes/Z_Storage/Health/ADHD/Archives/250209_Comorbidités_du_TDAH_de_l'adulte.md": {
+            "title": "\"Comorbidités du TDAH de l'adulte\"",
+            "category": "health",
+            "subcategory": "addiction",
+            "tags": [
+                "Childhood_ADHD",
+                "ADHD_comorbidities",
+                "Psychiatric_disorders",
+                "Neurodevelopmental_disorders"
+            ],
+            "status": "archive",
+            "created_at": "2021-10-18",
+            "modified_at": "2025-02-09 14:26:54",
+            "path": "notes/Z_Storage/Health/ADHD/Archives/250209_Comorbidités_du_TDAH_de_l'adulte.md"
+        },
+        "notes/Z_Storage/Health/ADHD/250208_Les_attentes_et_les_effets_du_diagnostic.md": {
+            "title": "\"Les attentes et les effets du diagnostic\"",
+            "category": "health",
+            "subcategory": "adhd",
+            "tags": [
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "TDAH",
+                "Adult_Diagnosis",
+                "Psychological_Disorder",
+                "Mental_Health",
+                "Neurodevelopmental_Disorder"
+            ],
+            "status": "synthesis",
+            "created_at": "2005-12-05",
+            "modified_at": "2025-02-09 23:14:29"
+        },
+        "notes/Z_Storage/Health/ADHD/Archives/250208_Les_attentes_et_les_effets_du_diagnostic.md": {
+            "title": "\"Les attentes et les effets du diagnostic\"",
+            "category": "health",
+            "subcategory": "addiction",
+            "tags": [
+                "TDAH",
+                "adults",
+                "diagnosis",
+                "mental_health",
+                "psychology",
+                "ADHD_diagnosis",
+                "medication",
+                "therapy",
+                "self-help"
+            ],
+            "status": "archive",
+            "created_at": "2005-12-05",
+            "modified_at": "2025-02-08 22:34:43",
+            "path": "notes/Z_Storage/Health/ADHD/Archives/250208_Les_attentes_et_les_effets_du_diagnostic.md"
+        },
+        "notes/Z_Storage/Health/ADHD/250208_Le_TDAH_et_les_addictions.md": {
+            "title": "\"Le TDAH et les addictions\"",
+            "category": "health",
+            "subcategory": "adhd",
+            "tags": [
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "Addiction_Prevention",
+                "Impulsivity",
+                "Agression",
+                "Personality_Traits",
+                "Environmental_Factors"
+            ],
+            "status": "synthesis",
+            "created_at": "2020-05-20",
+            "modified_at": "2025-02-09 23:14:57"
+        },
+        "notes/Z_Storage/Health/ADHD/Archives/250208_Le_TDAH_et_les_addictions.md": {
+            "title": "\"Le TDAH et les addictions\"",
+            "category": "health",
+            "subcategory": "addiction",
+            "tags": [
+                "Addiction",
+                "Attention_Deficit_Hyperactivity_Disorder_(ADHD)",
+                "Comorbidities",
+                "Dependence",
+                "Impulsivity",
+                "Mental_health",
+                "Psychiatry",
+                "Psychology"
+            ],
+            "status": "archive",
+            "created_at": "2020-05-20",
+            "modified_at": "2025-02-08 21:49:40",
+            "path": "notes/Z_Storage/Health/ADHD/Archives/250208_Le_TDAH_et_les_addictions.md"
+        },
+        "notes/Z_Storage/Health/ADHD/250208_Diagnostic_positif_du_TDAH_chez_l'adulte.md": {
+            "title": "\"Diagnostic positif du TDAH chez l'adulte\"",
+            "category": "health",
+            "subcategory": "adhd",
+            "tags": [
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "TDAH",
+                "Adults",
+                "Neurodevelopmental_Disorders",
+                "Psychiatric_Conditions",
+                "Comorbidities"
+            ],
+            "status": "synthesis",
+            "created_at": "2021-11-04",
+            "modified_at": "2025-02-09 23:15:19"
+        },
+        "notes/Z_Storage/Health/ADHD/Archives/250208_Diagnostic_positif_du_TDAH_chez_l'adulte.md": {
+            "title": "\"Diagnostic positif du TDAH chez l'adulte\"",
+            "category": "health",
+            "subcategory": "mental_health",
+            "tags": [
+                "Attention_Deficit_Hyperactivity_Disorder",
+                "ADHD",
+                "Neurodevelopmental_Disorders",
+                "Psychiatric_Disorders",
+                "Childhood_Disorders"
+            ],
+            "status": "archive",
+            "created_at": "2021-11-04",
+            "modified_at": "2025-02-08 21:48:08",
+            "path": "notes/Z_Storage/Health/ADHD/Archives/250208_Diagnostic_positif_du_TDAH_chez_l'adulte.md"
+        },
+        "notes/Z_Storage/AI/Ollama/250209_Llama2_and_Text_Summarization.md": {
+            "title": "\"Llama2 and Text Summarization\"",
+            "category": "ai",
+            "subcategory": "ollama",
+            "tags": [
+                "text_summarization",
+                "LLaMA_2_model",
+                "natural_language_processing",
+                "machine_learning",
+                "data_preparation",
+                "template_generation",
+                "text_generation",
+                "summary_evaluation"
+            ],
+            "status": "synthesis",
+            "created_at": "2023-09-09",
+            "modified_at": "2025-02-09 23:16:31"
+        },
+        "notes/Z_Storage/AI/Ollama/Archives/250209_Llama2_and_Text_Summarization.md": {
+            "title": "\"Llama2 and Text Summarization\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "Large_Language_Models",
+                "Text_Summarization",
+                "GPU_Resources",
+                "Computational_Complexity",
+                "NLP_Applications"
+            ],
+            "status": "archive",
+            "created_at": "2023-09-09",
+            "modified_at": "2025-02-09 22:10:09",
+            "path": "notes/Z_Storage/AI/Ollama/Archives/250209_Llama2_and_Text_Summarization.md"
+        },
+        "notes/Z_Storage/Health/Addiction/Archives/250209_Mes_techniques_pour_contrer_les_distractions.md": {
+            "title": "\"Mes techniques pour contrer les distractions\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "sécurité_en_ligne",
+                "freedom.to",
+                "LeechBlock",
+                "verrouillage_d'applications_mobiles",
+                "mot_de_passe_sécurisé"
+            ],
+            "status": "synthesis",
+            "created_at": "2024-11-17",
+            "modified_at": "2025-02-09 22:11:12",
+            "path": "notes/Z_Storage/Health/Addiction/Archives/250209_Mes_techniques_pour_contrer_les_distractions.md"
+        },
+        "notes/Z_Storage/Organization/Obsidian/250209_Obsidian__une_puissante_application_pour_organiser_votre_base_de_connaissances.md": {
+            "title": "\"Obsidian",
+            "category": "organization",
+            "subcategory": "obsidian",
+            "tags": [
+                "No_tags_found"
+            ],
+            "status": "synthesis",
+            "created_at": "2022-03-20",
+            "modified_at": "2025-02-09 23:17:49"
+        },
+        "notes/Z_Storage/Organization/Obsidian/Archives/250209_Obsidian__une_puissante_application_pour_organiser_votre_base_de_connaissances.md": {
+            "title": "\"Obsidian",
+            "category": "organization",
+            "subcategory": "obsidian",
+            "tags": [
+                "Productivity",
+                "Note-taking",
+                "Task_management",
+                "Personal_knowledge_base",
+                "Digital_organization"
+            ],
+            "status": "archive",
+            "created_at": "2022-03-20",
+            "modified_at": "2025-02-09 23:17:49"
+        },
+        "notes/Z_Storage/AI/Open_ai/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md": {
+            "title": "\"OpenAI's Operator",
+            "category": "ai",
+            "subcategory": "open_ai",
+            "tags": [
+                "Artificial_Intelligence",
+                "Web_browser",
+                "Machine_Learning",
+                "AI",
+                "OpenAI"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-01-24",
+            "modified_at": "2025-02-09 23:21:54"
+        },
+        "notes/Z_Storage/AI/Open_ai/Archives/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md": {
+            "title": "\"OpenAI's Operator",
+            "category": "ai",
+            "subcategory": "theorical",
+            "tags": [
+                "AI",
+                "Agent",
+                "Accessibility",
+                "User_Interface",
+                "Computer_Use",
+                "Web_Interaction",
+                "DeepMind",
+                "Google",
+                "Project_Mariner",
+                "Anthropic",
+                "Claude_3.5_Sonnet"
+            ],
+            "status": "archive",
+            "created_at": "2025-01-24",
+            "modified_at": "2025-02-09 22:21:38",
+            "path": "notes/Z_Storage/AI/Open_ai/Archives/250209_OpenAI's_Operator_Examples,_Use_Cases,_Competition_&_More.md"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/250209_Mix_Harmonique_-_Comment_mixer_tout_avec_n'importe_quoi__Key_Adjust,.md": {
+            "title": "\"Mix Harmonique - Comment mixer tout avec n'importe quoi ? Key Adjust,\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "DJ_equipment",
+                "Rekordbox",
+                "Traktor",
+                "audio_editing",
+                "music_production"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 23:23:29"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/250209_MIX_HARMONIQUE_-_Comment_mixer_avec_la_roue_de_camelot.md": {
+            "title": "\"MIX HARMONIQUE - Comment mixer avec la roue de camelot\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "mixing_music",
+                "audio_production",
+                "music_editing"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 23:23:35"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/250209_MIX_HARMONIQUE_-_La_technique_secrète_d'Andy_Mac_Door.md": {
+            "title": "\"MIX HARMONIQUE - La technique secrète d'Andy Mac Door\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "music_mixing",
+                "bass_level",
+                "audio_engineering",
+                "sound_design"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 23:23:40"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/250209_MIX_HARMONIQUE_-_Explications_approfondies_du_fonctionnement_de_la_rou.md": {
+            "title": "\"MIX HARMONIQUE - Explications approfondies du fonctionnement de la rou\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "Camelot_wheel",
+                "cycle_of_fifths",
+                "music_theory",
+                "tonality",
+                "harmony",
+                "mixing_key",
+                "electronic_music"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 23:23:46"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/250209_MIX_HARMONIQUE_-_Qu'est_ce_que_le_Mixage_Harmonique.md": {
+            "title": "\"MIX HARMONIQUE - Qu'est ce que le Mixage Harmonique ?\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "mixing",
+                "harmony",
+                "music_theory",
+                "DJ_techniques",
+                "key_identification",
+                "Roue_de_Camelot"
+            ],
+            "status": "synthesis",
+            "created_at": "2025-02-09",
+            "modified_at": "2025-02-09 23:23:52"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/Archives/250209_Mix_Harmonique_-_Comment_mixer_tout_avec_n'importe_quoi__Key_Adjust,.md": {
+            "title": "\"Mix Harmonique - Comment mixer tout avec n'importe quoi ? Key Adjust,\"",
+            "category": "music",
+            "subcategory": "music_production",
+            "tags": [
+                "mixing",
+                "harmonic_mix",
+                "key_adjust",
+                "Traktor",
+                "Mixed_in_Key",
+                "Rekordbox",
+                "music_production",
+                "sound_engineering"
+            ],
+            "status": "archive",
+            "created_at": "",
+            "modified_at": "2025-02-09 20:02:39",
+            "path": "notes/Z_Storage/Music_production/Mix_harmonique/Archives/250209_Mix_Harmonique_-_Comment_mixer_tout_avec_n'importe_quoi__Key_Adjust,.md"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/Archives/250209_MIX_HARMONIQUE_-_Comment_mixer_avec_la_roue_de_camelot.md": {
+            "title": "\"MIX HARMONIQUE - Comment mixer avec la roue de camelot\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "Mixing_Techniques",
+                "Audio_Mixing",
+                "Music_Production",
+                "Sound_Engineering",
+                "Music_Theory"
+            ],
+            "status": "archive",
+            "created_at": "unknown",
+            "modified_at": "2025-02-09 23:23:35"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/Archives/250209_MIX_HARMONIQUE_-_La_technique_secrète_d'Andy_Mac_Door.md": {
+            "title": "\"MIX HARMONIQUE - La technique secrète d'Andy Mac Door\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "mixing_harmonique",
+                "key_adjust",
+                "Andy_Mac_Door",
+                "technique_secrete",
+                "cycle_des_quintes",
+                "roue_de_camelot"
+            ],
+            "status": "archive",
+            "created_at": "unknown",
+            "modified_at": "2025-02-09 23:23:40"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/Archives/250209_MIX_HARMONIQUE_-_Explications_approfondies_du_fonctionnement_de_la_rou.md": {
+            "title": "\"MIX HARMONIQUE - Explications approfondies du fonctionnement de la rou\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "Cycle_of_Fifths",
+                "Camelot's_Wheel",
+                "Music_Theory",
+                "Harmony",
+                "Musical_Composition"
+            ],
+            "status": "archive",
+            "created_at": "unknown",
+            "modified_at": "2025-02-09 23:23:46"
+        },
+        "notes/Z_Storage/Music_production/Mix_harmonique/Archives/250209_MIX_HARMONIQUE_-_Qu'est_ce_que_le_Mixage_Harmonique.md": {
+            "title": "\"MIX HARMONIQUE - Qu'est ce que le Mixage Harmonique ?\"",
+            "category": "music_production",
+            "subcategory": "mix_harmonique",
+            "tags": [
+                "DJ",
+                "music_theory",
+                "harmony",
+                "camelot_wheel",
+                "circle_of_fifths",
+                "key_recognition",
+                "mixed_in_key"
+            ],
+            "status": "archive",
+            "created_at": "unknown",
+            "modified_at": "2025-02-09 23:23:52"
         }
     }
 }

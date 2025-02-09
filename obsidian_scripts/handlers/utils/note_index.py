@@ -20,9 +20,9 @@ def load_note_index():
         with open(note_paths_file, 'r', encoding='utf-8') as file:
             
             data = json.load(file)
-            
+            logging.debug(f"[DEBUG] load_note_index : {data}")
             notes = data.get('notes', {})
-           
+            logging.debug(f"[DEBUG] load_note_index : {notes}")
             # Ajout de logs pour vérifier le format des notes
             for note_path, note_data in notes.items():
                 logging.debug(f"[DEBUG] Type de note_path : {type(note_path)} - note_path : {note_path}")
@@ -32,7 +32,11 @@ def load_note_index():
                 else:
                     logging.debug(f"[DEBUG] Note trouvée : {note_data['title']} (path: {note_path})")
 
-            _note_index_cache = {note_data['title']: str(note_path) for note_path, note_data in notes.items()}
+            _note_index_cache = {
+                note_data['title']: str(note_path)
+                for note_path, note_data in notes.items()
+                if note_data.get("status") == "synthesis"  # Sélectionne uniquement les notes de statut "synthesis"
+            }
             logging.debug(f"[DEBUG] Test2_note_index_cache {(_note_index_cache)}")
             
             #logging.debug(f"[DEBUG] Index chargé avec succès : {_note_index_cache.keys()}")

@@ -41,6 +41,7 @@ def process_get_note_type(filepath):
 
         logging.debug("[DEBUG] process_get_note_type : %s", prompt)
         response = ollama_generate(prompt)
+        #response = "Cinema/test"
         logging.debug("[DEBUG] process_get_note_type response : %s", response)
 
         parse_category = parse_category_response(response)
@@ -271,8 +272,12 @@ def add_dynamic_subcategory(category, subcategory):
         raise ValueError(f"[❌] Chemin introuvable pour la catégorie : {category}")
 
     base_path = Path(base_path_str)
+    logging.debug("[DEBUG] base_path %s", base_path)
+    first_parent_name = Path(base_path).parent.name
     new_subcategory_name = subcategory.capitalize()
+    category_name = category.capitalize()
     new_path = base_path / new_subcategory_name
+    logging.debug("[DEBUG] new_path %s", new_path)
 
     # 🔹 Création du dossier si inexistant
     if not new_path.exists():
@@ -286,17 +291,19 @@ def add_dynamic_subcategory(category, subcategory):
     }
 
     # 🔹 Ajout du dossier dans `folders`
-    folder_key = f"notes/{category}/{new_subcategory_name}"
+    folder_key = f"{first_parent_name}/{category_name}/{new_subcategory_name}"
     folders[folder_key] = {
         "path": str(new_path),
         "category": category,
         "subcategory": subcategory,
         "folder_type": "storage"
     }
-
+    logging.debug("[DEBUG] folder_key %s", folder_key)
     # 🔹 Sauvegarde de `note_paths.json`
     note_paths["categories"] = categories
     note_paths["folders"] = folders
+    logging.info(f"[INFO] note_paths[categories] : {note_paths["categories"]}")
+    logging.info(f"[INFO] note_paths[folders] : {note_paths["folders"]}")
     save_note_paths(note_paths)
 
     return new_path
@@ -372,7 +379,7 @@ def check_and_handle_similarity(name, existing_names, threshold_low=0.7, entity_
             )
             logging.warning(f"[WARN] Similitude moyenne détectée ({entity_type}) : '{name}' proche de '{closest}' (score: {score:.2f})")
             
-            with open(SIMILARITY_WARNING_LOG, "a", encoding='utf-8') as log_file:
+            with open(similarity_warnings_log, "a", encoding='utf-8') as log_file:
                 log_file.write(log_message)
             
             return None  # 🔥 Retourne None pour éviter la création automatique
@@ -404,7 +411,7 @@ def add_dynamic_category(category):
     }
 
     # 🔹 Ajout du dossier dans `folders`
-    folder_key = f"notes/{category}"
+    folder_key = f"{category}"
     folders[folder_key] = {
         "path": str(base_path),
         "category": category,
@@ -415,6 +422,8 @@ def add_dynamic_category(category):
     # 🔹 Mise à jour et sauvegarde de `note_paths.json`
     note_paths["categories"] = categories
     note_paths["folders"] = folders
+    logging.info(f"[INFO] note_paths[categories] : {note_paths["categories"]}")
+    logging.info(f"[INFO] note_paths[folders] : {note_paths["folders"]}")
     save_note_paths(note_paths)
 
     return base_path

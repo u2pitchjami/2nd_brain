@@ -110,26 +110,36 @@ def get_path_from_classification(category, subcategory):
         f"Aucune correspondance trouvée pour catégorie {category} et sous-catégorie {subcategory}")
     
 def save_note_paths(note_paths):
-    """Sauvegarde sécurisée de note_paths.json avec protection contre les écritures concurrentes."""
+    """Sauvegarde sécurisée de note_paths.json avec relecture avant écriture pour éviter les écrasements."""
     logging.debug("[DEBUG] entrée save_note_paths")
     logging.debug(f"[DEBUG] Tentative d'acquisition de _save_lock par {threading.current_thread().name}")
 
     note_paths_file = os.getenv('NOTE_PATHS_FILE')
     temp_file = note_paths_file + ".tmp"
 
-    logging.debug("[DEBUG] save_note_paths 2")
-
-    if not _save_lock.acquire(timeout=30):  # 🔥 Acquisition du verrou pour éviter les écritures concurrentes
+    if not _save_lock.acquire(timeout=30):
         logging.error("[ERREUR] ⏳ _save_lock bloqué trop longtemps dans `save_note_paths()`, abandon")
         return
 
     try:
         logging.debug(f"[DEBUG] 🔒 _save_lock acquis par {threading.current_thread().name} dans `save_note_paths()`")
 
-        with lock:  # 🔒 Empêche plusieurs processus de modifier `note_paths.json` simultanément
-            logging.debug("[DEBUG] save_note_paths 4")
+        with lock:
             try:
-                logging.debug(f"[DEBUG] Avant normalisation, {len(note_paths['notes'])} notes enregistrées.")
+                # 🔄 Relecture du fichier pour éviter d'écraser les modifs d'un autre process
+                if os.path.exists(note_paths_file):
+                    with open(note_paths_file, "r", encoding="utf-8") as f:
+                        latest_data = json.load(f)
+                        logging.debug("[DEBUG] Dernière version de note_paths chargée depuis le fichier.")
+
+                    # 🔄 Fusion des nouvelles données avec les existantes
+                    for key, value in note_paths["notes"].items():
+                        latest_data["notes"][key] = value
+
+                    for key, value in note_paths["folders"].items():
+                        latest_data["folders"][key] = value
+
+                    note_paths = latest_data  # On travaille avec la version fusionnée
 
                 # 🔹 Normalisation des chemins avant la sauvegarde
                 normalized_notes = {normalize_path(k): v for k, v in note_paths["notes"].items()}
@@ -138,15 +148,16 @@ def save_note_paths(note_paths):
                 note_paths["notes"] = normalized_notes
                 note_paths["folders"] = normalized_folders
 
-                # 🔥 Écriture dans un fichier temporaire pour éviter la corruption en cas d'échec
+                # 🔥 Écriture dans un fichier temporaire
                 with open(temp_file, "w", encoding="utf-8") as f:
                     json.dump(note_paths, f, indent=4, ensure_ascii=False)
 
-                # 🔄 Remplacement atomique du fichier (évite la corruption si interruption)
+                # 🔄 Remplacement atomique
                 os.replace(temp_file, note_paths_file)
 
                 logging.debug(f"[DEBUG] Après normalisation, {len(note_paths['notes'])} notes enregistrées.")
                 logging.info("[INFO] `note_paths.json` mis à jour avec normalisation et protection contre corruption.")
+
             except Exception as e:
                 logging.error(f"[ERREUR] Impossible de sauvegarder `note_paths.json` : {e}")
 
