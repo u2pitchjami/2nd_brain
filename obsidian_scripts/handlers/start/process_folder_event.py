@@ -122,7 +122,7 @@ def process_folder_event(event):
             logging.warning(f"[WARNING] Tentative de suppression d'un dossier inexistant : {relative_path}")
 
         
-
+    
     save_note_paths(note_paths)
 
 

@@ -398,7 +398,7 @@ def add_dynamic_category(category):
     logging.info(f"[INFO] Création de la nouvelle catégorie : {category}")
 
     # 🔹 Création du chemin physique pour la catégorie
-    base_path = Path(os.getenv('BASE_PATH')) / category
+    base_path = Path(os.getenv('BASE_PATH')) / "Z_Storage" / category
     if not base_path.exists():
         logging.info(f"[INFO] Création du dossier catégorie : {base_path}")
         base_path.mkdir(parents=True, exist_ok=True)

@@ -132,12 +132,45 @@ def save_note_paths(note_paths):
                         latest_data = json.load(f)
                         logging.debug("[DEBUG] Dernière version de note_paths chargée depuis le fichier.")
 
+                    # 🔥 Suppression des catégories et sous-catégories disparues
+                    for category in list(latest_data["categories"].keys()):
+                        if category not in note_paths["categories"]:
+                            logging.info(f"[INFO] Suppression de la catégorie disparue : {category}")
+                            del latest_data["categories"][category]
+                        else:
+                            for subcategory in list(latest_data["categories"][category].get("subcategories", {}).keys()):
+                                if "subcategories" in note_paths["categories"][category]:
+                                    if subcategory not in note_paths["categories"][category]["subcategories"]:
+                                        logging.info(f"[INFO] Suppression de la sous-catégorie disparue : {subcategory} de {category}")
+                                        del latest_data["categories"][category]["subcategories"][subcategory]
+
+                    # 🔥 Suppression des notes disparues
+                    for note in list(latest_data["notes"].keys()):
+                        if note not in note_paths["notes"]:
+                            logging.info(f"[INFO] Suppression de la note disparue : {note}")
+                            del latest_data["notes"][note]
+
+                    # 🔥 Suppression des dossiers disparus
+                    for folder in list(latest_data["folders"].keys()):
+                        if folder not in note_paths["folders"]:
+                            logging.info(f"[INFO] Suppression du dossier disparu : {folder}")
+                            del latest_data["folders"][folder]
+
                     # 🔄 Fusion des nouvelles données avec les existantes
                     for key, value in note_paths["notes"].items():
                         latest_data["notes"][key] = value
 
                     for key, value in note_paths["folders"].items():
                         latest_data["folders"][key] = value
+
+                    for key, value in note_paths["categories"].items():
+                        if key not in latest_data["categories"]:
+                            latest_data["categories"][key] = value
+                        else:
+                            for sub_key, sub_value in value.get("subcategories", {}).items():
+                                if "subcategories" not in latest_data["categories"][key]:
+                                    latest_data["categories"][key]["subcategories"] = {}
+                                latest_data["categories"][key]["subcategories"][sub_key] = sub_value
 
                     note_paths = latest_data  # On travaille avec la version fusionnée
 
@@ -164,7 +197,6 @@ def save_note_paths(note_paths):
     finally:
         _save_lock.release()
         logging.debug(f"[DEBUG] 🔓 _save_lock libéré par {threading.current_thread().name} dans `save_note_paths()`")
-
 
 
 def categ_extract(base_folder):

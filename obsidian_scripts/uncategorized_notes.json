@@ -45,9 +45,9 @@
         "date": "2025-02-07 21:41:26"
     },
     "/mnt/user/Documents/Obsidian/notes/Z_technical/uncategorized/Evaluating dopamine reward pathway in ADHD clinical implications - PubMed.md": {
-        "original_type": "ai/theoretical",
-        "llama_proposition": "Invalid format",
-        "date": "2025-02-07 21:52:59"
+        "original_type": "health/addhd",
+        "llama_proposition": "addhd",
+        "date": "2025-02-10 17:43:32"
     },
     "/mnt/user/Documents/Obsidian/notes/Z_technical/uncategorized/Tutoriel sur la conversion des types de donn\u00e9es en Python.md": {
         "original_type": "Invalid format",
@@ -78,5 +78,25 @@
         "original_type": "organization/unbound",
         "llama_proposition": "Invalid format",
         "date": "2025-02-08 15:20:29"
+    },
+    "/mnt/user/Documents/Obsidian/notes/Z_technical/uncategorized/10 ChatGPT Prompts to Supercharge Your LinkedIn Profile.md": {
+        "original_type": "Invalid format",
+        "llama_proposition": "",
+        "date": "2025-02-10 17:23:14"
+    },
+    "/mnt/user/Documents/Obsidian/notes/Z_technical/uncategorized/50 trucs de gestion du d\u00e9ficit d'attention de l'adulte.md": {
+        "original_type": "health/addhd",
+        "llama_proposition": "addhd",
+        "date": "2025-02-10 17:34:24"
+    },
+    "/mnt/user/Documents/Obsidian/notes/Z_technical/uncategorized/GitHub Copilot.md": {
+        "original_type": "Invalid format",
+        "llama_proposition": "",
+        "date": "2025-02-10 18:39:21"
+    },
+    "/mnt/user/Documents/Obsidian/notes/Z_technical/uncategorized/How to Boost LinkedIn Engagement With AI.md": {
+        "original_type": "Invalid format",
+        "llama_proposition": "",
+        "date": "2025-02-10 22:26:53"
     }
 }
